@@ -131,11 +131,11 @@ fn display_row(
         }
         .into(),
         river_level: record.river.map_or_else(
-            || SharedString::from("—"),
-            |river| river.level.0.to_string().into(),
+            || SharedString::from("-"),
+            |river| format!("L{}  +{}%", river.level.0, river.level.0 * 10).into(),
         ),
         harbor: record.harbor_suitability.map_or_else(
-            || SharedString::from("—"),
+            || SharedString::from("-"),
             |value| format!("{value:.2}").into(),
         ),
         movement_presence: if record.movement_assistance.is_some() {
@@ -145,12 +145,20 @@ fn display_row(
         }
         .into(),
         movement_x: record.movement_assistance.map_or_else(
-            || SharedString::from("—"),
+            || SharedString::from("-"),
             |value| format!("{:.2}", value[0]).into(),
         ),
         movement_y: record.movement_assistance.map_or_else(
-            || SharedString::from("—"),
+            || SharedString::from("-"),
             |value| format!("{:.2}", value[1]).into(),
+        ),
+        static_capacity: record.static_population_capacity.map_or_else(
+            || SharedString::from("-"),
+            |value| format_population(value.total.0).into(),
+        ),
+        equator_capacity: record.static_population_capacity.map_or_else(
+            || SharedString::from("-"),
+            |value| format_population(value.equator.0).into(),
         ),
     }
 }
@@ -160,11 +168,23 @@ fn shared(values: &[SharedString], symbol: Option<SymbolId>) -> SharedString {
         .and_then(|id| usize::try_from(id.0).ok())
         .and_then(|index| values.get(index))
         .cloned()
-        .unwrap_or_else(|| SharedString::from("—"))
+        .unwrap_or_else(|| SharedString::from("-"))
+}
+
+pub(super) fn format_population(value: u32) -> String {
+    let digits = value.to_string();
+    let mut output = String::with_capacity(digits.len() + digits.len() / 3);
+    for (index, character) in digits.chars().enumerate() {
+        if index > 0 && (digits.len() - index).is_multiple_of(3) {
+            output.push(',');
+        }
+        output.push(character);
+    }
+    output
 }
 
 pub(super) fn text(dataset: &Dataset, symbol: Option<SymbolId>) -> &str {
-    symbol.and_then(|id| dataset.symbol(id)).unwrap_or("—")
+    symbol.and_then(|id| dataset.symbol(id)).unwrap_or("-")
 }
 
 #[cfg(test)]
@@ -224,6 +244,7 @@ mod tests {
                 coastal: false,
                 connected_sea: None,
                 river: None,
+                static_population_capacity: None,
             }],
             diagnostics: Vec::new(),
         };

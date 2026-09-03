@@ -18,6 +18,8 @@ component FilterGroup inherits VerticalLayout {
     callback clear-options(string);
     in property <int> reset-generation: 0;
     spacing: 3px;
+    min-width: 0px;
+    horizontal-stretch: 1;
     Text { text: root.label; color: #aeb8c5; font-size: 12px; }
     checklist := SearchableChecklist {
         field: root.label;
@@ -96,8 +98,8 @@ export component FilterRail inherits Rectangle {
             Text { text: root.rgb-error; color: #ff8d8d; font-size: 11px; visible: root.rgb-error != ""; }
             coastal-group := FilterGroup { label: "Coastal"; options: root.coastal-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
             river-group := FilterGroup { label: "River"; options: root.river-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            river-min-group := FilterGroup { label: "Min river level"; options: root.river-level-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            river-max-group := FilterGroup { label: "Max river level"; options: root.river-level-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+            river-min-group := FilterGroup { label: "Min river bonus"; options: root.river-level-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+            river-max-group := FilterGroup { label: "Max river bonus"; options: root.river-level-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
             harbor-group := FilterGroup { label: "Harbor suitability"; options: root.harbor-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
             HorizontalLayout { spacing: 6px; harbor-min-input := LineEdit { placeholder-text: "Minimum"; input-type: decimal; edited(value) => { root.numeric-changed("harbor-min", value); } } harbor-max-input := LineEdit { placeholder-text: "Maximum"; input-type: decimal; edited(value) => { root.numeric-changed("harbor-max", value); } } }
             movement-group := FilterGroup { label: "Movement assistance"; options: root.movement-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }

@@ -14,6 +14,7 @@ const REQUIRED_MAP_FILES: &[&str] = &[
     "ports.csv",
     "locations.png",
     "rivers.png",
+    "default.map",
 ];
 
 /// A validated vanilla game installation.
@@ -59,6 +60,40 @@ impl GameInstallation {
             .join("jomini")
             .join("rivers.txt")
     }
+
+    /// Returns one immutable map-data definition used by capacity calculation.
+    #[must_use]
+    pub fn map_definition(&self) -> PathBuf {
+        self.map_data().join("default.map")
+    }
+
+    /// Returns the vanilla topography definitions.
+    #[must_use]
+    pub fn topography_definitions(&self) -> PathBuf {
+        self.root
+            .join("game/in_game/common/topography/00_default.txt")
+    }
+
+    /// Returns the vanilla vegetation definitions.
+    #[must_use]
+    pub fn vegetation_definitions(&self) -> PathBuf {
+        self.root
+            .join("game/in_game/common/vegetation/00_default.txt")
+    }
+
+    /// Returns the vanilla climate definitions.
+    #[must_use]
+    pub fn climate_definitions(&self) -> PathBuf {
+        self.root
+            .join("game/in_game/common/climates/00_default.txt")
+    }
+
+    /// Returns static location modifiers used by immutable map factors.
+    #[must_use]
+    pub fn location_static_modifiers(&self) -> PathBuf {
+        self.root
+            .join("game/main_menu/common/static_modifiers/location.txt")
+    }
 }
 
 /// Uses an explicit path or discovers Steam on Windows, then validates required inputs.
@@ -90,6 +125,16 @@ fn validate(path: &Path, build_id: u64) -> Result<GameInstallation, AppError> {
     let river_defines = root.join("game/loading_screen/common/defines/jomini/rivers.txt");
     if !river_defines.is_file() {
         return Err(AppError::MissingFile(river_defines));
+    }
+    for required in [
+        root.join("game/in_game/common/topography/00_default.txt"),
+        root.join("game/in_game/common/vegetation/00_default.txt"),
+        root.join("game/in_game/common/climates/00_default.txt"),
+        root.join("game/main_menu/common/static_modifiers/location.txt"),
+    ] {
+        if !required.is_file() {
+            return Err(AppError::MissingFile(required));
+        }
     }
     Ok(GameInstallation { root, build_id })
 }

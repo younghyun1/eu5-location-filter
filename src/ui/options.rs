@@ -7,6 +7,7 @@ use slint::{Model, ModelRc, SharedString};
 
 use super::{AppWindow, CheckOption};
 use crate::filter::fold_search;
+use crate::model::MAX_RIVER_LEVEL;
 use crate::model::{Dataset, SymbolId};
 
 pub(super) fn install(app: &AppWindow, dataset: &Dataset) {
@@ -58,10 +59,15 @@ pub(super) fn install(app: &AppWindow, dataset: &Dataset) {
     app.set_river_options(static_model(presence));
     app.set_harbor_options(static_model(presence));
     app.set_movement_options(static_model(presence));
-    let levels: Vec<CheckOption> = (0..=dataset.stored.river_widths.level_count)
-        .map(|level| option(&level.to_string(), &format!("Level {level}")))
+    let levels: Vec<CheckOption> = (1..=MAX_RIVER_LEVEL)
+        .map(|level| option(&level.to_string(), &river_label(level)))
         .collect();
     app.set_river_level_options(ModelRc::from(levels.as_slice()));
+}
+
+fn river_label(level: u8) -> String {
+    let name = crate::model::RiverLevel(level).label();
+    format!("Level {level}: {name} (+{}%)", level * 10)
 }
 
 pub(super) fn filtered(
@@ -103,7 +109,7 @@ pub(super) fn source(app: &AppWindow, field: &str) -> ModelRc<CheckOption> {
         "Modifier" => app.get_modifier_options(),
         "Coastal" => app.get_coastal_options(),
         "River" => app.get_river_options(),
-        "Min river level" | "Max river level" => app.get_river_level_options(),
+        "Min river bonus" | "Max river bonus" => app.get_river_level_options(),
         "Harbor suitability" => app.get_harbor_options(),
         "Movement assistance" => app.get_movement_options(),
         _ => ModelRc::default(),

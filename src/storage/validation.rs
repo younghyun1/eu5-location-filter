@@ -4,8 +4,8 @@ use std::collections::HashSet;
 
 use crate::AppError;
 use crate::model::{
-    EU5_APP_ID, FORMAT_VERSION, LocationRecord, MAX_DICTIONARY_BYTES, MAX_LOCATIONS, MAX_SYMBOLS,
-    StoredDataset, SymbolId,
+    EU5_APP_ID, FORMAT_VERSION, LocationKind, LocationRecord, MAX_DICTIONARY_BYTES, MAX_LOCATIONS,
+    MAX_RIVER_LEVEL, MAX_SYMBOLS, StoredDataset, SymbolId,
 };
 
 pub(super) fn validate_stored(stored: &StoredDataset) -> Result<(), AppError> {
@@ -38,13 +38,7 @@ pub(super) fn validate_stored(stored: &StoredDataset) -> Result<(), AppError> {
     let mut keys = HashSet::with_capacity(location_count);
     let mut colors = HashSet::with_capacity(location_count);
     for (index, record) in stored.locations.iter().enumerate() {
-        validate_record(
-            record,
-            index,
-            symbol_count,
-            location_count,
-            stored.river_widths.level_count,
-        )?;
+        validate_record(record, index, symbol_count, location_count, MAX_RIVER_LEVEL)?;
         if !keys.insert(record.key) || !colors.insert(record.color) {
             return Err(AppError::InvalidData(
                 "location identifiers and colors must be unique".to_owned(),
@@ -102,12 +96,24 @@ fn validate_record(
             "connected sea location is out of range".to_owned(),
         ));
     }
-    if record.river.is_some_and(|river| {
-        river.level.0 > max_river_level
-            || !river.rendered_width.is_finite()
-            || river.rendered_width < 0.0
-    }) {
+    if record
+        .river
+        .is_some_and(|river| river.level.0 == 0 || river.level.0 > max_river_level)
+    {
         return Err(AppError::InvalidData("river data is invalid".to_owned()));
+    }
+    let requires_capacity = record.kind == LocationKind::Land && record.vegetation.is_some();
+    if record.static_population_capacity.is_some() != requires_capacity {
+        return Err(AppError::InvalidData(
+            "static population capacity presence is invalid".to_owned(),
+        ));
+    }
+    if record.static_population_capacity.is_some_and(|capacity| {
+        capacity.total.0 == 0 || capacity.vegetation.0.saturating_add(capacity.equator.0) == 0
+    }) {
+        return Err(AppError::InvalidData(
+            "static population capacity is invalid".to_owned(),
+        ));
     }
     Ok(())
 }

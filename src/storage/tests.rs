@@ -122,6 +122,7 @@ fn fixture() -> StoredDataset {
             coastal: false,
             connected_sea: None,
             river: None,
+            static_population_capacity: None,
         }],
         diagnostics: Vec::new(),
     }

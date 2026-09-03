@@ -187,7 +187,7 @@ fn record(
             level,
             has_source: false,
             has_confluence: false,
-            rendered_width: f32::from(level.0),
         }),
+        static_population_capacity: None,
     }
 }

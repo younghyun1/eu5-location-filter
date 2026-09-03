@@ -99,7 +99,17 @@ impl Parser<'_> {
             TokenKind::Word(value) => {
                 let value = value.clone();
                 self.position += 1;
-                Ok(Value::Atom(value))
+                if matches!(
+                    self.tokens.get(self.position).map(|item| &item.kind),
+                    Some(TokenKind::LeftBrace)
+                ) {
+                    // Jomini uses tagged blocks such as `rgb { 1 2 3 }`. Callers
+                    // interested only in assignment structure can treat these as blocks.
+                    self.position += 1;
+                    self.parse_entries(true).map(Value::Block)
+                } else {
+                    Ok(Value::Atom(value))
+                }
             }
             TokenKind::LeftBrace => {
                 self.position += 1;
@@ -212,7 +222,7 @@ mod tests {
 
     #[test]
     fn parses_comments_compact_blocks_and_lists() {
-        let input = b"# heading\nloc={topography=flatland movement={-1.5 2} name=\"A \\\"B\\\"\"}";
+        let input = b"# heading\nloc={topography=flatland movement={-1.5 2} debug=rgb {1 2 3} name=\"A \\\"B\\\"\"}";
         let parsed = parse_document("test", input);
         assert!(parsed.is_ok());
         let Ok(entries) = parsed else { return };

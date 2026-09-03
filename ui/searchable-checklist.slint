@@ -1,4 +1,4 @@
-import { Button, CheckBox, LineEdit, ListView } from "std-widgets.slint";
+import { CheckBox, LineEdit, ListView } from "std-widgets.slint";
 import { CheckOption } from "types.slint";
 
 export component SearchableChecklist inherits VerticalLayout {
@@ -13,34 +13,28 @@ export component SearchableChecklist inherits VerticalLayout {
     callback clear-options(string);
     spacing: 4px;
     horizontal-stretch: 1;
-
-    HorizontalLayout {
+    min-width: 0px;
+    LineEdit {
         height: 30px;
-        spacing: 4px;
-        LineEdit {
-            text <=> root.query;
-            placeholder-text: "Search " + root.field.to-lowercase();
-            accessible-label: "Search " + root.field + " options";
-            edited(value) => {
-                root.filtered-options = root.filter-options(root.field, value);
-            }
-        }
-        Button {
-            text: "Clear";
-            width: 54px;
-            clicked => {
-                root.clear-options(root.field);
-                root.filtered-options = root.filter-options(root.field, root.query);
-            }
+        horizontal-stretch: 1;
+        min-width: 0px;
+        text <=> root.query;
+        placeholder-text: "Search " + root.field.to-lowercase();
+        accessible-label: "Search " + root.field + " options";
+        edited(value) => {
+            root.filtered-options = root.filter-options(root.field, value);
         }
     }
     Rectangle {
         height: root.list-height;
+        horizontal-stretch: 1;
+        clip: true;
         background: #19222c;
         border-color: #354454;
         border-width: 1px;
         border-radius: 3px;
         ListView {
+            horizontal-scrollbar-policy: always-off;
             for option in root.filtered-options: CheckBox {
                 height: 30px;
                 text: option.label;

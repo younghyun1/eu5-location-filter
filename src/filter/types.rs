@@ -82,9 +82,9 @@ pub struct FilterSet {
     pub coastal: Option<bool>,
     /// Exact river presence.
     pub river_presence: Option<bool>,
-    /// Inclusive minimum river level.
+    /// Inclusive minimum gameplay river bonus tier.
     pub river_level_min: Option<u8>,
-    /// Inclusive maximum river level.
+    /// Inclusive maximum gameplay river bonus tier.
     pub river_level_max: Option<u8>,
     /// Harbor missing/present selector.
     pub harbor_presence: OptionalNumeric,
@@ -171,7 +171,7 @@ pub enum SortField {
     Coastal,
     /// River presence.
     RiverPresence,
-    /// River level, nulls last.
+    /// Gameplay river bonus tier, nulls last.
     RiverLevel,
     /// Harbor suitability, nulls last.
     HarborSuitability,
@@ -181,11 +181,15 @@ pub enum SortField {
     MovementX,
     /// Second movement-assistance component, nulls last.
     MovementY,
+    /// Immutable population capacity, nulls last.
+    StaticPopulationCapacity,
+    /// Latitude-based capacity contribution, nulls last.
+    EquatorCapacity,
 }
 
 impl SortField {
     /// Every supported field, used to build fixed startup indexes.
-    pub const ALL: [Self; 23] = [
+    pub const ALL: [Self; 25] = [
         Self::Color,
         Self::Name,
         Self::Identifier,
@@ -209,6 +213,8 @@ impl SortField {
         Self::MovementPresence,
         Self::MovementX,
         Self::MovementY,
+        Self::StaticPopulationCapacity,
+        Self::EquatorCapacity,
     ];
 }
 

@@ -68,6 +68,7 @@ pub(super) fn build_records(
             coastal: ports.contains_key(&template.key),
             connected_sea: None,
             river: None,
+            static_population_capacity: None,
         };
         key_ids.insert(template.key, id);
         color_ids.insert(color, id);

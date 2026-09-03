@@ -2,6 +2,7 @@
 
 mod colors;
 mod hierarchy;
+mod population;
 mod ports;
 mod records;
 mod river_defines;
@@ -40,25 +41,25 @@ pub fn import_game(
     mut progress: impl FnMut(ImportProgress),
 ) -> Result<StoredDataset, AppError> {
     let map = installation.map_data();
-    progress_at(&mut progress, "Reading location templates", 0, 8);
+    progress_at(&mut progress, "Reading location templates", 0, 10);
     let template_path = map.join("location_templates.txt");
     let templates = templates::parse_templates(
         &template_path.display().to_string(),
         &read_limited(&template_path, MAX_TEMPLATES_SIZE)?,
     )?;
-    progress_at(&mut progress, "Reading hierarchy", 1, 8);
+    progress_at(&mut progress, "Reading hierarchy", 1, 10);
     let hierarchy_path = map.join("definitions.txt");
     let mut hierarchy = hierarchy::parse_hierarchy(
         &hierarchy_path.display().to_string(),
         &read_limited(&hierarchy_path, MAX_DEFINITIONS_SIZE)?,
     )?;
-    progress_at(&mut progress, "Reading map colors", 2, 8);
+    progress_at(&mut progress, "Reading map colors", 2, 10);
     let colors_path = map.join("named_locations").join("00_default.txt");
     let mut colors = colors::parse_colors(
         &colors_path.display().to_string(),
         &read_limited(&colors_path, MAX_COLORS_SIZE)?,
     )?;
-    progress_at(&mut progress, "Reading ports", 3, 8);
+    progress_at(&mut progress, "Reading ports", 3, 10);
     let ports_path = map.join("ports.csv");
     let ports_bytes = read_limited(&ports_path, MAX_PORTS_SIZE)?;
     let ports_text = String::from_utf8(ports_bytes).map_err(|error| {
@@ -69,15 +70,17 @@ pub fn import_game(
         )
     })?;
     let ports = ports::parse_ports(&ports_text)?;
-    progress_at(&mut progress, "Reading river settings", 4, 8);
+    progress_at(&mut progress, "Reading river settings", 4, 10);
     let river_defines_path = installation.river_defines();
     let river_widths = river_defines::parse_river_widths(
         &river_defines_path.display().to_string(),
         &read_limited(&river_defines_path, MAX_DEFINES_SIZE)?,
     )?;
+    progress_at(&mut progress, "Reading static capacity factors", 5, 10);
+    let population_factors = population::load(installation)?;
     validate_source_coverage(&templates, &hierarchy, &colors, &ports)?;
 
-    progress_at(&mut progress, "Reading English localization", 5, 8);
+    progress_at(&mut progress, "Reading English localization", 6, 10);
     let requested = referenced_symbols(&templates, &hierarchy);
     let localization = read_localizations(
         &installation.localization_roots(),
@@ -94,7 +97,7 @@ pub fn import_game(
         &localization,
     )?;
 
-    progress_at(&mut progress, "Scanning map and rivers", 6, 8);
+    progress_at(&mut progress, "Scanning map and rivers", 7, 10);
     let river_scan = rivers::scan_rivers(
         &map.join("locations.png"),
         &map.join("rivers.png"),
@@ -105,6 +108,13 @@ pub fn import_game(
     for (record, river) in stored.locations.iter_mut().zip(river_scan.values) {
         record.river = river;
     }
+    progress_at(
+        &mut progress,
+        "Calculating static population capacity",
+        8,
+        10,
+    );
+    population::calculate(&mut stored, &river_scan.center_y, &population_factors)?;
     records::resolve_ports(&mut stored.locations, &key_ids, &ports)?;
     if !colors.is_empty() {
         stored.diagnostics.push(ImportDiagnostic {
@@ -118,7 +128,7 @@ pub fn import_game(
             count: u32::try_from(river_scan.unknown_pixels).unwrap_or(u32::MAX),
         });
     }
-    progress_at(&mut progress, "Import complete", 8, 8);
+    progress_at(&mut progress, "Import complete", 10, 10);
     Ok(stored)
 }
 

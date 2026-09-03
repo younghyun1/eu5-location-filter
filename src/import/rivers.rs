@@ -8,7 +8,9 @@ use std::path::Path;
 use png::{BitDepth, ColorType, Decoder};
 
 use crate::AppError;
-use crate::model::{LocationId, MapColor, RiverData, RiverLevel, RiverWidthMetadata};
+use crate::model::{
+    LocationId, MAX_RIVER_LEVEL, MapColor, RiverData, RiverLevel, RiverWidthMetadata,
+};
 
 const MAP_WIDTH: u32 = 16_384;
 const MAP_HEIGHT: u32 = 8_192;
@@ -22,9 +24,27 @@ struct Accumulator {
     level: u8,
 }
 
+#[derive(Clone, Copy, Debug)]
+struct PositionAccumulator {
+    present: bool,
+    minimum_y: u32,
+    maximum_y: u32,
+}
+
+impl Default for PositionAccumulator {
+    fn default() -> Self {
+        Self {
+            present: false,
+            minimum_y: u32::MAX,
+            maximum_y: 0,
+        }
+    }
+}
+
 /// Result of the paired image pass.
 pub(super) struct RiverScan {
     pub values: Vec<Option<RiverData>>,
+    pub center_y: Vec<Option<f64>>,
     pub unknown_pixels: u64,
 }
 
@@ -129,8 +149,9 @@ fn scan_readers<L: BufRead + Seek, R: BufRead + Seek>(
     let height = usize::try_from(dimensions.1)
         .map_err(|error| AppError::InvalidData(format!("map height overflow: {error}")))?;
     let mut accumulators = vec![Accumulator::default(); location_count];
+    let mut positions = vec![PositionAccumulator::default(); location_count];
     let mut unknown_pixels = 0_u64;
-    for _ in 0..height {
+    for row_index in 0..height {
         let location_row = next_row(&mut locations, locations_path)?;
         let river_row = next_row(&mut rivers, rivers_path)?;
         if location_row.len() != width.saturating_mul(3) || river_row.len() != width {
@@ -144,14 +165,15 @@ fn scan_readers<L: BufRead + Seek, R: BufRead + Seek>(
                 "locations.png row has partial RGB data".to_owned(),
             ));
         }
+        let map_y = u32::try_from(height.saturating_sub(row_index).saturating_sub(1))
+            .map_err(|error| AppError::InvalidData(format!("map row overflow: {error}")))?;
         for (rgb, palette) in location_pixels.iter().zip(river_row.iter().copied()) {
-            if palette == 0 || palette > widths.level_count.saturating_add(2) {
-                continue;
-            }
             let color =
                 MapColor((u32::from(rgb[0]) << 16) | (u32::from(rgb[1]) << 8) | u32::from(rgb[2]));
             let Some(location_id) = by_color.get(&color) else {
-                unknown_pixels = unknown_pixels.saturating_add(1);
+                if palette > 0 && palette <= widths.level_count.saturating_add(2) {
+                    unknown_pixels = unknown_pixels.saturating_add(1);
+                }
                 continue;
             };
             let Ok(index) = usize::try_from(location_id.0) else {
@@ -159,6 +181,17 @@ fn scan_readers<L: BufRead + Seek, R: BufRead + Seek>(
                     "location index does not fit this platform".to_owned(),
                 ));
             };
+            let Some(position) = positions.get_mut(index) else {
+                return Err(AppError::InvalidData(
+                    "location image resolved an invalid location index".to_owned(),
+                ));
+            };
+            position.present = true;
+            position.minimum_y = position.minimum_y.min(map_y);
+            position.maximum_y = position.maximum_y.max(map_y);
+            if palette == 0 || palette > widths.level_count.saturating_add(2) {
+                continue;
+            }
             let Some(accumulator) = accumulators.get_mut(index) else {
                 return Err(AppError::InvalidData(
                     "river image resolved an invalid location index".to_owned(),
@@ -183,15 +216,23 @@ fn scan_readers<L: BufRead + Seek, R: BufRead + Seek>(
         .into_iter()
         .map(|value| {
             value.present.then(|| RiverData {
-                level: RiverLevel(value.level),
+                level: gameplay_level(value.level),
                 has_source: value.source,
                 has_confluence: value.confluence,
-                rendered_width: rendered_width(value.level, widths),
             })
+        })
+        .collect();
+    let center_y = positions
+        .into_iter()
+        .map(|position| {
+            position
+                .present
+                .then(|| (f64::from(position.minimum_y) + f64::from(position.maximum_y)) / 2.0)
         })
         .collect();
     Ok(RiverScan {
         values,
+        center_y,
         unknown_pixels,
     })
 }
@@ -217,15 +258,11 @@ fn next_optional_row<'a, R: BufRead + Seek>(
         })
 }
 
-fn rendered_width(level: u8, widths: RiverWidthMetadata) -> f32 {
-    if level == 0 {
-        return 0.0;
-    }
-    if widths.level_count == 1 {
-        return widths.width_min;
-    }
-    let fraction = f32::from(level - 1) / f32::from(widths.level_count - 1);
-    widths.width_min + (widths.width_max - widths.width_min) * fraction
+fn gameplay_level(render_level: u8) -> RiverLevel {
+    // EU5 uses three consecutive render-palette steps for each gameplay tier.
+    // A source-only pixel is still a brook; the thirteenth step is the fifth tier.
+    let normalized = render_level.max(1);
+    RiverLevel(((normalized - 1) / 3 + 1).min(MAX_RIVER_LEVEL))
 }
 
 #[cfg(test)]

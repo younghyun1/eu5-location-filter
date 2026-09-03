@@ -4,7 +4,7 @@ use std::path::Path;
 
 use png::{BitDepth, ColorType, Encoder};
 
-use super::scan_readers;
+use super::{gameplay_level, scan_readers};
 use crate::model::{LocationId, MapColor, RiverWidthMetadata};
 
 #[test]
@@ -40,8 +40,17 @@ fn streams_sources_confluences_levels_and_unknown_colors() {
     };
     assert!(river.has_source);
     assert!(river.has_confluence);
-    assert_eq!(river.level.0, 3);
+    assert_eq!(river.level.0, 1);
     assert_eq!(scanned.unknown_pixels, 1);
+    assert_eq!(scanned.center_y.first(), Some(&Some(0.0)));
+}
+
+#[test]
+fn maps_render_palette_steps_to_five_gameplay_tiers() {
+    let levels = (1..=13)
+        .map(|level| gameplay_level(level).0)
+        .collect::<Vec<_>>();
+    assert_eq!(levels, vec![1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5]);
 }
 
 #[test]

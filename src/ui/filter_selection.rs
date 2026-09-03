@@ -29,8 +29,8 @@ pub(super) fn is_checked(state: &ActiveState, field: &str, key: &str) -> bool {
         "Modifier" => facet_checked(state.filters.modifier, state, key),
         "Coastal" => presence_checked(state.filters.coastal, key, "yes", "no"),
         "River" => presence_checked(state.filters.river_presence, key, "present", "missing"),
-        "Min river level" => numeric_checked(state.filters.river_level_min, key),
-        "Max river level" => numeric_checked(state.filters.river_level_max, key),
+        "Min river bonus" => numeric_checked(state.filters.river_level_min, key),
+        "Max river bonus" => numeric_checked(state.filters.river_level_max, key),
         "Harbor suitability" => numeric_presence_checked(state.filters.harbor_presence, key),
         "Movement assistance" => {
             presence_checked(state.filters.movement_presence, key, "present", "missing")
@@ -66,8 +66,8 @@ pub(super) fn toggle(state: &mut ActiveState, field: &str, key: &str, checked: b
         "Modifier" => set_facet(&mut state.filters.modifier, resolved, key, checked),
         "Coastal" => set_presence(&mut state.filters.coastal, key, "yes", checked),
         "River" => set_presence(&mut state.filters.river_presence, key, "present", checked),
-        "Min river level" => set_numeric(&mut state.filters.river_level_min, key, checked),
-        "Max river level" => set_numeric(&mut state.filters.river_level_max, key, checked),
+        "Min river bonus" => set_numeric(&mut state.filters.river_level_min, key, checked),
+        "Max river bonus" => set_numeric(&mut state.filters.river_level_max, key, checked),
         "Harbor suitability" => {
             set_numeric_presence(&mut state.filters.harbor_presence, key, checked)
         }
@@ -98,8 +98,8 @@ pub(super) fn clear(state: &mut ActiveState, field: &str) {
         "Modifier" => state.filters.modifier = OptionalFacet::Any,
         "Coastal" => state.filters.coastal = None,
         "River" => state.filters.river_presence = None,
-        "Min river level" => state.filters.river_level_min = None,
-        "Max river level" => state.filters.river_level_max = None,
+        "Min river bonus" => state.filters.river_level_min = None,
+        "Max river bonus" => state.filters.river_level_max = None,
         "Harbor suitability" => state.filters.harbor_presence = OptionalNumeric::Any,
         "Movement assistance" => state.filters.movement_presence = None,
         _ => {}

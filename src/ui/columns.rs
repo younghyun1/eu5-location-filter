@@ -31,11 +31,13 @@ pub(super) fn initial() -> Rc<VecModel<ColumnSpec>> {
         spec("rgb", "RGB", 150.0, false),
         spec("coastal", "Coastal", 82.0, false),
         spec("river_presence", "River", 90.0, false),
-        spec("river_level", "River level", 96.0, true),
+        spec("river_level", "River bonus", 112.0, true),
         spec("harbor", "Harbor", 84.0, true),
         spec("movement_presence", "Movement", 100.0, false),
         spec("movement_x", "Movement X", 104.0, false),
         spec("movement_y", "Movement Y", 104.0, false),
+        spec("static_capacity", "Static capacity", 126.0, true),
+        spec("equator_capacity", "Equator capacity", 130.0, false),
     ];
     Rc::new(VecModel::from(columns.to_vec()))
 }
@@ -85,6 +87,8 @@ pub(super) fn sort_field(key: &str) -> Option<SortField> {
         "movement_presence" => SortField::MovementPresence,
         "movement_x" => SortField::MovementX,
         "movement_y" => SortField::MovementY,
+        "static_capacity" => SortField::StaticPopulationCapacity,
+        "equator_capacity" => SortField::EquatorCapacity,
         _ => return None,
     })
 }

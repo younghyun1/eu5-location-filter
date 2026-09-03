@@ -5,7 +5,7 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use eu5_location_filter::filter::{FilterEngine, FilterSet, SortField};
-use eu5_location_filter::model::LocationKind;
+use eu5_location_filter::model::{LocationKind, MAX_RIVER_LEVEL};
 use eu5_location_filter::storage;
 
 #[test]
@@ -26,7 +26,7 @@ fn verifies_reference_install_import() -> Result<(), eu5_location_filter::AppErr
     assert!(dataset.stored.locations.iter().all(|record| {
         record
             .river
-            .is_none_or(|river| river.level.0 <= dataset.stored.river_widths.level_count)
+            .is_none_or(|river| (1..=MAX_RIVER_LEVEL).contains(&river.level.0))
     }));
     let river_locations: Vec<_> = dataset
         .stored
@@ -39,7 +39,15 @@ fn verifies_reference_install_import() -> Result<(), eu5_location_filter::AppErr
     assert!(river_locations.iter().any(|river| river.has_confluence));
     assert_eq!(
         river_locations.iter().map(|river| river.level.0).max(),
-        Some(dataset.stored.river_widths.level_count)
+        Some(MAX_RIVER_LEVEL)
+    );
+    assert!(
+        dataset
+            .stored
+            .locations
+            .iter()
+            .filter(|record| record.kind == LocationKind::Land && record.vegetation.is_some())
+            .all(|record| record.static_population_capacity.is_some())
     );
     assert_eq!(dataset.by_color.len(), dataset.stored.locations.len());
     assert_eq!(dataset.by_key.len(), dataset.stored.locations.len());

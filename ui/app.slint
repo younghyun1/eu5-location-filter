@@ -9,7 +9,13 @@ component PaneHandle inherits Rectangle {
     width: 7px;
     height: 100%;
     callback dragged(length);
-    background: drag-area.has-hover || drag-area.pressed ? #52779a : #202c38;
+    background: transparent;
+    Rectangle {
+        x: (parent.width - self.width) / 2;
+        width: drag-area.has-hover || drag-area.pressed ? 2px : 1px;
+        height: 100%;
+        background: drag-area.has-hover || drag-area.pressed ? #52779a : #2b3948;
+    }
     drag-area := TouchArea {
         mouse-cursor: col-resize;
         moved => {

@@ -6,7 +6,13 @@ component ColumnHandle inherits Rectangle {
     height: 100%;
     in property <length> target-width;
     callback resized(length);
-    background: drag-area.has-hover || drag-area.pressed ? #6b9bc5 : #30404f;
+    background: transparent;
+    Rectangle {
+        x: (parent.width - self.width) / 2;
+        width: drag-area.has-hover || drag-area.pressed ? 2px : 1px;
+        height: 100%;
+        background: drag-area.has-hover || drag-area.pressed ? #6b9bc5 : #30404f;
+    }
     drag-area := TouchArea {
         mouse-cursor: col-resize;
         moved => {
@@ -23,7 +29,6 @@ export component ResultTable inherits VerticalLayout {
     in property <float> table-width;
     in property <string> sort-key;
     in property <bool> sort-ascending;
-    property <length> horizontal-offset: 0px;
     in-out property <int> selected-index: -1;
     callback sort-requested(string);
     callback select-row(int);
@@ -57,6 +62,8 @@ export component ResultTable inherits VerticalLayout {
         if (key == "movement_presence") { return row.movement-presence; }
         if (key == "movement_x") { return row.movement-x; }
         if (key == "movement_y") { return row.movement-y; }
+        if (key == "static_capacity") { return row.static-capacity; }
+        if (key == "equator_capacity") { return row.equator-capacity; }
         return "";
     }
 
@@ -88,87 +95,102 @@ export component ResultTable inherits VerticalLayout {
             }
         }
     }
-    ScrollView {
+    Rectangle {
+        height: 44px;
+        background: #18212c;
+        clip: true;
+        HorizontalLayout {
+            x: table.viewport-x;
+            width: root.table-width * 1px;
+            padding-left: 10px;
+            padding-right: 10px;
+            spacing: 0px;
+            for column in root.columns: Rectangle {
+                visible: column.visible;
+                width: column.visible ? column.width * 1px + 6px : 0px;
+                Button {
+                    width: column.width * 1px;
+                    height: 34px;
+                    y: (parent.height - self.height) / 2;
+                    text: column.label + (root.sort-key == column.key
+                        ? (root.sort-ascending ? "  ^" : "  v") : "");
+                    clicked => { root.sort-requested(column.key); }
+                }
+                ColumnHandle {
+                    x: column.width * 1px;
+                    target-width: column.width * 1px;
+                    resized(value) => { root.resize-column(column.key, value / 1px); }
+                }
+            }
+        }
+    }
+    table := ListView {
         viewport-width: max(self.visible-width, root.table-width * 1px);
         horizontal-scrollbar-policy: as-needed;
-        VerticalLayout {
+        for row[index] in root.rows: Rectangle {
             width: root.table-width * 1px;
-            height: parent.height;
-            spacing: 0px;
-            Rectangle {
-                height: 44px;
-                background: #18212c;
-                HorizontalLayout {
-                    padding-left: 10px;
-                    padding-right: 10px;
-                    spacing: 0px;
-                    for column in root.columns: Rectangle {
-                        visible: column.visible;
-                        width: column.visible ? column.width * 1px + 6px : 0px;
-                        Button {
-                            width: column.width * 1px;
-                            text: column.label + (root.sort-key == column.key
-                                ? (root.sort-ascending ? "  ^" : "  v") : "");
-                            clicked => { root.sort-requested(column.key); }
+            height: 62px;
+            background: root.selected-index == index ? #263b51
+                : (Math.mod(index, 2) == 0 ? #121922 : #151e28);
+            HorizontalLayout {
+                padding-left: 10px;
+                padding-right: 10px;
+                spacing: 0px;
+                for column in root.columns: Rectangle {
+                    visible: column.visible;
+                    width: column.visible ? column.width * 1px + 6px : 0px;
+                    if column.key == "color": HorizontalLayout {
+                        width: column.width * 1px;
+                        height: 32px;
+                        y: (parent.height - self.height) / 2;
+                        padding-left: 6px;
+                        padding-right: 6px;
+                        spacing: 7px;
+                        Rectangle {
+                            width: 30px;
+                            height: 30px;
+                            border-radius: 4px;
+                            border-width: 1px;
+                            border-color: #d5dde6;
+                            background: row.color;
                         }
-                        ColumnHandle {
-                            x: column.width * 1px;
-                            target-width: column.width * 1px;
-                            resized(value) => { root.resize-column(column.key, value / 1px); }
+                        Text {
+                            text: row.hex;
+                            color: #9eacba;
+                            font-size: 11px;
+                            vertical-alignment: center;
+                            overflow: elide;
                         }
+                    }
+                    if column.key != "color": Text {
+                        width: column.width * 1px;
+                        height: 100%;
+                        text: root.cell-text(row, column.key);
+                        color: column.key == "river_level" ? #77bff2 : #c3ced9;
+                        font-size: column.key == "name" ? 14px : 12px;
+                        font-weight: column.key == "name" ? 600 : 400;
+                        horizontal-alignment: column.key == "name" || column.key == "identifier" ? left : center;
+                        vertical-alignment: center;
+                        overflow: elide;
+                    }
+                    Rectangle {
+                        x: column.width * 1px + 2px;
+                        width: 1px;
+                        height: 100%;
+                        background: #263543;
                     }
                 }
             }
-            ListView {
-                for row[index] in root.rows: Rectangle {
-                    height: 62px;
-                    background: root.selected-index == index ? #263b51
-                        : (Math.mod(index, 2) == 0 ? #121922 : #151e28);
-                    border-color: #243140;
-                    border-width: 1px;
-                    HorizontalLayout {
-                        padding-left: 10px;
-                        padding-right: 10px;
-                        spacing: 0px;
-                        for column in root.columns: Rectangle {
-                            visible: column.visible;
-                            width: column.visible ? column.width * 1px + 6px : 0px;
-                            if column.key == "color": HorizontalLayout {
-                                width: column.width * 1px;
-                                padding-left: 6px;
-                                padding-right: 6px;
-                                spacing: 7px;
-                                Rectangle {
-                                    width: 30px;
-                                    height: 30px;
-                                    vertical-stretch: 0;
-                                    border-radius: 4px;
-                                    border-width: 1px;
-                                    border-color: #d5dde6;
-                                    background: row.color;
-                                }
-                                Text { text: row.hex; color: #9eacba; font-size: 11px; vertical-alignment: center; overflow: elide; }
-                            }
-                            if column.key != "color": Text {
-                                width: column.width * 1px;
-                                height: 100%;
-                                text: root.cell-text(row, column.key);
-                                color: column.key == "river_level" ? #77bff2 : #c3ced9;
-                                font-size: column.key == "name" ? 14px : 12px;
-                                font-weight: column.key == "name" ? 600 : 400;
-                                horizontal-alignment: column.key == "name" || column.key == "identifier" ? left : center;
-                                vertical-alignment: center;
-                                overflow: elide;
-                            }
-                            Rectangle { x: column.width * 1px; width: 6px; height: 100%; }
-                        }
-                    }
-                    TouchArea {
-                        accessible-role: list-item;
-                        accessible-label: row.name + ", " + row.key;
-                        clicked => { root.selected-index = index; root.select-row(index); }
-                    }
-                }
+            Rectangle {
+                y: parent.height - 1px;
+                width: 100%;
+                height: 1px;
+                background: #243140;
+            }
+            TouchArea {
+                accessible-role: list-item;
+                accessible-label: row.name + ", " + row.key;
+                clicked => { root.selected-index = index; root.select-row(index); }
             }
         }
     }

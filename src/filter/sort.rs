@@ -172,6 +172,16 @@ fn compare_records(
         SortField::MovementY => {
             optional_floats(movement_component(left, 1), movement_component(right, 1))
         }
+        SortField::StaticPopulationCapacity => optional_values(
+            left.static_population_capacity.map(|value| value.total.0),
+            right.static_population_capacity.map(|value| value.total.0),
+        ),
+        SortField::EquatorCapacity => optional_values(
+            left.static_population_capacity.map(|value| value.equator.0),
+            right
+                .static_population_capacity
+                .map(|value| value.equator.0),
+        ),
     }
 }
 
@@ -234,6 +244,10 @@ fn reverse_non_null(
         SortField::MovementX | SortField::MovementY => (
             left.movement_assistance.is_none(),
             right.movement_assistance.is_none(),
+        ),
+        SortField::StaticPopulationCapacity | SortField::EquatorCapacity => (
+            left.static_population_capacity.is_none(),
+            right.static_population_capacity.is_none(),
         ),
         _ => (false, false),
     };

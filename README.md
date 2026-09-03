@@ -15,9 +15,13 @@ Normal GUI startup uses the embedded bundles. `--data-file PATH` and `--index-fi
 
 The committed bundles contain static names and map metadata derived from the installed game. They do not contain the original Paradox text files or map images. The bundle headers record the represented build, and both files are included in the source repository and compiled executable.
 
+## Static population capacity
+
+The committed dataset stores a population-capacity estimate derived only from immutable EU5 1.3.11 map data. It combines vegetation capacity and the location's map-coordinate distance from `equator_y`, then applies topography, climate, coastal, and five-tier river modifiers. Development, staffed buildings, location rank, laws, societal values, country modifiers, and other mutable campaign state are deliberately excluded. The total and the equator contribution are sortable columns, and the selected-location pane shows the full static breakdown.
+
 ## Filters
 
-The application starts with every location visible, including oceans, lakes, and impassable wastelands. Categorical filters use searchable dropdowns; numeric ranges and exact RGB remain validated inputs. Filters combine with AND, and empty fields mean any value. Invalid numeric or RGB input is shown inline and does not change the active result set. The result table has sortable, resizable columns, a column-visibility menu covering every filter criterion, and draggable filter and detail pane boundaries.
+The application starts with every location visible, including oceans, lakes, and impassable wastelands. Categorical filters use bounded searchable checkbox lists; numeric ranges and exact RGB remain validated inputs. Filters combine with AND, and empty fields mean any value. Invalid numeric or RGB input is shown inline and does not change the active result set. The result table has sortable, resizable columns, a column-visibility menu covering every filter criterion and static capacity value, and draggable filter and detail pane boundaries.
 
 ## Scope and license
 

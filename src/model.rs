@@ -6,12 +6,14 @@ use bitcode::{Decode, Encode};
 
 use crate::AppError;
 
+mod attributes;
 mod interner;
 
+pub use attributes::{PopulationAmount, RiverLevel, StaticPopulationCapacity};
 pub use interner::StringInterner;
 
 /// Current on-disk schema version.
-pub const FORMAT_VERSION: u16 = 1;
+pub const FORMAT_VERSION: u16 = 2;
 /// Steam application identifier for Europa Universalis V.
 pub const EU5_APP_ID: u32 = 3_450_310;
 /// Europa Universalis V version represented by the committed bundles.
@@ -22,6 +24,8 @@ pub const MAX_SYMBOLS: usize = 200_000;
 pub const MAX_DICTIONARY_BYTES: usize = 32 * 1024 * 1024;
 /// Upper bound for imported locations.
 pub const MAX_LOCATIONS: usize = 100_000;
+/// Highest gameplay river tier defined by EU5 1.3.11.
+pub const MAX_RIVER_LEVEL: u8 = 5;
 
 /// Index into the dataset-wide string dictionary.
 #[derive(Clone, Copy, Debug, Decode, Encode, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -68,10 +72,6 @@ impl MapColor {
         format!("#{:06X}", self.0)
     }
 }
-
-/// Highest river palette level intersecting a location.
-#[derive(Clone, Copy, Debug, Decode, Encode, Eq, Ord, PartialEq, PartialOrd)]
-pub struct RiverLevel(pub u8);
 
 /// Broad map-location classification derived from topography.
 #[derive(Clone, Copy, Debug, Decode, Encode, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -136,14 +136,12 @@ pub struct Hierarchy {
 /// River properties derived by streaming paired map images.
 #[derive(Clone, Copy, Debug, Decode, Encode, PartialEq)]
 pub struct RiverData {
-    /// Highest configured width level touching the location.
+    /// Highest gameplay bonus tier touching the location.
     pub level: RiverLevel,
     /// Whether palette index 1 touches the location.
     pub has_source: bool,
     /// Whether palette index 2 touches the location.
     pub has_confluence: bool,
-    /// Rendered width corresponding to `level`.
-    pub rendered_width: f32,
 }
 
 /// One imported location represented only by typed values and dictionary IDs.
@@ -185,6 +183,8 @@ pub struct LocationRecord {
     pub connected_sea: Option<LocationId>,
     /// Derived river data.
     pub river: Option<RiverData>,
+    /// Capacity calculated without mutable campaign state.
+    pub static_population_capacity: Option<StaticPopulationCapacity>,
 }
 
 /// Parameters used to map river palette levels to rendered widths.

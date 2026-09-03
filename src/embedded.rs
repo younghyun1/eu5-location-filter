@@ -35,6 +35,37 @@ mod tests {
             return;
         };
         assert_eq!(dataset.stored.locations.len(), 28_573);
+        assert_eq!(
+            dataset
+                .stored
+                .locations
+                .iter()
+                .filter(|record| record.kind == crate::model::LocationKind::Impassable)
+                .count(),
+            1_577
+        );
+        let tortosa = dataset
+            .stored
+            .locations
+            .iter()
+            .find(|record| dataset.symbol(record.key) == Some("tortosa"));
+        assert_eq!(
+            tortosa.and_then(|record| record.river.map(|river| river.level.0)),
+            Some(1)
+        );
+        let kotor = dataset
+            .stored
+            .locations
+            .iter()
+            .find(|record| dataset.symbol(record.key) == Some("kotor"));
+        assert_eq!(
+            kotor.and_then(|record| {
+                record
+                    .static_population_capacity
+                    .map(|capacity| capacity.equator.0)
+            }),
+            Some(2_661)
+        );
         let engine = FilterEngine::from_stored_index(Arc::new(dataset), index);
         assert!(engine.is_ok());
         let Ok(engine) = engine else { return };
