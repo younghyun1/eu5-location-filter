@@ -1,4 +1,5 @@
 /target
+/pkg/
 *.bitcode.zst
 !assets/*.bitcode.zst
 *.bitcode.zst.bak

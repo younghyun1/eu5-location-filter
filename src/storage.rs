@@ -1,8 +1,12 @@
 //! Versioned compressed blob encoding and crash-safe replacement.
 
 use std::collections::HashMap;
+#[cfg(feature = "desktop")]
 use std::fs::{self, OpenOptions};
-use std::io::{Cursor, Read, Write};
+#[cfg(feature = "desktop")]
+use std::io::Write;
+use std::io::{Cursor, Read};
+#[cfg(feature = "desktop")]
 use std::path::{Path, PathBuf};
 
 use crate::AppError;
@@ -86,6 +90,7 @@ pub fn decode_blob(compressed: &[u8]) -> Result<Dataset, AppError> {
 }
 
 /// Loads a compressed dataset while enforcing the on-disk size limit first.
+#[cfg(feature = "desktop")]
 pub fn load_dataset(path: &Path) -> Result<Dataset, AppError> {
     let metadata = fs::metadata(path).map_err(|source| AppError::io("inspect", path, source))?;
     if metadata.len() > MAX_COMPRESSED_SIZE {
@@ -99,6 +104,7 @@ pub fn load_dataset(path: &Path) -> Result<Dataset, AppError> {
 }
 
 /// Writes through a validated same-directory temporary file and safely replaces on force.
+#[cfg(feature = "desktop")]
 pub fn write_dataset(path: &Path, stored: &StoredDataset, force: bool) -> Result<(), AppError> {
     if path.exists() && !force {
         return Err(AppError::InvalidData(format!(
@@ -156,6 +162,7 @@ fn build_dataset(stored: StoredDataset) -> Result<Dataset, AppError> {
     })
 }
 
+#[cfg(feature = "desktop")]
 fn write_and_sync(path: &Path, bytes: &[u8]) -> Result<(), AppError> {
     let mut file = OpenOptions::new()
         .create_new(true)
@@ -169,6 +176,7 @@ fn write_and_sync(path: &Path, bytes: &[u8]) -> Result<(), AppError> {
         .map_err(|source| AppError::io("flush temporary data file", path, source))
 }
 
+#[cfg(feature = "desktop")]
 fn replace(target: &Path, temp: &Path) -> Result<(), AppError> {
     if !target.exists() {
         return fs::rename(temp, target)
@@ -207,6 +215,7 @@ fn replace(target: &Path, temp: &Path) -> Result<(), AppError> {
     remove_if_exists(&backup)
 }
 
+#[cfg(feature = "desktop")]
 fn temporary_path(path: &Path) -> PathBuf {
     let name = path
         .file_name()
@@ -216,6 +225,7 @@ fn temporary_path(path: &Path) -> PathBuf {
     path.with_file_name(temp_name)
 }
 
+#[cfg(feature = "desktop")]
 fn backup_path(path: &Path) -> PathBuf {
     let name = path
         .file_name()
@@ -225,6 +235,7 @@ fn backup_path(path: &Path) -> PathBuf {
     path.with_file_name(backup_name)
 }
 
+#[cfg(feature = "desktop")]
 fn remove_if_exists(path: &Path) -> Result<(), AppError> {
     match fs::remove_file(path) {
         Ok(()) => Ok(()),
@@ -233,5 +244,5 @@ fn remove_if_exists(path: &Path) -> Result<(), AppError> {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "desktop"))]
 mod tests;

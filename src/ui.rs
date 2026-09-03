@@ -26,15 +26,23 @@ mod filter_selection;
 mod options;
 mod result_model;
 mod state;
+#[cfg(feature = "desktop")]
 mod worker;
 
+#[cfg(all(feature = "web", target_family = "wasm"))]
+mod web;
+
+#[cfg(feature = "desktop")]
 use std::path::PathBuf;
 
+#[cfg(feature = "desktop")]
 use slint::ComponentHandle;
 
+#[cfg(feature = "desktop")]
 use crate::AppError;
 
 /// Opens the desktop UI and starts loading or importing on a worker thread.
+#[cfg(feature = "desktop")]
 pub fn run(
     data_file: Option<PathBuf>,
     index_file: Option<PathBuf>,
@@ -49,4 +57,11 @@ pub fn run(
     );
     worker::start_load(app.as_weak(), data_file, index_file, game_dir, false);
     app.run().map_err(|error| AppError::Ui(error.to_string()))
+}
+
+/// Starts the Slint application in the browser canvas.
+#[cfg(all(feature = "web", target_family = "wasm"))]
+#[wasm_bindgen::prelude::wasm_bindgen(start)]
+pub fn start_web() -> Result<(), wasm_bindgen::JsValue> {
+    web::run().map_err(|error| wasm_bindgen::JsValue::from_str(&error.to_string()))
 }

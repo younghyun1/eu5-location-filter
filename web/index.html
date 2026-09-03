@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EU5 Locations DB</title>
+    <style>
+      html, body, canvas { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #11161d; }
+      canvas { display: block; }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script type="module">
+      import init from "./pkg/eu5_location_filter.js";
+      await init();
+    </script>
+  </body>
+</html>

@@ -42,6 +42,7 @@ pub enum AppError {
     #[error("dataset compression failed: {0}")]
     Compression(String),
     /// A PNG could not be decoded.
+    #[cfg(feature = "desktop")]
     #[error("PNG decode failed for {path}: {source}")]
     Png {
         /// Affected PNG path.
@@ -62,14 +63,16 @@ impl AppError {
     /// Returns whether retrying after user or environmental intervention can succeed.
     #[must_use]
     pub const fn is_retryable(&self) -> bool {
-        matches!(
-            self,
-            Self::Io { .. }
-                | Self::Installation(_)
-                | Self::MissingFile(_)
-                | Self::Png { .. }
-                | Self::Worker
-        )
+        match self {
+            Self::Io { .. } | Self::Installation(_) | Self::MissingFile(_) | Self::Worker => true,
+            #[cfg(feature = "desktop")]
+            Self::Png { .. } => true,
+            Self::Parse { .. }
+            | Self::InvalidData(_)
+            | Self::Encoding(_)
+            | Self::Compression(_)
+            | Self::Ui(_) => false,
+        }
     }
 
     /// Adds path and operation context to an I/O failure.

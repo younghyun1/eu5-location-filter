@@ -42,6 +42,7 @@ export component AppWindow inherits Window {
     in-out property <string> search-text: "";
     in-out property <bool> show-impassable: true;
     in-out property <string> install-path: "";
+    in property <bool> external-data-controls: true;
     in property <string> result-count: "0 locations";
     in property <string> build-text: "Build -";
     in property <bool> loading: true;
@@ -223,11 +224,15 @@ export component AppWindow inherits Window {
             spacing: 12px;
             Text { text: "Could not load EU5 locations"; color: #ffb2b2; font-size: 21px; horizontal-alignment: center; }
             Text { text: root.error-text; color: #e6edf4; width: 640px; wrap: word-wrap; horizontal-alignment: center; }
-            LineEdit { text <=> root.install-path; placeholder-text: "Europa Universalis V installation directory"; width: 640px; }
-            HorizontalLayout {
+            if root.external-data-controls: VerticalLayout {
                 alignment: center;
-                Button { text: "Retry"; clicked => { root.retry(root.install-path); } }
-                Button { text: "Rebuild data"; clicked => { root.rebuild(root.install-path); } }
+                spacing: 12px;
+                LineEdit { text <=> root.install-path; placeholder-text: "Europa Universalis V installation directory"; width: 640px; }
+                HorizontalLayout {
+                    alignment: center;
+                    Button { text: "Retry"; clicked => { root.retry(root.install-path); } }
+                    Button { text: "Rebuild data"; clicked => { root.rebuild(root.install-path); } }
+                }
             }
         }
     }

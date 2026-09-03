@@ -1283,6 +1283,7 @@ dependencies = [
  "slint",
  "slint-build",
  "thiserror 2.0.20",
+ "wasm-bindgen",
  "zstd",
 ]
 

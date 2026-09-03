@@ -186,6 +186,7 @@ fn discover_steam() -> Result<GameInstallation, AppError> {
     ))
 }
 
+#[cfg(windows)]
 fn discover_in_steam(steam_root: &Path) -> Result<GameInstallation, AppError> {
     let libraries_path = steam_root.join("steamapps").join("libraryfolders.vdf");
     let bytes = read_limited(&libraries_path, MAX_STEAM_METADATA_SIZE)?;

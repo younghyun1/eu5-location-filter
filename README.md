@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/younghyun1/eu5-location-filter/actions/workflows/ci.yml/badge.svg)](https://github.com/younghyun1/eu5-location-filter/actions/workflows/ci.yml)
 
-EU5 Location Filter is an unofficial desktop browser for the static map locations in Europa Universalis V 1.3.11. The executable embeds compressed location data and precomputed search and sort indexes for Steam build `24187685`, then decompresses both into memory at startup without reading a game installation.
+EU5 Location Filter is an unofficial desktop and browser application for the static map locations in Europa Universalis V 1.3.11. Both targets embed compressed location data and precomputed search and sort indexes for Steam build `24187685`, then decompress both into memory at startup without reading a game installation.
 
 ## Install and run
 
@@ -14,6 +14,8 @@ eu5-location-filter
 ```
 
 Normal GUI startup uses the embedded bundles. `--data-file PATH` and `--index-file PATH` override them with external bundles. Maintainers can regenerate both committed assets from the local Windows Steam installation with `eu5-location-filter import --force`; `--game-dir PATH` remains available for explicit installations.
+
+The browser package is built with `wasm-pack --target web` and renders the same Slint interface into `canvas#canvas`. See [development](docs/development.md) for the development command. Steam discovery, external files, retries, and data rebuilding remain desktop-only.
 
 The committed bundles contain static names and map metadata derived from the installed game. They do not contain the original Paradox text files or map images. The bundle headers record the represented build, and both files are included in the source repository and compiled executable.
 

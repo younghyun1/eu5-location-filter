@@ -12,10 +12,13 @@
 pub mod embedded;
 pub mod error;
 pub mod filter;
+#[cfg(feature = "desktop")]
 pub mod import;
 pub mod index_storage;
 pub mod model;
+#[cfg(feature = "desktop")]
 pub mod parser;
+#[cfg(feature = "desktop")]
 pub mod steam;
 pub mod storage;
 pub mod ui;

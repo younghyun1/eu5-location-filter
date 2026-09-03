@@ -14,16 +14,39 @@ license = "MIT OR Apache-2.0"
 readme = "README.md"
 keywords = ["eu5", "map", "paradox", "slint"]
 categories = ["games", "visualization"]
-include = ["/assets/**", "/build.rs", "/src/**", "/tests/**", "/ui/**", "/docs/**", "/README.md", "/CHANGELOG.md", "/LICENSE-MIT", "/LICENSE-APACHE", "/rust-toolchain.toml"]
+include = ["/assets/**", "/build.rs", "/src/**", "/tests/**", "/ui/**", "/web/**", "/docs/**", "/README.md", "/CHANGELOG.md", "/LICENSE-MIT", "/LICENSE-APACHE", "/rust-toolchain.toml"]
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "eu5-location-filter"
+path = "src/main.rs"
+required-features = ["desktop"]
+
+[features]
+default = ["desktop"]
+desktop = [
+    "dep:clap",
+    "dep:png",
+    "slint/accessibility",
+    "slint/backend-winit",
+    "slint/renderer-femtovg",
+    "slint/renderer-software",
+]
+web = ["slint/backend-winit", "slint/renderer-femtovg"]
 
 [dependencies]
 bitcode = { version = "0.6.9", default-features = false, features = ["derive", "std"] }
-clap = { version = "4.6.6", default-features = false, features = ["derive", "error-context", "help", "std", "suggestions", "usage"] }
+clap = { version = "4.6.6", default-features = false, features = ["derive", "error-context", "help", "std", "suggestions", "usage"], optional = true }
 memchr = { version = "2.8.3", default-features = false, features = ["std"] }
-png = { version = "0.18.1", default-features = false }
-slint = { version = "1.17.1", default-features = false, features = ["accessibility", "backend-winit", "compat-1-2", "renderer-femtovg", "renderer-software", "std"] }
+png = { version = "0.18.1", default-features = false, optional = true }
+slint = { version = "1.17.1", default-features = false, features = ["compat-1-2", "std"] }
 thiserror = "2.0.20"
 zstd = { version = "0.13.3", default-features = false }
+
+[target.'cfg(target_family = "wasm")'.dependencies]
+wasm-bindgen = "0.2.103"
 
 [build-dependencies]
 slint-build = "1.17.1"
@@ -39,3 +62,6 @@ panic = "immediate-abort"
 
 [profile.dev]
 panic = "immediate-abort"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = ["-Oz"]

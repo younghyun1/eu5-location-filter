@@ -1,7 +1,11 @@
 //! Level-22 bitcode-zstd storage for precomputed search and sort indexes.
 
+#[cfg(feature = "desktop")]
 use std::fs::{self, OpenOptions};
-use std::io::{Cursor, Read, Write};
+#[cfg(feature = "desktop")]
+use std::io::Write;
+use std::io::{Cursor, Read};
+#[cfg(feature = "desktop")]
 use std::path::{Path, PathBuf};
 
 use crate::AppError;
@@ -77,6 +81,7 @@ pub fn decode_index(compressed: &[u8]) -> Result<StoredFilterIndex, AppError> {
 }
 
 /// Reads and decodes an external index bundle.
+#[cfg(feature = "desktop")]
 pub fn load_index(path: &Path) -> Result<StoredFilterIndex, AppError> {
     let size = fs::metadata(path)
         .map_err(|source| AppError::io("inspect", path, source))?
@@ -91,6 +96,7 @@ pub fn load_index(path: &Path) -> Result<StoredFilterIndex, AppError> {
 }
 
 /// Writes a validated temporary index before replacing the prior bundle.
+#[cfg(feature = "desktop")]
 pub fn write_index(path: &Path, index: &StoredFilterIndex, force: bool) -> Result<(), AppError> {
     if path.exists() && !force {
         return Err(AppError::InvalidData(format!(
@@ -121,6 +127,7 @@ pub fn write_index(path: &Path, index: &StoredFilterIndex, force: bool) -> Resul
     replace(path, &temp)
 }
 
+#[cfg(feature = "desktop")]
 fn replace(path: &Path, temp: &Path) -> Result<(), AppError> {
     let backup = backup_path(path);
     remove_if_exists(&backup)?;
@@ -137,14 +144,17 @@ fn replace(path: &Path, temp: &Path) -> Result<(), AppError> {
     remove_if_exists(&backup)
 }
 
+#[cfg(feature = "desktop")]
 fn temporary_path(path: &Path) -> PathBuf {
     suffixed(path, &format!(".{}.tmp", std::process::id()))
 }
 
+#[cfg(feature = "desktop")]
 fn backup_path(path: &Path) -> PathBuf {
     suffixed(path, ".bak")
 }
 
+#[cfg(feature = "desktop")]
 fn suffixed(path: &Path, suffix: &str) -> PathBuf {
     let mut name = path
         .file_name()
@@ -153,6 +163,7 @@ fn suffixed(path: &Path, suffix: &str) -> PathBuf {
     path.with_file_name(name)
 }
 
+#[cfg(feature = "desktop")]
 fn remove_if_exists(path: &Path) -> Result<(), AppError> {
     match fs::remove_file(path) {
         Ok(()) => Ok(()),
