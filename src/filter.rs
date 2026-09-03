@@ -182,7 +182,7 @@ fn numeric_matches(filter: OptionalNumeric, range: FloatRange, value: Option<f32
 fn optional_range_matches(value: Option<f32>, range: FloatRange) -> bool {
     match value {
         Some(value) => range.matches(value),
-        None => range.min.is_none() && range.max.is_none(),
+        None => range.min.is_none(),
     }
 }
 

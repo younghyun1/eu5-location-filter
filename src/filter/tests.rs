@@ -64,9 +64,18 @@ fn toggles_impassables_and_preserves_visible_selection() {
 }
 
 #[test]
-fn numeric_bounds_exclude_missing_values() {
+fn river_minimum_excludes_missing_but_maximum_includes_it() {
     let engine = FilterEngine::new(Arc::new(fixture()));
-    let filters = FilterSet {
+    let mut filters = FilterSet {
+        river_level_max: Some(1),
+        ..FilterSet::default()
+    };
+    assert_eq!(
+        engine.apply(&filters, SortField::Name, true),
+        vec![LocationId(0), LocationId(1)]
+    );
+
+    filters = FilterSet {
         river_level_min: Some(0),
         ..FilterSet::default()
     };
