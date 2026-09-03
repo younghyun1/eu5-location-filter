@@ -43,6 +43,11 @@ fn verifies_reference_install_import() -> Result<(), eu5_location_filter::AppErr
     );
     assert_eq!(dataset.by_color.len(), dataset.stored.locations.len());
     assert_eq!(dataset.by_key.len(), dataset.stored.locations.len());
+    assert!(dataset.stored.locations.iter().all(|record| {
+        dataset
+            .symbol(record.name)
+            .is_some_and(|name| !name.contains('$'))
+    }));
     Ok(())
 }
 
@@ -50,7 +55,9 @@ fn verifies_reference_install_import() -> Result<(), eu5_location_filter::AppErr
 #[ignore = "timing harness requires a local data blob"]
 fn measures_repeated_filter_latency() -> Result<(), eu5_location_filter::AppError> {
     let dataset = load_local_blob()?;
+    let index_started = Instant::now();
     let engine = FilterEngine::new(Arc::new(dataset));
+    let index_time = index_started.elapsed();
     let full = benchmark(&engine, &FilterSet::default(), 100);
     let search = benchmark(
         &engine,
@@ -60,9 +67,18 @@ fn measures_repeated_filter_latency() -> Result<(), eu5_location_filter::AppErro
         },
         100,
     );
-    eprintln!("full-filter max: {full:?}; name-search max: {search:?}");
+    let mut sort_max = Duration::ZERO;
+    for field in SortField::ALL {
+        let started = Instant::now();
+        std::hint::black_box(engine.apply(&FilterSet::default(), field, false));
+        sort_max = sort_max.max(started.elapsed());
+    }
+    eprintln!(
+        "index build: {index_time:?}; full-filter max: {full:?}; name-search max: {search:?}; sort-scan max: {sort_max:?}"
+    );
     assert!(full < Duration::from_millis(17));
     assert!(search < Duration::from_millis(17));
+    assert!(sort_max < Duration::from_millis(17));
     Ok(())
 }
 

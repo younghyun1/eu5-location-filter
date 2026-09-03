@@ -131,8 +131,10 @@ impl Default for FilterSet {
 }
 
 /// Sortable result-list fields.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub enum SortField {
+    /// Exact RGB color.
+    Color,
     /// English display name.
     Name,
     /// Internal identifier.
@@ -145,8 +147,67 @@ pub enum SortField {
     Vegetation,
     /// Climate, nulls last.
     Climate,
+    /// Continent.
+    Continent,
+    /// Subcontinent.
+    Subcontinent,
+    /// Region.
+    Region,
+    /// Area.
+    Area,
+    /// Province.
+    Province,
+    /// Religion, nulls last.
+    Religion,
+    /// Culture, nulls last.
+    Culture,
+    /// Raw material, nulls last.
+    RawMaterial,
+    /// Modifier, nulls last.
+    Modifier,
+    /// Coastal state.
+    Coastal,
+    /// River presence.
+    RiverPresence,
     /// River level, nulls last.
     RiverLevel,
+    /// Harbor suitability, nulls last.
+    HarborSuitability,
+    /// Movement-assistance presence.
+    MovementPresence,
+    /// First movement-assistance component, nulls last.
+    MovementX,
+    /// Second movement-assistance component, nulls last.
+    MovementY,
+}
+
+impl SortField {
+    /// Every supported field, used to build fixed startup indexes.
+    pub const ALL: [Self; 23] = [
+        Self::Color,
+        Self::Name,
+        Self::Identifier,
+        Self::Kind,
+        Self::Topography,
+        Self::Vegetation,
+        Self::Climate,
+        Self::Continent,
+        Self::Subcontinent,
+        Self::Region,
+        Self::Area,
+        Self::Province,
+        Self::Religion,
+        Self::Culture,
+        Self::RawMaterial,
+        Self::Modifier,
+        Self::Coastal,
+        Self::RiverPresence,
+        Self::RiverLevel,
+        Self::HarborSuitability,
+        Self::MovementPresence,
+        Self::MovementX,
+        Self::MovementY,
+    ];
 }
 
 /// Parses an optional finite numeric bound for inline validation.

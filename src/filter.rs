@@ -1,33 +1,35 @@
-//! Allocation-bounded filtering and stable sorting over compact records.
+//! Allocation-bounded filtering and precomputed stable sorting.
 
-use std::cmp::Ordering;
 use std::sync::Arc;
 
 use crate::model::{Dataset, LocationId, LocationKind, LocationRecord, SymbolId};
 
+mod sort;
+mod text;
 mod types;
 
+use sort::SortOrders;
+pub(crate) use text::fold_search;
 pub use types::{
     FilterSet, FloatRange, OptionalFacet, OptionalNumeric, SortField, parse_optional_number,
 };
 
-/// Precomputed search strings and reusable index scanning logic.
+/// Precomputed search text and fixed sort indexes over one immutable dataset.
 pub struct FilterEngine {
     dataset: Arc<Dataset>,
     searchable: Vec<String>,
-    folded_symbols: Vec<String>,
-    name_order: Vec<LocationId>,
+    sort_orders: SortOrders,
 }
 
 impl FilterEngine {
-    /// Precomputes Unicode-lowercased name and identifier strings once at startup.
+    /// Builds normalized search strings and bounded orders for every sortable field.
     #[must_use]
     pub fn new(dataset: Arc<Dataset>) -> Self {
         let folded_symbols: Vec<String> = dataset
             .stored
             .dictionary
             .iter()
-            .map(|value| value.to_lowercase())
+            .map(|value| fold_search(value))
             .collect();
         let searchable = dataset
             .stored
@@ -36,64 +38,33 @@ impl FilterEngine {
             .map(|record| {
                 let name = dataset.symbol(record.name).unwrap_or_default();
                 let key = dataset.symbol(record.key).unwrap_or_default();
-                format!("{}\0{}", name.to_lowercase(), key.to_lowercase())
+                format!("{}\0{}", fold_search(name), fold_search(key))
             })
             .collect();
-        let mut name_order: Vec<LocationId> = dataset
-            .stored
-            .locations
-            .iter()
-            .map(|record| record.id)
-            .collect();
-        name_order.sort_by(|left, right| {
-            let left_name = dataset
-                .location(*left)
-                .and_then(|record| symbol_key(&folded_symbols, record.name))
-                .unwrap_or_default();
-            let right_name = dataset
-                .location(*right)
-                .and_then(|record| symbol_key(&folded_symbols, record.name))
-                .unwrap_or_default();
-            left_name.cmp(right_name).then_with(|| left.cmp(right))
-        });
+        let sort_orders = SortOrders::new(&dataset, &folded_symbols);
         Self {
             dataset,
             searchable,
-            folded_symbols,
-            name_order,
+            sort_orders,
         }
     }
 
-    /// Scans compact records and returns only matching location IDs.
+    /// Scans one pre-sorted index and returns only matching location IDs.
     #[must_use]
     pub fn apply(&self, filters: &FilterSet, sort: SortField, ascending: bool) -> Vec<LocationId> {
-        let query = filters.search.to_lowercase();
-        let mut ids: Vec<LocationId> = if sort == SortField::Name {
-            let ordered: Box<dyn Iterator<Item = LocationId> + '_> = if ascending {
-                Box::new(self.name_order.iter().copied())
-            } else {
-                Box::new(self.name_order.iter().rev().copied())
-            };
-            ordered
-                .filter(|id| {
-                    self.dataset
-                        .location(*id)
-                        .is_some_and(|record| self.matches(record, filters, &query))
-                })
-                .collect()
-        } else {
-            self.dataset
-                .stored
-                .locations
-                .iter()
-                .filter(|record| self.matches(record, filters, &query))
-                .map(|record| record.id)
-                .collect()
+        let query = fold_search(&filters.search);
+        let Some(order) = self.sort_orders.get(sort, ascending) else {
+            return Vec::new();
         };
-        if sort != SortField::Name {
-            ids.sort_by(|left, right| self.compare(*left, *right, sort, ascending));
-        }
-        ids
+        order
+            .iter()
+            .copied()
+            .filter(|id| {
+                self.dataset
+                    .location(*id)
+                    .is_some_and(|record| self.matches(record, filters, &query))
+            })
+            .collect()
     }
 
     /// Preserves selection only while its ID remains in the filtered index.
@@ -105,7 +76,12 @@ impl FilterEngine {
         selected.filter(|id| visible.contains(id))
     }
 
-    fn matches(&self, record: &LocationRecord, filters: &FilterSet, query: &str) -> bool {
+    fn matches(
+        &self,
+        record: &LocationRecord,
+        filters: &FilterSet,
+        query: &str,
+    ) -> bool {
         let searchable = usize::try_from(record.id.0)
             .ok()
             .and_then(|index| self.searchable.get(index))
@@ -154,59 +130,6 @@ impl FilterEngine {
                 None => ranges_are_empty(filters.movement_x, filters.movement_y),
             }
     }
-
-    fn compare(
-        &self,
-        left: LocationId,
-        right: LocationId,
-        field: SortField,
-        ascending: bool,
-    ) -> Ordering {
-        let Some(left_record) = self.dataset.location(left) else {
-            return Ordering::Equal;
-        };
-        let Some(right_record) = self.dataset.location(right) else {
-            return Ordering::Equal;
-        };
-        let ordering = match field {
-            SortField::Name => symbols(
-                &self.folded_symbols,
-                Some(left_record.name),
-                Some(right_record.name),
-            ),
-            SortField::Identifier => symbols(
-                &self.folded_symbols,
-                Some(left_record.key),
-                Some(right_record.key),
-            ),
-            SortField::Kind => left_record.kind.cmp(&right_record.kind),
-            SortField::Topography => symbols(
-                &self.folded_symbols,
-                Some(left_record.topography),
-                Some(right_record.topography),
-            ),
-            SortField::Vegetation => optional_symbols(
-                &self.folded_symbols,
-                left_record.vegetation,
-                right_record.vegetation,
-            ),
-            SortField::Climate => optional_symbols(
-                &self.folded_symbols,
-                left_record.climate,
-                right_record.climate,
-            ),
-            SortField::RiverLevel => optional_values(
-                left_record.river.as_ref().map(|value| value.level.0),
-                right_record.river.as_ref().map(|value| value.level.0),
-            ),
-        };
-        let directed = if ascending {
-            ordering
-        } else {
-            reverse_non_null(ordering, field, left_record, right_record)
-        };
-        directed.then_with(|| left.cmp(&right))
-    }
 }
 
 fn facet_matches(filter: OptionalFacet, value: Option<SymbolId>) -> bool {
@@ -235,56 +158,6 @@ fn optional_range_matches(value: Option<f32>, range: FloatRange) -> bool {
 
 fn ranges_are_empty(first: FloatRange, second: FloatRange) -> bool {
     first.min.is_none() && first.max.is_none() && second.min.is_none() && second.max.is_none()
-}
-
-fn symbols(folded: &[String], left: Option<SymbolId>, right: Option<SymbolId>) -> Ordering {
-    optional_values(
-        left.and_then(|value| symbol_key(folded, value)),
-        right.and_then(|value| symbol_key(folded, value)),
-    )
-}
-
-fn optional_symbols(
-    folded: &[String],
-    left: Option<SymbolId>,
-    right: Option<SymbolId>,
-) -> Ordering {
-    symbols(folded, left, right)
-}
-
-fn symbol_key(folded: &[String], symbol: SymbolId) -> Option<&str> {
-    usize::try_from(symbol.0)
-        .ok()
-        .and_then(|index| folded.get(index))
-        .map(String::as_str)
-}
-
-fn optional_values<T: Ord>(left: Option<T>, right: Option<T>) -> Ordering {
-    match (left, right) {
-        (Some(left), Some(right)) => left.cmp(&right),
-        (Some(_), None) => Ordering::Less,
-        (None, Some(_)) => Ordering::Greater,
-        (None, None) => Ordering::Equal,
-    }
-}
-
-fn reverse_non_null(
-    ordering: Ordering,
-    field: SortField,
-    left: &LocationRecord,
-    right: &LocationRecord,
-) -> Ordering {
-    let nullable = match field {
-        SortField::Vegetation => (left.vegetation.is_none(), right.vegetation.is_none()),
-        SortField::Climate => (left.climate.is_none(), right.climate.is_none()),
-        SortField::RiverLevel => (left.river.is_none(), right.river.is_none()),
-        _ => (false, false),
-    };
-    if nullable.0 != nullable.1 {
-        ordering
-    } else {
-        ordering.reverse()
-    }
 }
 
 #[cfg(test)]

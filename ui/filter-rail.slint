@@ -1,4 +1,5 @@
-import { CheckBox, ComboBox, LineEdit, ScrollView } from "std-widgets.slint";
+import { CheckBox, LineEdit, ScrollView } from "std-widgets.slint";
+import { SearchableComboBox } from "searchable-combobox.slint";
 
 component SectionTitle inherits Text {
     color: #8fbdea;
@@ -14,25 +15,58 @@ component FieldLabel inherits Text {
     vertical-alignment: center;
 }
 
+component FacetPicker inherits VerticalLayout {
+    in property <string> label;
+    in property <[string]> options;
+    in-out property <string> current-value: "Any";
+    callback selected(string);
+    callback filter-options(string, string) -> [string];
+    spacing: 3px;
+    horizontal-stretch: 0;
+    preferred-width: 220px;
+    max-width: 235px;
+    FieldLabel { text: root.label; }
+    SearchableComboBox {
+        field: root.label;
+        options: root.options;
+        current-value <=> root.current-value;
+        selected(value) => { root.selected(value); }
+        filter-options(field, query) => { return root.filter-options(field, query); }
+    }
+}
+
 export component FilterRail inherits Rectangle {
-    width: 292px;
     background: #151c25;
     border-color: #2b3948;
     border-width: 1px;
-
     in-out property <bool> show-impassable: true;
     in property <string> rgb-error: "";
     in property <string> numeric-error: "";
+    in property <int> reset-generation: 0;
+    in property <[string]> continent-options;
+    in property <[string]> subcontinent-options;
+    in property <[string]> region-options;
+    in property <[string]> area-options;
+    in property <[string]> province-options;
+    in property <[string]> topography-options;
+    in property <[string]> vegetation-options;
+    in property <[string]> climate-options;
+    in property <[string]> religion-options;
+    in property <[string]> culture-options;
+    in property <[string]> raw-material-options;
+    in property <[string]> modifier-options;
+    in property <[string]> river-level-options;
     callback toggle-impassable(bool);
     callback kind-changed(string);
     callback state-changed(string, string);
     callback facet-changed(string, string);
     callback rgb-changed(string);
     callback numeric-changed(string, string);
+    callback filter-options(string, string) -> [string];
 
     ScrollView {
         VerticalLayout {
-            padding: 16px;
+            padding: 14px;
             spacing: 8px;
             SectionTitle { text: "VISIBILITY"; height: 25px; }
             CheckBox {
@@ -41,88 +75,97 @@ export component FilterRail inherits Rectangle {
                 accessible-label: "Show impassable wastelands";
                 toggled => { root.toggle-impassable(self.checked); }
             }
-            FieldLabel { text: "Kind"; }
-            ComboBox {
-                model: ["Any", "Land", "Sea", "Lake", "Impassable", "Unknown"];
-                current-value: "Any";
+            kind-picker := FacetPicker {
+                label: "Kind";
+                options: ["Any", "Land", "Sea", "Lake", "Impassable", "Unknown"];
                 selected(value) => { root.kind-changed(value); }
+                filter-options(field, query) => { return root.filter-options(field, query); }
             }
-
             SectionTitle { text: "GEOGRAPHY"; height: 30px; }
-            for field in ["Continent", "Subcontinent", "Region", "Area", "Province"]: VerticalLayout {
-                spacing: 3px;
-                FieldLabel { text: field; }
-                LineEdit {
-                    placeholder-text: "Any; type exact ID or label";
-                    accessible-label: field + " filter";
-                    edited(value) => { root.facet-changed(field, value); }
-                }
-            }
-
+            continent-picker := FacetPicker { label: "Continent"; options: root.continent-options; selected(value) => { root.facet-changed("Continent", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            subcontinent-picker := FacetPicker { label: "Subcontinent"; options: root.subcontinent-options; selected(value) => { root.facet-changed("Subcontinent", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            region-picker := FacetPicker { label: "Region"; options: root.region-options; selected(value) => { root.facet-changed("Region", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            area-picker := FacetPicker { label: "Area"; options: root.area-options; selected(value) => { root.facet-changed("Area", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            province-picker := FacetPicker { label: "Province"; options: root.province-options; selected(value) => { root.facet-changed("Province", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
             SectionTitle { text: "TERRAIN & ENVIRONMENT"; height: 30px; }
-            for field in ["Topography", "Vegetation", "Climate", "Religion", "Culture", "Raw material", "Modifier"]: VerticalLayout {
-                spacing: 3px;
-                FieldLabel { text: field; }
-                LineEdit {
-                    placeholder-text: "Any; type exact ID or label";
-                    accessible-label: field + " filter";
-                    edited(value) => { root.facet-changed(field, value); }
-                }
-            }
-
+            topography-picker := FacetPicker { label: "Topography"; options: root.topography-options; selected(value) => { root.facet-changed("Topography", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            vegetation-picker := FacetPicker { label: "Vegetation"; options: root.vegetation-options; selected(value) => { root.facet-changed("Vegetation", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            climate-picker := FacetPicker { label: "Climate"; options: root.climate-options; selected(value) => { root.facet-changed("Climate", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            religion-picker := FacetPicker { label: "Religion"; options: root.religion-options; selected(value) => { root.facet-changed("Religion", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            culture-picker := FacetPicker { label: "Culture"; options: root.culture-options; selected(value) => { root.facet-changed("Culture", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            raw-material-picker := FacetPicker { label: "Raw material"; options: root.raw-material-options; selected(value) => { root.facet-changed("Raw material", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            modifier-picker := FacetPicker { label: "Modifier"; options: root.modifier-options; selected(value) => { root.facet-changed("Modifier", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
             SectionTitle { text: "MAP DATA"; height: 30px; }
             FieldLabel { text: "RGB"; }
-            LineEdit {
+            rgb-input := LineEdit {
+                preferred-width: 220px;
+                max-width: 235px;
+                horizontal-stretch: 0;
                 placeholder-text: "#RRGGBB";
                 accessible-label: "Exact RGB filter";
                 edited(value) => { root.rgb-changed(value); }
             }
             Text { text: root.rgb-error; color: #ff8d8d; font-size: 11px; visible: root.rgb-error != ""; }
-            FieldLabel { text: "Coastal"; }
-            ComboBox {
-                model: ["Any", "Yes", "No"];
-                current-value: "Any";
-                selected(value) => { root.state-changed("coastal", value); }
+            coastal-picker := FacetPicker { label: "Coastal"; options: ["Any", "Yes", "No"]; selected(value) => { root.state-changed("coastal", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            river-picker := FacetPicker { label: "River"; options: ["Any", "Present", "Missing"]; selected(value) => { root.state-changed("river", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            river-min-picker := FacetPicker { label: "Min river level"; options: root.river-level-options; selected(value) => { root.numeric-changed("river-min", value == "Any" ? "" : value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            river-max-picker := FacetPicker { label: "Max river level"; options: root.river-level-options; selected(value) => { root.numeric-changed("river-max", value == "Any" ? "" : value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            harbor-picker := FacetPicker { label: "Harbor suitability"; options: ["Any", "Present", "Missing"]; selected(value) => { root.state-changed("harbor", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            HorizontalLayout {
+                spacing: 6px;
+                preferred-width: 220px;
+                max-width: 235px;
+                horizontal-stretch: 0;
+                harbor-min-input := LineEdit { placeholder-text: "Minimum"; input-type: decimal; edited(value) => { root.numeric-changed("harbor-min", value); } }
+                harbor-max-input := LineEdit { placeholder-text: "Maximum"; input-type: decimal; edited(value) => { root.numeric-changed("harbor-max", value); } }
             }
-            FieldLabel { text: "River"; }
-            ComboBox {
-                model: ["Any", "Present", "Missing"];
-                current-value: "Any";
-                selected(value) => { root.state-changed("river", value); }
+            movement-picker := FacetPicker { label: "Movement assistance"; options: ["Any", "Present", "Missing"]; selected(value) => { root.state-changed("movement", value); } filter-options(field, query) => { return root.filter-options(field, query); } }
+            HorizontalLayout {
+                spacing: 6px;
+                preferred-width: 220px;
+                max-width: 235px;
+                horizontal-stretch: 0;
+                move-x-min-input := LineEdit { placeholder-text: "X minimum"; input-type: decimal; edited(value) => { root.numeric-changed("move-x-min", value); } }
+                move-x-max-input := LineEdit { placeholder-text: "X maximum"; input-type: decimal; edited(value) => { root.numeric-changed("move-x-max", value); } }
             }
             HorizontalLayout {
                 spacing: 6px;
-                LineEdit { placeholder-text: "River min"; edited(value) => { root.numeric-changed("river-min", value); } }
-                LineEdit { placeholder-text: "River max"; edited(value) => { root.numeric-changed("river-max", value); } }
-            }
-            FieldLabel { text: "Harbor suitability"; }
-            ComboBox {
-                model: ["Any", "Present", "Missing"];
-                current-value: "Any";
-                selected(value) => { root.state-changed("harbor", value); }
-            }
-            HorizontalLayout {
-                spacing: 6px;
-                LineEdit { placeholder-text: "Harbor min"; edited(value) => { root.numeric-changed("harbor-min", value); } }
-                LineEdit { placeholder-text: "Harbor max"; edited(value) => { root.numeric-changed("harbor-max", value); } }
-            }
-            FieldLabel { text: "Movement assistance"; }
-            ComboBox {
-                model: ["Any", "Present", "Missing"];
-                current-value: "Any";
-                selected(value) => { root.state-changed("movement", value); }
-            }
-            HorizontalLayout {
-                spacing: 6px;
-                LineEdit { placeholder-text: "X min"; edited(value) => { root.numeric-changed("move-x-min", value); } }
-                LineEdit { placeholder-text: "X max"; edited(value) => { root.numeric-changed("move-x-max", value); } }
-            }
-            HorizontalLayout {
-                spacing: 6px;
-                LineEdit { placeholder-text: "Y min"; edited(value) => { root.numeric-changed("move-y-min", value); } }
-                LineEdit { placeholder-text: "Y max"; edited(value) => { root.numeric-changed("move-y-max", value); } }
+                preferred-width: 220px;
+                max-width: 235px;
+                horizontal-stretch: 0;
+                move-y-min-input := LineEdit { placeholder-text: "Y minimum"; input-type: decimal; edited(value) => { root.numeric-changed("move-y-min", value); } }
+                move-y-max-input := LineEdit { placeholder-text: "Y maximum"; input-type: decimal; edited(value) => { root.numeric-changed("move-y-max", value); } }
             }
             Text { text: root.numeric-error; color: #ff8d8d; font-size: 11px; visible: root.numeric-error != ""; }
         }
+    }
+
+    changed reset-generation => {
+        kind-picker.current-value = "Any";
+        continent-picker.current-value = "Any";
+        subcontinent-picker.current-value = "Any";
+        region-picker.current-value = "Any";
+        area-picker.current-value = "Any";
+        province-picker.current-value = "Any";
+        topography-picker.current-value = "Any";
+        vegetation-picker.current-value = "Any";
+        climate-picker.current-value = "Any";
+        religion-picker.current-value = "Any";
+        culture-picker.current-value = "Any";
+        raw-material-picker.current-value = "Any";
+        modifier-picker.current-value = "Any";
+        coastal-picker.current-value = "Any";
+        river-picker.current-value = "Any";
+        river-min-picker.current-value = "Any";
+        river-max-picker.current-value = "Any";
+        harbor-picker.current-value = "Any";
+        movement-picker.current-value = "Any";
+        rgb-input.text = "";
+        harbor-min-input.text = "";
+        harbor-max-input.text = "";
+        move-x-min-input.text = "";
+        move-x-max-input.text = "";
+        move-y-min-input.text = "";
+        move-y-max-input.text = "";
     }
 }

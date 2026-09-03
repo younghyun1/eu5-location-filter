@@ -76,6 +76,34 @@ fn numeric_bounds_exclude_missing_values() {
     );
 }
 
+#[test]
+fn ascii_search_matches_localized_diacritics() {
+    let mut dataset = fixture();
+    dataset.stored.dictionary[1] = "Kouřim".to_owned();
+    let engine = FilterEngine::new(Arc::new(dataset));
+    let filters = FilterSet {
+        search: "kourim".to_owned(),
+        ..FilterSet::default()
+    };
+    assert_eq!(
+        engine.apply(&filters, SortField::Name, true),
+        vec![LocationId(0)]
+    );
+}
+
+#[test]
+fn every_column_has_precomputed_orders_with_nulls_last() {
+    let engine = FilterEngine::new(Arc::new(fixture()));
+    for field in SortField::ALL {
+        assert_eq!(engine.apply(&FilterSet::default(), field, true).len(), 2);
+        assert_eq!(engine.apply(&FilterSet::default(), field, false).len(), 2);
+    }
+    assert_eq!(
+        engine.apply(&FilterSet::default(), SortField::HarborSuitability, false),
+        vec![LocationId(0), LocationId(1)]
+    );
+}
+
 fn fixture() -> Dataset {
     let locations = vec![
         record(

@@ -1,9 +1,9 @@
 //! Selected-location detail formatting.
 
-use slint::{Color, SharedString};
+use slint::{Color, ModelRc, SharedString};
 
-use super::AppWindow;
 use super::result_model::text;
+use super::{AppWindow, DetailField};
 use crate::model::{Dataset, LocationId, LocationRecord};
 
 pub(super) fn show(app: &AppWindow, dataset: &Dataset, id: LocationId) {
@@ -26,7 +26,8 @@ pub(super) fn show(app: &AppWindow, dataset: &Dataset, id: LocationId) {
     .map(|symbol| dataset.label(symbol).unwrap_or("—"))
     .join("  ›  ");
     app.set_detail_breadcrumb(breadcrumb.into());
-    app.set_detail_fields(fields(dataset, record).into());
+    let fields = fields(dataset, record);
+    app.set_detail_fields(ModelRc::from(fields.as_slice()));
 }
 
 pub(super) fn clear(app: &AppWindow) {
@@ -34,10 +35,10 @@ pub(super) fn clear(app: &AppWindow) {
     app.set_detail_name("Select a location".into());
     app.set_detail_key(SharedString::new());
     app.set_detail_breadcrumb(SharedString::new());
-    app.set_detail_fields(SharedString::new());
+    app.set_detail_fields(ModelRc::default());
 }
 
-fn fields(dataset: &Dataset, record: &LocationRecord) -> String {
+fn fields(dataset: &Dataset, record: &LocationRecord) -> Vec<DetailField> {
     let connected = record
         .connected_sea
         .and_then(|id| dataset.location(id))
@@ -58,20 +59,26 @@ fn fields(dataset: &Dataset, record: &LocationRecord) -> String {
         || "—".to_owned(),
         |value| format!("{:.2}, {:.2}", value[0], value[1]),
     );
-    format!(
-        "Kind\n{}\n\nTopography\n{}\n\nVegetation\n{}\n\nClimate\n{}\n\nReligion\n{}\n\nCulture\n{}\n\nRaw material\n{}\n\nModifier\n{}\n\nCoastal\n{}\n\nConnected sea\n{}\n\nHarbor suitability\n{}\n\nMovement assistance\n{}\n\nRiver\n{}",
-        record.kind.label(),
-        text(dataset, Some(record.topography)),
-        text(dataset, record.vegetation),
-        text(dataset, record.climate),
-        text(dataset, record.religion),
-        text(dataset, record.culture),
-        text(dataset, record.raw_material),
-        text(dataset, record.modifier),
-        record.coastal,
-        connected,
-        harbor,
-        movement,
-        river
-    )
+    vec![
+        field("Kind", record.kind.label()),
+        field("Topography", text(dataset, Some(record.topography))),
+        field("Vegetation", text(dataset, record.vegetation)),
+        field("Climate", text(dataset, record.climate)),
+        field("Religion", text(dataset, record.religion)),
+        field("Culture", text(dataset, record.culture)),
+        field("Raw material", text(dataset, record.raw_material)),
+        field("Modifier", text(dataset, record.modifier)),
+        field("Coastal", if record.coastal { "Yes" } else { "No" }),
+        field("Connected sea", connected),
+        field("Harbor suitability", &harbor),
+        field("Movement assistance", &movement),
+        field("River", &river),
+    ]
+}
+
+fn field(label: &str, value: &str) -> DetailField {
+    DetailField {
+        label: label.into(),
+        value: value.into(),
+    }
 }

@@ -8,6 +8,10 @@ use crate::AppError;
 
 const MAX_LOCALIZATION_FILE_SIZE: u64 = 32 * 1024 * 1024;
 const MAX_LOCALIZATION_FILES: usize = 10_000;
+const MAX_LOCALIZATION_TOTAL_SIZE: u64 = 512 * 1024 * 1024;
+const MAX_LOCALIZATION_ENTRIES: usize = 2_000_000;
+const MAX_LOCALIZATION_TEXT: usize = 256 * 1024 * 1024;
+const MAX_REFERENCE_DEPTH: usize = 32;
 
 /// Parses `key:0 "Value"` and returns `None` for headings, comments, and blank lines.
 pub fn parse_localization_line(line: &str) -> Result<Option<(String, String)>, AppError> {
@@ -29,6 +33,9 @@ pub fn parse_localization_line(line: &str) -> Result<Option<(String, String)>, A
     let mut remainder = line[colon + 1..].trim_start();
     remainder = remainder.trim_start_matches(|character: char| character.is_ascii_digit());
     remainder = remainder.trim_start();
+    if remainder.is_empty() || remainder.starts_with('#') {
+        return Ok(None);
+    }
     if !remainder.starts_with('"') {
         return Err(AppError::parse(
             "localization",
@@ -40,7 +47,7 @@ pub fn parse_localization_line(line: &str) -> Result<Option<(String, String)>, A
     Ok(Some((key.to_owned(), value)))
 }
 
-/// Recursively reads only requested English localization keys in deterministic path order.
+/// Recursively resolves requested English localization keys in deterministic path order.
 pub fn read_localizations(
     roots: &[PathBuf],
     requested: &HashSet<String>,
@@ -55,7 +62,9 @@ pub fn read_localizations(
             "localization file count exceeds configured limit".to_owned(),
         ));
     }
-    let mut values = HashMap::with_capacity(requested.len());
+    let mut raw_values = HashMap::new();
+    let mut total_source_size = 0_u64;
+    let mut total_text_size = 0_usize;
     for path in paths {
         let metadata =
             fs::metadata(&path).map_err(|source| AppError::io("inspect", &path, source))?;
@@ -64,6 +73,12 @@ pub fn read_localizations(
                 "localization file is too large: {}",
                 path.display()
             )));
+        }
+        total_source_size = total_source_size.saturating_add(metadata.len());
+        if total_source_size > MAX_LOCALIZATION_TOTAL_SIZE {
+            return Err(AppError::InvalidData(
+                "English localization sources exceed the cumulative size limit".to_owned(),
+            ));
         }
         let bytes = fs::read(&path).map_err(|source| AppError::io("read", &path, source))?;
         let text = String::from_utf8(bytes).map_err(|error| {
@@ -78,12 +93,20 @@ pub fn read_localizations(
             let Some(colon) = candidate.find(':') else {
                 continue;
             };
-            if !requested.contains(candidate[..colon].trim()) {
+            if candidate[..colon].trim().is_empty() {
                 continue;
             }
             match parse_localization_line(line) {
-                Ok(Some((key, value))) if requested.contains(&key) => {
-                    values.insert(key, value);
+                Ok(Some((key, value))) => {
+                    total_text_size = total_text_size.saturating_add(key.len() + value.len());
+                    if raw_values.len() >= MAX_LOCALIZATION_ENTRIES
+                        || total_text_size > MAX_LOCALIZATION_TEXT
+                    {
+                        return Err(AppError::InvalidData(
+                            "English localization index exceeds configured limits".to_owned(),
+                        ));
+                    }
+                    raw_values.insert(key, value);
                 }
                 Ok(_) => {}
                 Err(error) => {
@@ -96,7 +119,66 @@ pub fn read_localizations(
             }
         }
     }
-    Ok(values)
+    let mut cache = HashMap::with_capacity(requested.len());
+    for key in requested {
+        let mut visiting = HashSet::new();
+        if let Some(value) = resolve_key(key, &raw_values, &mut cache, &mut visiting, 0) {
+            cache.insert(key.clone(), value);
+        }
+    }
+    cache.retain(|key, _| requested.contains(key));
+    Ok(cache)
+}
+
+fn resolve_key(
+    key: &str,
+    raw: &HashMap<String, String>,
+    cache: &mut HashMap<String, String>,
+    visiting: &mut HashSet<String>,
+    depth: usize,
+) -> Option<String> {
+    if let Some(value) = cache.get(key) {
+        return Some(value.clone());
+    }
+    let value = raw.get(key)?;
+    if depth >= MAX_REFERENCE_DEPTH || !visiting.insert(key.to_owned()) {
+        return Some(value.clone());
+    }
+    let expanded = expand_references(value, raw, cache, visiting, depth + 1);
+    visiting.remove(key);
+    cache.insert(key.to_owned(), expanded.clone());
+    Some(expanded)
+}
+
+fn expand_references(
+    value: &str,
+    raw: &HashMap<String, String>,
+    cache: &mut HashMap<String, String>,
+    visiting: &mut HashSet<String>,
+    depth: usize,
+) -> String {
+    let mut output = String::with_capacity(value.len());
+    let mut remainder = value;
+    while let Some(start) = remainder.find('$') {
+        output.push_str(&remainder[..start]);
+        let after_start = &remainder[start + 1..];
+        let Some(end) = after_start.find('$') else {
+            output.push_str(&remainder[start..]);
+            return output;
+        };
+        let token = &after_start[..end];
+        let key = token.split('|').next().unwrap_or_default();
+        if let Some(resolved) = resolve_key(key, raw, cache, visiting, depth) {
+            output.push_str(&resolved);
+        } else {
+            output.push('$');
+            output.push_str(token);
+            output.push('$');
+        }
+        remainder = &after_start[end + 1..];
+    }
+    output.push_str(remainder);
+    output
 }
 
 fn collect_files(directory: &Path, output: &mut Vec<PathBuf>) -> Result<(), AppError> {
@@ -149,7 +231,9 @@ fn parse_quoted(input: &str) -> Result<(String, usize), AppError> {
 
 #[cfg(test)]
 mod tests {
-    use super::parse_localization_line;
+    use std::collections::{HashMap, HashSet};
+
+    use super::{parse_localization_line, resolve_key};
 
     #[test]
     fn parses_escaped_localization() {
@@ -164,6 +248,22 @@ mod tests {
     #[test]
     fn ignores_headers_and_comments() {
         assert_eq!(parse_localization_line("l_english:").ok().flatten(), None);
+        assert_eq!(
+            parse_localization_line("l_english: # Ukrainian")
+                .ok()
+                .flatten(),
+            None
+        );
         assert_eq!(parse_localization_line(" # text").ok().flatten(), None);
+    }
+
+    #[test]
+    fn resolves_nested_static_references() {
+        let raw = HashMap::from([
+            ("place".to_owned(), "$short$ of Lewis".to_owned()),
+            ("short".to_owned(), "Butt".to_owned()),
+        ]);
+        let resolved = resolve_key("place", &raw, &mut HashMap::new(), &mut HashSet::new(), 0);
+        assert_eq!(resolved.as_deref(), Some("Butt of Lewis"));
     }
 }

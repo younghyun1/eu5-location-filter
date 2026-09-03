@@ -1,0 +1,11 @@
+[build]
+target = "x86_64-pc-windows-msvc"
+rustflags = [
+    "-C", "target-cpu=native",
+    "-Z", "unstable-options",
+    "-C", "panic=immediate-abort",
+]
+
+[unstable]
+build-std = ["core", "alloc", "std"]
+panic-abort-tests = true

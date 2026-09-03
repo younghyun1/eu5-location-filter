@@ -2,3 +2,4 @@
 *.bitcode.zst
 *.bitcode.zst.bak
 *.tmp
+/artifacts/

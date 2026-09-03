@@ -1,0 +1,50 @@
+import { ScrollView } from "std-widgets.slint";
+import { DetailField } from "types.slint";
+
+export component DetailPane inherits Rectangle {
+    background: #151c25;
+    border-color: #2b3948;
+    border-width: 1px;
+    in property <bool> has-selection;
+    in property <color> detail-color;
+    in property <string> detail-name;
+    in property <string> detail-key;
+    in property <string> detail-hex;
+    in property <string> detail-rgb;
+    in property <string> detail-breadcrumb;
+    in property <[DetailField]> detail-fields;
+
+    if !root.has-selection: VerticalLayout {
+        alignment: center;
+        padding: 28px;
+        spacing: 8px;
+        Text { text: "Select a location"; color: #d8e1ea; font-size: 20px; font-weight: 700; horizontal-alignment: center; }
+        Text { text: "Location details, hierarchy, color, and river data appear here."; color: #7f91a3; font-size: 12px; wrap: word-wrap; horizontal-alignment: center; }
+    }
+    if root.has-selection: ScrollView {
+        VerticalLayout {
+            padding: 18px;
+            spacing: 10px;
+            Rectangle {
+                height: 108px;
+                background: root.detail-color;
+                border-radius: 8px;
+                border-width: 1px;
+                border-color: #d8e0e8;
+            }
+            Text { text: root.detail-name; color: #f3f7fb; font-size: 20px; font-weight: 700; wrap: word-wrap; }
+            Text { text: root.detail-key; color: #91a4b7; font-size: 13px; wrap: word-wrap; }
+            HorizontalLayout {
+                Text { text: root.detail-hex; color: #d5e0ea; font-size: 13px; }
+                Text { text: root.detail-rgb; color: #d5e0ea; font-size: 13px; horizontal-alignment: right; }
+            }
+            Rectangle { height: 1px; background: #2a3746; }
+            Text { text: root.detail-breadcrumb; color: #8fc6ed; font-size: 12px; wrap: word-wrap; }
+            for field in root.detail-fields: VerticalLayout {
+                spacing: 2px;
+                Text { text: field.label; color: #8798aa; font-size: 11px; font-weight: 600; }
+                Text { text: field.value; color: #d3dce5; font-size: 13px; wrap: word-wrap; }
+            }
+        }
+    }
+}

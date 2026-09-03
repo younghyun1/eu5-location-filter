@@ -1,8 +1,10 @@
+cargo-features = ["panic-immediate-abort"]
+
 [package]
 name = "eu5-location-filter"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.92"
+rust-version = "1.100"
 authors = ["Young Hyun Chi"]
 description = "Inspect and filter Europa Universalis V map locations"
 documentation = "https://docs.rs/eu5-location-filter"
@@ -15,6 +17,7 @@ include = ["/build.rs", "/src/**", "/tests/**", "/ui/**", "/docs/**", "/README.m
 [dependencies]
 bitcode = { version = "0.6.9", default-features = false, features = ["derive", "std"] }
 clap = { version = "4.6.6", default-features = false, features = ["derive", "error-context", "help", "std", "suggestions", "usage"] }
+memchr = { version = "2.8.3", default-features = false, features = ["std"] }
 png = { version = "0.18.1", default-features = false }
 slint = { version = "1.17.1", default-features = false, features = ["accessibility", "backend-winit", "compat-1-2", "renderer-femtovg", "renderer-software", "std"] }
 thiserror = "2.0.20"
@@ -30,4 +33,7 @@ debug = false
 incremental = false
 strip = true
 lto = "fat"
-panic = "unwind"
+panic = "immediate-abort"
+
+[profile.dev]
+panic = "immediate-abort"

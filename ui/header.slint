@@ -1,0 +1,60 @@
+import { Button, LineEdit } from "std-widgets.slint";
+
+component HeaderButton inherits Rectangle {
+    callback clicked;
+    in property <string> text;
+    width: root.text == "About" ? 64px : 94px;
+    height: 100%;
+    Button {
+        width: 100%;
+        height: 34px;
+        y: (parent.height - self.height) / 2;
+        text: root.text;
+        clicked => { root.clicked(); }
+    }
+}
+
+export component AppHeader inherits Rectangle {
+    height: 64px;
+    background: #18212c;
+    border-color: #2b3948;
+    border-width: 1px;
+    in-out property <string> search-text: "";
+    in property <string> result-count;
+    in property <string> build-text;
+    callback search-changed(string);
+    callback clear-filters;
+    callback show-about;
+
+    HorizontalLayout {
+        padding-left: 20px;
+        padding-right: 16px;
+        spacing: 12px;
+        Text {
+            text: "EU5 LOCATION FILTER";
+            color: #eef4fa;
+            font-size: 19px;
+            font-weight: 700;
+            vertical-alignment: center;
+            preferred-width: 220px;
+            min-width: 175px;
+        }
+        Rectangle {
+            horizontal-stretch: 1;
+            min-width: 250px;
+            search := LineEdit {
+                width: 100%;
+                height: 36px;
+                y: (parent.height - self.height) / 2;
+                text <=> root.search-text;
+                placeholder-text: "Search name or ID; ASCII spelling works";
+                accessible-label: "Global location search";
+                edited(value) => { root.search-changed(value); }
+            }
+        }
+        Text { text: root.result-count; color: #c6d2df; vertical-alignment: center; width: 118px; }
+        Text { text: root.build-text; color: #8292a5; vertical-alignment: center; width: 112px; }
+        HeaderButton { text: "Clear filters"; clicked => { root.clear-filters(); } }
+        HeaderButton { text: "About"; clicked => { root.show-about(); } }
+    }
+}

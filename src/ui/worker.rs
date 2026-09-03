@@ -47,7 +47,17 @@ pub(super) fn start_load(
         app.set_progress_value(0.0);
     }
     std::thread::spawn(move || {
-        let result = load_or_import(&weak, &data_file, game_dir.as_deref(), force);
+        let result = load_or_import(&weak, &data_file, game_dir.as_deref(), force).map(|dataset| {
+            send_progress(
+                &weak,
+                ImportProgress {
+                    stage: "Preparing search and sort indexes",
+                    current: 1,
+                    total: 1,
+                },
+            );
+            state::prepare(dataset)
+        });
         let completion = weak.clone();
         let dispatch = slint::invoke_from_event_loop(move || {
             let Some(app) = completion.upgrade() else {

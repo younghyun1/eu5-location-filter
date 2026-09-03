@@ -4,15 +4,21 @@ use std::cell::RefCell;
 use std::collections::HashSet;
 use std::rc::Rc;
 
-use slint::{ComponentHandle, SharedString, Weak};
+use slint::{ComponentHandle, ModelRc, SharedString, Weak};
 
 use super::state::ActiveState;
-use super::{AppWindow, detail};
+use super::{AppWindow, column_controls, columns, detail, options};
 use crate::AppError;
-use crate::filter::{FilterSet, OptionalFacet, OptionalNumeric, SortField, parse_optional_number};
+use crate::filter::{FilterSet, OptionalFacet, OptionalNumeric, parse_optional_number};
 use crate::model::{LocationKind, MapColor, SymbolId};
 
 pub(super) fn install(app: &AppWindow, state: &Rc<RefCell<ActiveState>>) {
+    let weak = app.as_weak();
+    app.on_filter_options(move |field, query| {
+        weak.upgrade().map_or_else(ModelRc::default, |app| {
+            options::filtered(&app, field.as_str(), query.as_str())
+        })
+    });
     let weak = app.as_weak();
     let shared = Rc::clone(state);
     app.on_search_changed(move |value| {
@@ -28,6 +34,7 @@ pub(super) fn install(app: &AppWindow, state: &Rc<RefCell<ActiveState>>) {
     install_kind(app, state);
     install_values(app, state);
     install_sort_and_selection(app, state);
+    column_controls::install(app, state);
 }
 
 fn install_kind(app: &AppWindow, state: &Rc<RefCell<ActiveState>>) {
@@ -100,14 +107,8 @@ fn install_sort_and_selection(app: &AppWindow, state: &Rc<RefCell<ActiveState>>)
     let shared = Rc::clone(state);
     app.on_sort_requested(move |field| {
         update(&weak, &shared, |state| {
-            let next = match field.as_str() {
-                "id" => SortField::Identifier,
-                "kind" => SortField::Kind,
-                "topography" => SortField::Topography,
-                "vegetation" => SortField::Vegetation,
-                "climate" => SortField::Climate,
-                "river" => SortField::RiverLevel,
-                _ => SortField::Name,
+            let Some(next) = columns::sort_field(field.as_str()) else {
+                return;
             };
             state.ascending = if state.sort == next {
                 !state.ascending
@@ -115,6 +116,7 @@ fn install_sort_and_selection(app: &AppWindow, state: &Rc<RefCell<ActiveState>>)
                 true
             };
             state.sort = next;
+            state.sort_key = field.to_string();
         });
     });
     let weak = app.as_weak();
@@ -138,6 +140,7 @@ fn install_sort_and_selection(app: &AppWindow, state: &Rc<RefCell<ActiveState>>)
         let Some(app) = weak.upgrade() else { return };
         app.set_search_text(SharedString::new());
         app.set_show_impassable(true);
+        app.set_filter_reset_generation(app.get_filter_reset_generation().wrapping_add(1));
         update_direct(&app, &shared, |state| {
             state.filters = FilterSet::default();
         });
@@ -185,7 +188,7 @@ fn set_presence(state: &mut ActiveState, field: &str, value: &str) {
 
 fn set_facet(state: &mut ActiveState, field: &str, value: &str) {
     let trimmed = value.trim();
-    let facet = if trimmed.is_empty() {
+    let facet = if trimmed.is_empty() || trimmed == "Any" {
         OptionalFacet::Any
     } else if trimmed.eq_ignore_ascii_case("missing") {
         OptionalFacet::Missing

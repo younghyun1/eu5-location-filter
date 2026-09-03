@@ -1,26 +1,38 @@
-import { AboutSlint, Button, LineEdit, ListView, ProgressIndicator, ScrollView } from "std-widgets.slint";
+import { AboutSlint, Button, LineEdit, ProgressIndicator } from "std-widgets.slint";
+import { AppHeader } from "header.slint";
+import { DetailPane } from "detail-pane.slint";
 import { FilterRail } from "filter-rail.slint";
+import { ResultTable } from "result-table.slint";
+import { ColumnSpec, DetailField, LocationRow } from "types.slint";
 
-export struct LocationRow {
-    id: int,
-    color: color,
-    hex: string,
-    name: string,
-    key: string,
-    kind: string,
-    topography: string,
-    vegetation: string,
-    climate: string,
-    river: string,
+component PaneHandle inherits Rectangle {
+    width: 7px;
+    height: 100%;
+    callback dragged(length);
+    background: drag-area.has-hover || drag-area.pressed ? #52779a : #202c38;
+    drag-area := TouchArea {
+        mouse-cursor: col-resize;
+        moved => {
+            if (self.pressed) {
+                root.dragged(self.mouse-x - root.width / 2);
+            }
+        }
+    }
 }
 
 export component AppWindow inherits Window {
     title: "EU5 Location Filter";
-    width: 1440px;
-    height: 900px;
+    preferred-width: 1440px;
+    preferred-height: 900px;
+    min-width: 1050px;
+    min-height: 680px;
     background: #11161d;
 
     in property <[LocationRow]> rows;
+    in property <[ColumnSpec]> columns;
+    in property <float> table-width: 900;
+    in property <string> sort-key: "name";
+    in property <bool> sort-ascending: true;
     in-out property <string> search-text: "";
     in-out property <bool> show-impassable: true;
     in-out property <string> install-path: "";
@@ -32,8 +44,11 @@ export component AppWindow inherits Window {
     in property <string> error-text: "";
     in property <string> rgb-error: "";
     in property <string> numeric-error: "";
+    in-out property <int> filter-reset-generation: 0;
     in-out property <bool> about-open: false;
     in-out property <int> selected-index: -1;
+    in-out property <bool> window-maximized <=> root.maximized;
+    in-out property <bool> window-full-screen <=> root.full-screen;
 
     in property <color> detail-color: #202832;
     in property <string> detail-name: "Select a location";
@@ -41,7 +56,24 @@ export component AppWindow inherits Window {
     in property <string> detail-hex: "#000000";
     in property <string> detail-rgb: "rgb(0, 0, 0)";
     in property <string> detail-breadcrumb: "";
-    in property <string> detail-fields: "";
+    in property <[DetailField]> detail-fields;
+
+    in property <[string]> continent-options;
+    in property <[string]> subcontinent-options;
+    in property <[string]> region-options;
+    in property <[string]> area-options;
+    in property <[string]> province-options;
+    in property <[string]> topography-options;
+    in property <[string]> vegetation-options;
+    in property <[string]> climate-options;
+    in property <[string]> religion-options;
+    in property <[string]> culture-options;
+    in property <[string]> raw-material-options;
+    in property <[string]> modifier-options;
+    in property <[string]> river-level-options;
+
+    property <length> filter-pane-width: 270px;
+    property <length> detail-pane-width: 350px;
 
     callback search-changed(string);
     callback toggle-impassable(bool);
@@ -50,7 +82,10 @@ export component AppWindow inherits Window {
     callback facet-changed(string, string);
     callback rgb-changed(string);
     callback numeric-changed(string, string);
-    callback clear-filters();
+    callback filter-options(string, string) -> [string];
+    callback toggle-column(string, bool);
+    callback resize-column(string, float);
+    callback clear-filters;
     callback sort-requested(string);
     callback select-row(int);
     callback retry(string);
@@ -58,135 +93,75 @@ export component AppWindow inherits Window {
 
     VerticalLayout {
         spacing: 0px;
-
-        Rectangle {
-            height: 72px;
-            background: #18212c;
-            border-color: #2b3948;
-            border-width: 1px;
-            HorizontalLayout {
-                padding-left: 22px;
-                padding-right: 18px;
-                spacing: 16px;
-                Text {
-                    text: "EU5 LOCATION FILTER";
-                    color: #eef4fa;
-                    font-size: 20px;
-                    font-weight: 700;
-                    vertical-alignment: center;
-                    width: 230px;
-                }
-                LineEdit {
-                    text <=> root.search-text;
-                    placeholder-text: "Search English name or internal ID";
-                    accessible-label: "Global location search";
-                    edited(value) => { root.search-changed(value); }
-                    vertical-stretch: 0;
-                    height: 38px;
-                }
-                Text { text: root.result-count; color: #c6d2df; vertical-alignment: center; width: 130px; }
-                Text { text: root.build-text; color: #8292a5; vertical-alignment: center; width: 125px; }
-                Button { text: "Clear filters"; clicked => { root.clear-filters(); } }
-                Button { text: "About"; clicked => { root.about-open = true; } }
-            }
+        AppHeader {
+            search-text <=> root.search-text;
+            result-count: root.result-count;
+            build-text: root.build-text;
+            search-changed(value) => { root.search-changed(value); }
+            clear-filters => { root.clear-filters(); }
+            show-about => { root.about-open = true; }
         }
-
         HorizontalLayout {
             spacing: 0px;
             FilterRail {
+                width: root.filter-pane-width;
                 show-impassable <=> root.show-impassable;
                 rgb-error: root.rgb-error;
                 numeric-error: root.numeric-error;
+                reset-generation: root.filter-reset-generation;
+                continent-options: root.continent-options;
+                subcontinent-options: root.subcontinent-options;
+                region-options: root.region-options;
+                area-options: root.area-options;
+                province-options: root.province-options;
+                topography-options: root.topography-options;
+                vegetation-options: root.vegetation-options;
+                climate-options: root.climate-options;
+                religion-options: root.religion-options;
+                culture-options: root.culture-options;
+                raw-material-options: root.raw-material-options;
+                modifier-options: root.modifier-options;
+                river-level-options: root.river-level-options;
                 toggle-impassable(value) => { root.toggle-impassable(value); }
                 kind-changed(value) => { root.kind-changed(value); }
                 state-changed(field, value) => { root.state-changed(field, value); }
                 facet-changed(field, value) => { root.facet-changed(field, value); }
                 rgb-changed(value) => { root.rgb-changed(value); }
                 numeric-changed(field, value) => { root.numeric-changed(field, value); }
+                filter-options(field, query) => { return root.filter-options(field, query); }
             }
-
-            VerticalLayout {
-                spacing: 0px;
-                Rectangle {
-                    height: 42px;
-                    background: #18212c;
-                    HorizontalLayout {
-                        padding-left: 12px;
-                        spacing: 8px;
-                        Button { text: "Name"; clicked => { root.sort-requested("name"); } }
-                        Button { text: "ID"; clicked => { root.sort-requested("id"); } }
-                        Button { text: "Kind"; clicked => { root.sort-requested("kind"); } }
-                        Button { text: "Topography"; clicked => { root.sort-requested("topography"); } }
-                        Button { text: "Vegetation"; clicked => { root.sort-requested("vegetation"); } }
-                        Button { text: "Climate"; clicked => { root.sort-requested("climate"); } }
-                        Button { text: "River"; clicked => { root.sort-requested("river"); } }
-                    }
-                }
-                ListView {
-                    for row[index] in root.rows: Rectangle {
-                        height: 62px;
-                        background: root.selected-index == index ? #263b51 : (Math.mod(index, 2) == 0 ? #121922 : #151e28);
-                        border-color: #243140;
-                        border-width: 1px;
-                        HorizontalLayout {
-                            padding-left: 12px;
-                            padding-right: 12px;
-                            spacing: 10px;
-                            Rectangle {
-                                width: 34px;
-                                height: 34px;
-                                border-radius: 4px;
-                                border-width: 1px;
-                                border-color: #d5dde6;
-                                background: row.color;
-                            }
-                            VerticalLayout {
-                                spacing: 1px;
-                                Text { text: row.name; color: #eef4fa; font-size: 14px; font-weight: 600; overflow: elide; }
-                                Text { text: row.key + "  " + row.hex; color: #8596a8; font-size: 11px; overflow: elide; }
-                            }
-                            Text { text: row.kind; color: #c4d0dc; width: 78px; vertical-alignment: center; }
-                            Text { text: row.topography; color: #aab7c4; width: 110px; vertical-alignment: center; overflow: elide; }
-                            Text { text: row.vegetation; color: #aab7c4; width: 100px; vertical-alignment: center; overflow: elide; }
-                            Text { text: row.climate; color: #aab7c4; width: 95px; vertical-alignment: center; overflow: elide; }
-                            Text { text: row.river; color: #77bff2; width: 62px; vertical-alignment: center; }
-                        }
-                        TouchArea {
-                            accessible-role: list-item;
-                            accessible-label: row.name + ", " + row.key;
-                            clicked => { root.selected-index = index; root.select-row(index); }
-                        }
-                    }
+            PaneHandle {
+                dragged(delta) => {
+                    root.filter-pane-width = min(400px, max(245px, root.filter-pane-width + delta));
                 }
             }
-
-            Rectangle {
-                width: 342px;
-                background: #151c25;
-                border-color: #2b3948;
-                border-width: 1px;
-                ScrollView {
-                    VerticalLayout {
-                        padding: 20px;
-                        spacing: 12px;
-                        Rectangle {
-                            height: 154px;
-                            background: root.detail-color;
-                            border-radius: 8px;
-                            border-width: 1px;
-                            border-color: #d8e0e8;
-                        }
-                        Text { text: root.detail-name; color: #f3f7fb; font-size: 22px; font-weight: 700; wrap: word-wrap; }
-                        Text { text: root.detail-key; color: #91a4b7; font-size: 13px; wrap: word-wrap; }
-                        HorizontalLayout {
-                            Text { text: root.detail-hex; color: #d5e0ea; font-size: 13px; }
-                            Text { text: root.detail-rgb; color: #d5e0ea; font-size: 13px; horizontal-alignment: right; }
-                        }
-                        Rectangle { height: 1px; background: #2a3746; }
-                        Text { text: root.detail-breadcrumb; color: #8fc6ed; font-size: 12px; wrap: word-wrap; }
-                        Text { text: root.detail-fields; color: #c0ccd8; font-size: 13px; wrap: word-wrap; }
-                    }
+            ResultTable {
+                rows: root.rows;
+                columns: root.columns;
+                table-width: root.table-width;
+                sort-key: root.sort-key;
+                sort-ascending: root.sort-ascending;
+                selected-index <=> root.selected-index;
+                sort-requested(field) => { root.sort-requested(field); }
+                select-row(index) => { root.select-row(index); }
+                toggle-column(key, visible) => { root.toggle-column(key, visible); }
+                resize-column(key, width) => { root.resize-column(key, width); }
+            }
+            PaneHandle {
+                dragged(delta) => {
+                    root.detail-pane-width = min(520px, max(280px, root.detail-pane-width - delta));
                 }
+            }
+            DetailPane {
+                width: root.detail-pane-width;
+                has-selection: root.selected-index >= 0;
+                detail-color: root.detail-color;
+                detail-name: root.detail-name;
+                detail-key: root.detail-key;
+                detail-hex: root.detail-hex;
+                detail-rgb: root.detail-rgb;
+                detail-breadcrumb: root.detail-breadcrumb;
+                detail-fields: root.detail-fields;
             }
         }
     }
@@ -201,7 +176,6 @@ export component AppWindow inherits Window {
             ProgressIndicator { progress: root.progress-value; width: 420px; }
         }
     }
-
     if root.error-text != "": Rectangle {
         background: #ed11161d;
         z: 90;
@@ -218,13 +192,12 @@ export component AppWindow inherits Window {
             }
         }
     }
-
     if root.about-open: Rectangle {
         background: #e910151c;
         z: 100;
         Rectangle {
-            width: 560px;
-            height: 570px;
+            width: 580px;
+            height: 610px;
             x: (parent.width - self.width) / 2;
             y: (parent.height - self.height) / 2;
             background: #1b2531;
@@ -235,12 +208,18 @@ export component AppWindow inherits Window {
                 padding: 24px;
                 spacing: 12px;
                 Text { text: "EU5 Location Filter"; color: #f2f7fb; font-size: 24px; font-weight: 700; horizontal-alignment: center; }
-                Text { text: "Version 0.1.0  •  " + root.build-text; color: #9fb0c1; horizontal-alignment: center; }
+                Text { text: "Version 0.1.0  |  " + root.build-text; color: #9fb0c1; horizontal-alignment: center; }
+                Text { text: "Created by Young Hyun Chi"; color: #e4ebf2; font-size: 15px; font-weight: 600; horizontal-alignment: center; }
+                HorizontalLayout {
+                    alignment: center;
+                    Button { text: "github.com/younghyun1"; clicked => { Platform.open-url("https://github.com/younghyun1"); } }
+                    Button { text: "cyhdev.com"; clicked => { Platform.open-url("https://cyhdev.com"); } }
+                }
                 Text { text: "An unofficial static map-data browser. Not affiliated with or endorsed by Paradox Interactive."; color: #d2dbe4; wrap: word-wrap; horizontal-alignment: center; }
                 Text { text: "Source license: MIT OR Apache-2.0\nUI: Slint Royalty-free License 2.0"; color: #aebdca; horizontal-alignment: center; }
                 AboutSlint { height: 120px; }
                 Rectangle { vertical-stretch: 1; }
-                Button { text: "Close"; clicked => { root.about-open = false; } }
+                Button { text: "Close"; height: 36px; clicked => { root.about-open = false; } }
             }
         }
     }

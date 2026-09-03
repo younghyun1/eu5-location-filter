@@ -1,0 +1,197 @@
+import { Button, CheckBox, ListView, ScrollView } from "std-widgets.slint";
+import { ColumnSpec, LocationRow } from "types.slint";
+
+component ColumnHandle inherits Rectangle {
+    width: 6px;
+    height: 100%;
+    in property <length> target-width;
+    callback resized(length);
+    background: drag-area.has-hover || drag-area.pressed ? #6b9bc5 : #30404f;
+    drag-area := TouchArea {
+        mouse-cursor: col-resize;
+        moved => {
+            if (self.pressed) {
+                root.resized(max(54px, root.target-width + self.mouse-x - root.width / 2));
+            }
+        }
+    }
+}
+
+export component ResultTable inherits VerticalLayout {
+    in property <[LocationRow]> rows;
+    in property <[ColumnSpec]> columns;
+    in property <float> table-width;
+    in property <string> sort-key;
+    in property <bool> sort-ascending;
+    in-out property <int> selected-index: -1;
+    callback sort-requested(string);
+    callback select-row(int);
+    callback toggle-column(string, bool);
+    callback resize-column(string, float);
+    spacing: 0px;
+    min-width: 420px;
+    horizontal-stretch: 1;
+
+    function cell-text(row: LocationRow, key: string) -> string {
+        if (key == "name") { return row.name; }
+        if (key == "identifier") { return row.key; }
+        if (key == "kind") { return row.kind; }
+        if (key == "topography") { return row.topography; }
+        if (key == "vegetation") { return row.vegetation; }
+        if (key == "climate") { return row.climate; }
+        if (key == "continent") { return row.continent; }
+        if (key == "subcontinent") { return row.subcontinent; }
+        if (key == "region") { return row.region; }
+        if (key == "area") { return row.area; }
+        if (key == "province") { return row.province; }
+        if (key == "religion") { return row.religion; }
+        if (key == "culture") { return row.culture; }
+        if (key == "raw_material") { return row.raw-material; }
+        if (key == "modifier") { return row.modifier; }
+        if (key == "rgb") { return row.rgb; }
+        if (key == "coastal") { return row.coastal; }
+        if (key == "river_presence") { return row.river-presence; }
+        if (key == "river_level") { return row.river-level; }
+        if (key == "harbor") { return row.harbor; }
+        if (key == "movement_presence") { return row.movement-presence; }
+        if (key == "movement_x") { return row.movement-x; }
+        if (key == "movement_y") { return row.movement-y; }
+        return "";
+    }
+
+    Rectangle {
+        height: 36px;
+        background: #151d26;
+        HorizontalLayout {
+            padding-left: 10px;
+            padding-right: 10px;
+            Text {
+                text: "RESULT COLUMNS";
+                color: #8295a8;
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                vertical-alignment: center;
+            }
+            Rectangle { horizontal-stretch: 1; }
+            Button { text: "Columns"; width: 88px; height: 30px; clicked => { column-popup.show(); } }
+        }
+    }
+    ScrollView {
+        viewport-width: max(self.visible-width, root.table-width * 1px);
+        horizontal-scrollbar-policy: as-needed;
+        VerticalLayout {
+            width: root.table-width * 1px;
+            height: parent.height;
+            spacing: 0px;
+            Rectangle {
+                height: 44px;
+                background: #18212c;
+                HorizontalLayout {
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    spacing: 0px;
+                    for column in root.columns: Rectangle {
+                        visible: column.visible;
+                        width: column.visible ? column.width * 1px + 6px : 0px;
+                        Button {
+                            width: column.width * 1px;
+                            text: column.label + (root.sort-key == column.key
+                                ? (root.sort-ascending ? "  ^" : "  v") : "");
+                            clicked => { root.sort-requested(column.key); }
+                        }
+                        ColumnHandle {
+                            x: column.width * 1px;
+                            target-width: column.width * 1px;
+                            resized(value) => { root.resize-column(column.key, value / 1px); }
+                        }
+                    }
+                }
+            }
+            ListView {
+                for row[index] in root.rows: Rectangle {
+                    height: 62px;
+                    background: root.selected-index == index ? #263b51
+                        : (Math.mod(index, 2) == 0 ? #121922 : #151e28);
+                    border-color: #243140;
+                    border-width: 1px;
+                    HorizontalLayout {
+                        padding-left: 10px;
+                        padding-right: 10px;
+                        spacing: 0px;
+                        for column in root.columns: Rectangle {
+                            visible: column.visible;
+                            width: column.visible ? column.width * 1px + 6px : 0px;
+                            if column.key == "color": HorizontalLayout {
+                                width: column.width * 1px;
+                                padding-left: 6px;
+                                padding-right: 6px;
+                                spacing: 7px;
+                                Rectangle {
+                                    width: 30px;
+                                    height: 30px;
+                                    vertical-stretch: 0;
+                                    border-radius: 4px;
+                                    border-width: 1px;
+                                    border-color: #d5dde6;
+                                    background: row.color;
+                                }
+                                Text { text: row.hex; color: #9eacba; font-size: 11px; vertical-alignment: center; overflow: elide; }
+                            }
+                            if column.key != "color": Text {
+                                width: column.width * 1px;
+                                height: 100%;
+                                text: root.cell-text(row, column.key);
+                                color: column.key == "river_level" ? #77bff2 : #c3ced9;
+                                font-size: column.key == "name" ? 14px : 12px;
+                                font-weight: column.key == "name" ? 600 : 400;
+                                horizontal-alignment: column.key == "name" || column.key == "identifier" ? left : center;
+                                vertical-alignment: center;
+                                overflow: elide;
+                            }
+                            Rectangle { x: column.width * 1px; width: 6px; height: 100%; }
+                        }
+                    }
+                    TouchArea {
+                        accessible-role: list-item;
+                        accessible-label: row.name + ", " + row.key;
+                        clicked => { root.selected-index = index; root.select-row(index); }
+                    }
+                }
+            }
+        }
+    }
+
+    column-popup := PopupWindow {
+        x: root.width - 260px;
+        y: 36px;
+        width: 250px;
+        height: min(520px, root.columns.length * 34px + 52px);
+        close-policy: no-auto-close;
+        Rectangle {
+            background: #1b232d;
+            border-color: #516376;
+            border-width: 1px;
+            border-radius: 4px;
+            VerticalLayout {
+                padding: 8px;
+                spacing: 6px;
+                HorizontalLayout {
+                    Text { text: "Visible columns"; color: #e5ecf3; font-size: 14px; font-weight: 700; vertical-alignment: center; }
+                    Rectangle { horizontal-stretch: 1; }
+                    Button { text: "Close"; width: 64px; height: 30px; clicked => { column-popup.close(); } }
+                }
+                ScrollView {
+                    VerticalLayout {
+                        spacing: 2px;
+                        for column in root.columns: CheckBox {
+                            text: column.label;
+                            checked: column.visible;
+                            toggled => { root.toggle-column(column.key, self.checked); }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,40 @@
+export struct LocationRow {
+    id: int,
+    color: color,
+    hex: string,
+    name: string,
+    key: string,
+    kind: string,
+    topography: string,
+    vegetation: string,
+    climate: string,
+    continent: string,
+    subcontinent: string,
+    region: string,
+    area: string,
+    province: string,
+    religion: string,
+    culture: string,
+    raw-material: string,
+    modifier: string,
+    rgb: string,
+    coastal: string,
+    river-presence: string,
+    river-level: string,
+    harbor: string,
+    movement-presence: string,
+    movement-x: string,
+    movement-y: string,
+}
+
+export struct DetailField {
+    label: string,
+    value: string,
+}
+
+export struct ColumnSpec {
+    key: string,
+    label: string,
+    width: float,
+    visible: bool,
+}

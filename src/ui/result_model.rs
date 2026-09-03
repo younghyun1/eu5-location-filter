@@ -94,15 +94,54 @@ fn display_row(dataset: &Dataset, record: &LocationRecord) -> LocationRow {
         topography: text(dataset, Some(record.topography)).into(),
         vegetation: text(dataset, record.vegetation).into(),
         climate: text(dataset, record.climate).into(),
-        river: record.river.map_or_else(
+        continent: label(dataset, Some(record.hierarchy.continent)).into(),
+        subcontinent: label(dataset, Some(record.hierarchy.subcontinent)).into(),
+        region: label(dataset, Some(record.hierarchy.region)).into(),
+        area: label(dataset, Some(record.hierarchy.area)).into(),
+        province: label(dataset, Some(record.hierarchy.province)).into(),
+        religion: label(dataset, record.religion).into(),
+        culture: label(dataset, record.culture).into(),
+        raw_material: label(dataset, record.raw_material).into(),
+        modifier: label(dataset, record.modifier).into(),
+        rgb: format!("rgb({red}, {green}, {blue})").into(),
+        coastal: if record.coastal { "Yes" } else { "No" }.into(),
+        river_presence: if record.river.is_some() {
+            "Present"
+        } else {
+            "Missing"
+        }
+        .into(),
+        river_level: record.river.map_or_else(
             || SharedString::from("—"),
-            |river| format!("L{}", river.level.0).into(),
+            |river| river.level.0.to_string().into(),
+        ),
+        harbor: record.harbor_suitability.map_or_else(
+            || SharedString::from("—"),
+            |value| format!("{value:.2}").into(),
+        ),
+        movement_presence: if record.movement_assistance.is_some() {
+            "Present"
+        } else {
+            "Missing"
+        }
+        .into(),
+        movement_x: record.movement_assistance.map_or_else(
+            || SharedString::from("—"),
+            |value| format!("{:.2}", value[0]).into(),
+        ),
+        movement_y: record.movement_assistance.map_or_else(
+            || SharedString::from("—"),
+            |value| format!("{:.2}", value[1]).into(),
         ),
     }
 }
 
 pub(super) fn text(dataset: &Dataset, symbol: Option<SymbolId>) -> &str {
     symbol.and_then(|id| dataset.symbol(id)).unwrap_or("—")
+}
+
+fn label(dataset: &Dataset, symbol: Option<SymbolId>) -> &str {
+    symbol.and_then(|id| dataset.label(id)).unwrap_or("—")
 }
 
 #[cfg(test)]

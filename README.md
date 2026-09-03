@@ -4,7 +4,7 @@ EU5 Location Filter is an unofficial desktop browser for the static map location
 
 ## Install and run
 
-Install from a source checkout with Rust 1.92 or newer:
+Install from a source checkout with Rust 1.100 or newer:
 
 ```text
 cargo install --path . --locked
@@ -17,10 +17,12 @@ The data file contains names and static map metadata derived from the user's ins
 
 ## Filters
 
-The application starts with every location visible, including oceans, lakes, and impassable wastelands. Filters combine with AND; multiple values in one categorical filter combine with OR. Empty fields mean any value. Invalid numeric or RGB input is shown inline and does not change the active result set.
+The application starts with every location visible, including oceans, lakes, and impassable wastelands. Categorical filters use searchable dropdowns; numeric ranges and exact RGB remain validated inputs. Filters combine with AND, and empty fields mean any value. Invalid numeric or RGB input is shown inline and does not change the active result set. The result table has sortable, resizable columns, a column-visibility menu covering every filter criterion, and draggable filter and detail pane boundaries.
 
 ## Scope and license
 
 The importer reads only vanilla installation files. Mods, saves, ownership, population, and other campaign state are out of scope. Europa Universalis and Paradox Interactive are trademarks of their respective owners. This project is unofficial and is not affiliated with or endorsed by Paradox Interactive.
 
 The source is available under MIT OR Apache-2.0. The UI uses Slint under the Slint Royalty-free License and includes Slint attribution in its About dialog.
+
+Created by Young Hyun Chi. Project links: [GitHub](https://github.com/younghyun1) and [cyhdev.com](https://cyhdev.com).

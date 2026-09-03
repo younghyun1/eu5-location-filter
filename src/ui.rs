@@ -16,10 +16,13 @@ mod generated {
     slint::include_modules!();
 }
 
-use generated::{AppWindow, LocationRow};
+use generated::{AppWindow, ColumnSpec, DetailField, LocationRow};
 
+mod column_controls;
+mod columns;
 mod controls;
 mod detail;
+mod options;
 mod result_model;
 mod state;
 mod worker;
