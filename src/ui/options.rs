@@ -1,15 +1,22 @@
-//! Dataset-backed dropdown options for categorical facets.
+//! Dataset-backed options for searchable checkbox filters.
 
 use std::collections::HashSet;
 
 use memchr::memmem::Finder;
 use slint::{Model, ModelRc, SharedString};
 
-use super::AppWindow;
+use super::{AppWindow, CheckOption};
 use crate::filter::fold_search;
 use crate::model::{Dataset, SymbolId};
 
 pub(super) fn install(app: &AppWindow, dataset: &Dataset) {
+    app.set_kind_options(static_model(&[
+        ("land", "Land"),
+        ("sea", "Sea"),
+        ("lake", "Lake"),
+        ("impassable", "Impassable"),
+        ("unknown", "Unknown"),
+    ]));
     app.set_continent_options(model(
         dataset,
         symbols(dataset, |r| Some(r.hierarchy.continent)),
@@ -46,14 +53,42 @@ pub(super) fn install(app: &AppWindow, dataset: &Dataset) {
     app.set_culture_options(model(dataset, symbols(dataset, |r| r.culture), true));
     app.set_raw_material_options(model(dataset, symbols(dataset, |r| r.raw_material), true));
     app.set_modifier_options(model(dataset, symbols(dataset, |r| r.modifier), true));
-    let river_levels: Vec<SharedString> = std::iter::once(SharedString::from("Any"))
-        .chain((0..=dataset.stored.river_widths.level_count).map(|level| level.to_string().into()))
+    app.set_coastal_options(static_model(&[("yes", "Yes"), ("no", "No")]));
+    let presence = &[("present", "Present"), ("missing", "Missing")];
+    app.set_river_options(static_model(presence));
+    app.set_harbor_options(static_model(presence));
+    app.set_movement_options(static_model(presence));
+    let levels: Vec<CheckOption> = (0..=dataset.stored.river_widths.level_count)
+        .map(|level| option(&level.to_string(), &format!("Level {level}")))
         .collect();
-    app.set_river_level_options(ModelRc::from(river_levels.as_slice()));
+    app.set_river_level_options(ModelRc::from(levels.as_slice()));
 }
 
-pub(super) fn filtered(app: &AppWindow, field: &str, query: &str) -> ModelRc<SharedString> {
-    let source = match field {
+pub(super) fn filtered(
+    source: ModelRc<CheckOption>,
+    query: &str,
+    mut checked: impl FnMut(&str) -> bool,
+) -> ModelRc<CheckOption> {
+    let query = fold_search(query);
+    let finder = (!query.is_empty()).then(|| Finder::new(query.as_bytes()));
+    let matches: Vec<CheckOption> = (0..source.row_count())
+        .filter_map(|index| source.row_data(index))
+        .filter(|value| {
+            finder
+                .as_ref()
+                .is_none_or(|finder| finder.find(fold_search(&value.label).as_bytes()).is_some())
+        })
+        .map(|mut value| {
+            value.checked = checked(&value.key);
+            value
+        })
+        .collect();
+    ModelRc::from(matches.as_slice())
+}
+
+pub(super) fn source(app: &AppWindow, field: &str) -> ModelRc<CheckOption> {
+    match field {
+        "Kind" => app.get_kind_options(),
         "Continent" => app.get_continent_options(),
         "Subcontinent" => app.get_subcontinent_options(),
         "Region" => app.get_region_options(),
@@ -66,33 +101,13 @@ pub(super) fn filtered(app: &AppWindow, field: &str, query: &str) -> ModelRc<Sha
         "Culture" => app.get_culture_options(),
         "Raw material" => app.get_raw_material_options(),
         "Modifier" => app.get_modifier_options(),
+        "Coastal" => app.get_coastal_options(),
+        "River" => app.get_river_options(),
         "Min river level" | "Max river level" => app.get_river_level_options(),
-        "Kind" => static_model(&["Any", "Land", "Sea", "Lake", "Impassable", "Unknown"]),
-        "Coastal" => static_model(&["Any", "Yes", "No"]),
-        "River" | "Harbor suitability" | "Movement assistance" => {
-            static_model(&["Any", "Present", "Missing"])
-        }
+        "Harbor suitability" => app.get_harbor_options(),
+        "Movement assistance" => app.get_movement_options(),
         _ => ModelRc::default(),
-    };
-    let query = fold_search(query);
-    filter_source(source, &query)
-}
-
-fn filter_source(source: ModelRc<SharedString>, query: &str) -> ModelRc<SharedString> {
-    if query.is_empty() {
-        return source;
     }
-    let finder = Finder::new(query.as_bytes());
-    let matches: Vec<SharedString> = (0..source.row_count())
-        .filter_map(|index| source.row_data(index))
-        .filter(|value| finder.find(fold_search(value).as_bytes()).is_some())
-        .collect();
-    ModelRc::from(matches.as_slice())
-}
-
-fn static_model(values: &[&str]) -> ModelRc<SharedString> {
-    let values: Vec<SharedString> = values.iter().map(|value| (*value).into()).collect();
-    ModelRc::from(values.as_slice())
 }
 
 fn symbols(
@@ -106,8 +121,8 @@ fn model(
     dataset: &Dataset,
     symbols: HashSet<SymbolId>,
     include_missing: bool,
-) -> ModelRc<SharedString> {
-    let mut values: Vec<(String, String)> = symbols
+) -> ModelRc<CheckOption> {
+    let mut values: Vec<(String, CheckOption)> = symbols
         .into_iter()
         .filter_map(|symbol| {
             let key = dataset.symbol(symbol)?;
@@ -117,18 +132,48 @@ fn model(
             } else {
                 format!("{label}  [{key}]")
             };
-            Some((fold_search(&display), display))
+            Some((fold_search(&display), option(key, &display)))
         })
         .collect();
-    values.sort_by(|left, right| left.0.cmp(&right.0).then_with(|| left.1.cmp(&right.1)));
-    let mut options = Vec::with_capacity(values.len().saturating_add(2));
-    options.push(SharedString::from("Any"));
+    values.sort_by(|left, right| {
+        left.0
+            .cmp(&right.0)
+            .then_with(|| left.1.label.cmp(&right.1.label))
+    });
+    let mut options = Vec::with_capacity(values.len().saturating_add(1));
     if include_missing {
-        options.push(SharedString::from("Missing"));
+        options.push(option("__missing__", "Missing"));
     }
-    options.extend(values.into_iter().map(|(_, display)| display.into()));
+    options.extend(values.into_iter().map(|(_, value)| value));
     ModelRc::from(options.as_slice())
 }
 
+fn static_model(values: &[(&str, &str)]) -> ModelRc<CheckOption> {
+    let values: Vec<CheckOption> = values
+        .iter()
+        .map(|(key, label)| option(key, label))
+        .collect();
+    ModelRc::from(values.as_slice())
+}
+
+fn option(key: &str, label: &str) -> CheckOption {
+    CheckOption {
+        key: SharedString::from(key),
+        label: SharedString::from(label),
+        checked: false,
+    }
+}
+
 #[cfg(test)]
-mod tests;
+mod tests {
+    use super::{filtered, static_model};
+    use slint::Model;
+
+    #[test]
+    fn search_filters_and_marks_checkbox_state() {
+        let source = static_model(&[("kourim", "Kouřim"), ("stockholm", "Stockholm")]);
+        let result = filtered(source, "kourim", |key| key == "kourim");
+        assert_eq!(result.row_count(), 1);
+        assert!(result.row_data(0).is_some_and(|value| value.checked));
+    }
+}

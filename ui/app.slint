@@ -3,7 +3,7 @@ import { AppHeader } from "header.slint";
 import { DetailPane } from "detail-pane.slint";
 import { FilterRail } from "filter-rail.slint";
 import { ResultTable } from "result-table.slint";
-import { ColumnSpec, DetailField, LocationRow } from "types.slint";
+import { CheckOption, ColumnSpec, DetailField, LocationRow } from "types.slint";
 
 component PaneHandle inherits Rectangle {
     width: 7px;
@@ -58,31 +58,35 @@ export component AppWindow inherits Window {
     in property <string> detail-breadcrumb: "";
     in property <[DetailField]> detail-fields;
 
-    in property <[string]> continent-options;
-    in property <[string]> subcontinent-options;
-    in property <[string]> region-options;
-    in property <[string]> area-options;
-    in property <[string]> province-options;
-    in property <[string]> topography-options;
-    in property <[string]> vegetation-options;
-    in property <[string]> climate-options;
-    in property <[string]> religion-options;
-    in property <[string]> culture-options;
-    in property <[string]> raw-material-options;
-    in property <[string]> modifier-options;
-    in property <[string]> river-level-options;
+    in property <[CheckOption]> kind-options;
+    in property <[CheckOption]> continent-options;
+    in property <[CheckOption]> subcontinent-options;
+    in property <[CheckOption]> region-options;
+    in property <[CheckOption]> area-options;
+    in property <[CheckOption]> province-options;
+    in property <[CheckOption]> topography-options;
+    in property <[CheckOption]> vegetation-options;
+    in property <[CheckOption]> climate-options;
+    in property <[CheckOption]> religion-options;
+    in property <[CheckOption]> culture-options;
+    in property <[CheckOption]> raw-material-options;
+    in property <[CheckOption]> modifier-options;
+    in property <[CheckOption]> coastal-options;
+    in property <[CheckOption]> river-options;
+    in property <[CheckOption]> river-level-options;
+    in property <[CheckOption]> harbor-options;
+    in property <[CheckOption]> movement-options;
 
     property <length> filter-pane-width: 270px;
     property <length> detail-pane-width: 350px;
 
     callback search-changed(string);
     callback toggle-impassable(bool);
-    callback kind-changed(string);
-    callback state-changed(string, string);
-    callback facet-changed(string, string);
     callback rgb-changed(string);
     callback numeric-changed(string, string);
-    callback filter-options(string, string) -> [string];
+    callback filter-options(string, string) -> [CheckOption];
+    callback option-toggled(string, string, bool);
+    callback clear-options(string);
     callback toggle-column(string, bool);
     callback resize-column(string, float);
     callback clear-filters;
@@ -109,6 +113,7 @@ export component AppWindow inherits Window {
                 rgb-error: root.rgb-error;
                 numeric-error: root.numeric-error;
                 reset-generation: root.filter-reset-generation;
+                kind-options: root.kind-options;
                 continent-options: root.continent-options;
                 subcontinent-options: root.subcontinent-options;
                 region-options: root.region-options;
@@ -121,14 +126,17 @@ export component AppWindow inherits Window {
                 culture-options: root.culture-options;
                 raw-material-options: root.raw-material-options;
                 modifier-options: root.modifier-options;
+                coastal-options: root.coastal-options;
+                river-options: root.river-options;
                 river-level-options: root.river-level-options;
+                harbor-options: root.harbor-options;
+                movement-options: root.movement-options;
                 toggle-impassable(value) => { root.toggle-impassable(value); }
-                kind-changed(value) => { root.kind-changed(value); }
-                state-changed(field, value) => { root.state-changed(field, value); }
-                facet-changed(field, value) => { root.facet-changed(field, value); }
                 rgb-changed(value) => { root.rgb-changed(value); }
                 numeric-changed(field, value) => { root.numeric-changed(field, value); }
                 filter-options(field, query) => { return root.filter-options(field, query); }
+                option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); }
+                clear-options(field) => { root.clear-options(field); }
             }
             PaneHandle {
                 dragged(delta) => {

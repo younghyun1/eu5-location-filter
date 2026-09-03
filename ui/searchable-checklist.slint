@@ -1,0 +1,60 @@
+import { Button, CheckBox, LineEdit, ListView } from "std-widgets.slint";
+import { CheckOption } from "types.slint";
+
+export component SearchableChecklist inherits VerticalLayout {
+    in property <string> field;
+    in property <[CheckOption]> options;
+    in-out property <[CheckOption]> filtered-options: root.options;
+    in-out property <string> query: "";
+    in property <int> reset-generation: 0;
+    property <length> list-height: min(170px, max(68px, root.filtered-options.length * 30px));
+    callback filter-options(string, string) -> [CheckOption];
+    callback option-toggled(string, string, bool);
+    callback clear-options(string);
+    spacing: 4px;
+    horizontal-stretch: 1;
+
+    HorizontalLayout {
+        height: 30px;
+        spacing: 4px;
+        LineEdit {
+            text <=> root.query;
+            placeholder-text: "Search " + root.field.to-lowercase();
+            accessible-label: "Search " + root.field + " options";
+            edited(value) => {
+                root.filtered-options = root.filter-options(root.field, value);
+            }
+        }
+        Button {
+            text: "Clear";
+            width: 54px;
+            clicked => {
+                root.clear-options(root.field);
+                root.filtered-options = root.filter-options(root.field, root.query);
+            }
+        }
+    }
+    Rectangle {
+        height: root.list-height;
+        background: #19222c;
+        border-color: #354454;
+        border-width: 1px;
+        border-radius: 3px;
+        ListView {
+            for option in root.filtered-options: CheckBox {
+                height: 30px;
+                text: option.label;
+                checked: option.checked;
+                toggled => {
+                    root.option-toggled(root.field, option.key, self.checked);
+                    root.filtered-options = root.filter-options(root.field, root.query);
+                }
+            }
+        }
+    }
+
+    changed reset-generation => {
+        root.query = "";
+        root.filtered-options = root.filter-options(root.field, "");
+    }
+}
