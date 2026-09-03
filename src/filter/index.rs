@@ -9,7 +9,7 @@ use crate::AppError;
 use crate::model::{Dataset, EU5_APP_ID, LocationId};
 
 /// Schema version for the independent filter-index bundle.
-pub const INDEX_FORMAT_VERSION: u16 = 2;
+pub const INDEX_FORMAT_VERSION: u16 = 3;
 
 /// One field's precomputed ascending and descending location order.
 #[derive(Clone, Debug, Decode, Encode, PartialEq)]
@@ -33,7 +33,7 @@ pub struct StoredFilterIndex {
     pub build_id: u64,
     /// Record count of the paired location dataset.
     pub location_count: u32,
-    /// ASCII-folded English name and internal ID for each location.
+    /// Compact folded English name and internal ID for each location.
     pub searchable: Vec<String>,
     /// Fixed sort orders in `SortField::ALL` order.
     pub orders: Vec<StoredSortOrder>,

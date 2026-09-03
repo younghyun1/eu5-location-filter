@@ -182,4 +182,17 @@ mod tests {
         assert_eq!(result.row_count(), 1);
         assert!(result.row_data(0).is_some_and(|value| value.checked));
     }
+
+    #[test]
+    fn search_ignores_option_punctuation_and_whitespace() {
+        let source = static_model(&[("ras_al_ain", "Ra's al-'Ain"), ("abu_dhabi", "Abu Dhabi")]);
+        for query in ["rasalain", "ras al ain", "ras_al_ain", "ras—al—ʿain"] {
+            let result = filtered(source.clone(), query, |_| false);
+            assert_eq!(result.row_count(), 1, "query did not match: {query:?}");
+            assert_eq!(
+                result.row_data(0).map(|value| value.key),
+                Some("ras_al_ain".into())
+            );
+        }
+    }
 }

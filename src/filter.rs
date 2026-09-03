@@ -147,7 +147,7 @@ fn search_data(dataset: &Dataset) -> (Vec<String>, Vec<String>) {
         .stored
         .dictionary
         .iter()
-        .map(|value| fold_search(value))
+        .map(|value| text::fold_sort(value))
         .collect();
     let searchable = dataset
         .stored

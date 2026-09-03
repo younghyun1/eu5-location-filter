@@ -101,6 +101,65 @@ fn ascii_search_matches_localized_diacritics() {
 }
 
 #[test]
+fn search_ignores_punctuation_and_whitespace_in_names_and_identifiers() {
+    let mut dataset = fixture();
+    dataset.stored.dictionary[0] = "ras_al_ain".to_owned();
+    dataset.stored.dictionary[1] = "Ra's al-'Ain".to_owned();
+    let engine = FilterEngine::new(Arc::new(dataset));
+    for search in [
+        "rasalain",
+        "ras al ain",
+        "ras_al_ain",
+        "Ra's al-'Ain",
+        "RAS—AL—ʿAIN",
+        "ras\u{00a0}\t al\n ain",
+    ] {
+        let filters = FilterSet {
+            search: search.to_owned(),
+            ..FilterSet::default()
+        };
+        assert_eq!(
+            engine.apply(&filters, SortField::Name, true),
+            vec![LocationId(0)],
+            "search did not match: {search:?}"
+        );
+    }
+}
+
+#[test]
+fn search_does_not_cross_the_name_identifier_boundary() {
+    let mut dataset = fixture();
+    dataset.stored.dictionary[0] = "bar".to_owned();
+    dataset.stored.dictionary[1] = "foo".to_owned();
+    let engine = FilterEngine::new(Arc::new(dataset));
+    let filters = FilterSet {
+        search: "obar".to_owned(),
+        ..FilterSet::default()
+    };
+    assert!(engine.apply(&filters, SortField::Name, true).is_empty());
+}
+
+#[test]
+fn punctuation_insensitive_search_preserves_sort_collation() {
+    let mut dataset = fixture();
+    dataset.stored.dictionary[1] = "az".to_owned();
+    dataset.stored.dictionary[4] = "a-z".to_owned();
+    let engine = FilterEngine::new(Arc::new(dataset));
+    assert_eq!(
+        engine.apply(&FilterSet::default(), SortField::Name, true),
+        vec![LocationId(1), LocationId(0)]
+    );
+}
+
+#[test]
+fn rejects_the_previous_search_index_format() {
+    let dataset = Arc::new(fixture());
+    let mut stored = FilterEngine::build_stored_index(&dataset);
+    stored.format_version = 2;
+    assert!(FilterEngine::from_stored_index(dataset, stored).is_err());
+}
+
+#[test]
 fn every_column_has_precomputed_orders_with_nulls_last() {
     let engine = FilterEngine::new(Arc::new(fixture()));
     for field in SortField::ALL {
