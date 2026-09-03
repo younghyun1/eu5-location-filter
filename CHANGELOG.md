@@ -12,4 +12,4 @@
 - Add per-filter folding and balanced padding around result-column separators.
 - Elide column labels and cell text when a user narrows a column while keeping the active sort arrow visible.
 - Target x86-64-v3 and baseline ARMv8-A for reproducible release binaries.
-- Add six-platform CI checks and a version-validated tagged GitHub Release workflow without creating a release.
+- Add six-platform CI checks and a signed, notarized, version-validated tagged GitHub Release workflow without creating a release.

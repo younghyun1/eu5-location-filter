@@ -19,7 +19,7 @@ The committed bundles contain static names and map metadata derived from the ins
 
 ## Supported release targets
 
-Tagged releases are configured for native Windows, Linux, and macOS runners on x86-64 and ARM64. x86-64 artifacts require the `x86-64-v3` feature level associated with Haswell-era processors. ARM64 artifacts use Rust's generic AArch64 CPU, retaining the architecture's ARMv8-A baseline instead of tuning for the build runner.
+Tagged releases are configured for native Windows, Linux, and macOS runners on x86-64 and ARM64. x86-64 artifacts require the `x86-64-v3` feature level associated with Haswell-era processors. ARM64 artifacts use Rust's generic AArch64 CPU, retaining the architecture's ARMv8-A baseline instead of tuning for the build runner. Release publication is gated on Windows Authenticode signing, Apple Developer ID signing and notarization, detached GPG signatures, checksums, and GitHub provenance attestations; see [release signing](docs/signing.md).
 
 ## Static population capacity
 
