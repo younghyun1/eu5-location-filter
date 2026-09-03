@@ -10,6 +10,12 @@ component SectionTitle inherits Text {
     vertical-alignment: center;
 }
 
+component RangeLineEdit inherits LineEdit {
+    min-width: 0px;
+    horizontal-stretch: 1;
+    input-type: decimal;
+}
+
 component FilterGroup inherits VerticalLayout {
     in property <string> label;
     in property <[CheckOption]> options;
@@ -168,10 +174,10 @@ export component FilterRail inherits Rectangle {
                 FilterGroup { label: "Min river bonus"; options: root.river-level-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
                 FilterGroup { label: "Max river bonus"; options: root.river-level-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
                 FilterGroup { label: "Harbor suitability"; options: root.harbor-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-                HorizontalLayout { spacing: 6px; LineEdit { text <=> root.harbor-min-text; placeholder-text: "Minimum"; input-type: decimal; edited(value) => { root.numeric-changed("harbor-min", value); } } LineEdit { text <=> root.harbor-max-text; placeholder-text: "Maximum"; input-type: decimal; edited(value) => { root.numeric-changed("harbor-max", value); } } }
+                HorizontalLayout { spacing: 6px; RangeLineEdit { text <=> root.harbor-min-text; placeholder-text: "Minimum"; edited(value) => { root.numeric-changed("harbor-min", value); } } RangeLineEdit { text <=> root.harbor-max-text; placeholder-text: "Maximum"; edited(value) => { root.numeric-changed("harbor-max", value); } } }
                 FilterGroup { label: "Movement assistance"; options: root.movement-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-                HorizontalLayout { spacing: 6px; LineEdit { text <=> root.move-x-min-text; placeholder-text: "X minimum"; input-type: decimal; edited(value) => { root.numeric-changed("move-x-min", value); } } LineEdit { text <=> root.move-x-max-text; placeholder-text: "X maximum"; input-type: decimal; edited(value) => { root.numeric-changed("move-x-max", value); } } }
-                HorizontalLayout { spacing: 6px; LineEdit { text <=> root.move-y-min-text; placeholder-text: "Y minimum"; input-type: decimal; edited(value) => { root.numeric-changed("move-y-min", value); } } LineEdit { text <=> root.move-y-max-text; placeholder-text: "Y maximum"; input-type: decimal; edited(value) => { root.numeric-changed("move-y-max", value); } } }
+                HorizontalLayout { spacing: 6px; RangeLineEdit { text <=> root.move-x-min-text; placeholder-text: "X minimum"; edited(value) => { root.numeric-changed("move-x-min", value); } } RangeLineEdit { text <=> root.move-x-max-text; placeholder-text: "X maximum"; edited(value) => { root.numeric-changed("move-x-max", value); } } }
+                HorizontalLayout { spacing: 6px; RangeLineEdit { text <=> root.move-y-min-text; placeholder-text: "Y minimum"; edited(value) => { root.numeric-changed("move-y-min", value); } } RangeLineEdit { text <=> root.move-y-max-text; placeholder-text: "Y maximum"; edited(value) => { root.numeric-changed("move-y-max", value); } } }
                 Text { text: root.numeric-error; color: #ff8d8d; font-size: 11px; visible: root.numeric-error != ""; }
             }
         }
