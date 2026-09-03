@@ -1,5 +1,3 @@
-cargo-features = ["panic-immediate-abort"]
-
 [package]
 name = "eu5-location-filter"
 version = "0.1.0"
@@ -58,10 +56,7 @@ debug = false
 incremental = false
 strip = true
 lto = "fat"
-panic = "immediate-abort"
-
-[profile.dev]
-panic = "immediate-abort"
+panic = "abort"
 
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = ["-Oz"]

@@ -1,6 +1,6 @@
 # Development
 
-The workspace uses Rust edition 2024 with MSRV 1.100 and the rolling nightly toolchain with `rust-src`, `rustfmt`, and `clippy`. Local builds default to `x86_64-pc-windows-msvc`; x86-64 builds use `target-cpu=x86-64-v3`, while ARM64 builds use the generic AArch64 ARMv8-A baseline. Both rebuild `core`, `alloc`, and `std` and compile with the Rust 1.100 `immediate-abort` panic strategy. Cargo's abort-compatible test mode keeps the test harness aligned with the rebuilt standard library.
+The workspace uses Rust edition 2024 with MSRV 1.100 and the rolling nightly toolchain. Cargo uses the host target by default, so normal builds work directly on Windows and Linux; release automation selects each supported target explicitly. x86-64 builds use `target-cpu=x86-64-v3`, while ARM64 builds use the generic AArch64 ARMv8-A baseline. Optimized builds use the portable `abort` panic strategy without rebuilding the standard library.
 
 Run development verification with:
 
