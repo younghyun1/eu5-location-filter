@@ -1,4 +1,4 @@
-import { AboutSlint, Button, LineEdit, ProgressIndicator } from "std-widgets.slint";
+import { AboutSlint, Button, LineEdit } from "std-widgets.slint";
 import { AppHeader } from "header.slint";
 import { DetailPane } from "detail-pane.slint";
 import { FilterRail } from "filter-rail.slint";
@@ -167,13 +167,34 @@ export component AppWindow inherits Window {
     }
 
     if root.loading: Rectangle {
-        background: #d911161d;
+        background: #b811161d;
         z: 80;
-        VerticalLayout {
-            alignment: center;
-            spacing: 14px;
-            Text { text: root.progress-stage; color: #eef4fa; font-size: 18px; horizontal-alignment: center; }
-            ProgressIndicator { progress: root.progress-value; width: 420px; }
+        Rectangle {
+            width: 440px;
+            height: 116px;
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2;
+            background: #1b2531;
+            border-color: #40556b;
+            border-width: 1px;
+            border-radius: 8px;
+            VerticalLayout {
+                padding: 20px;
+                spacing: 14px;
+                alignment: center;
+                Text { text: root.progress-stage; color: #eef4fa; font-size: 16px; horizontal-alignment: center; }
+                Rectangle {
+                    height: 4px;
+                    background: #2a3846;
+                    border-radius: 2px;
+                    Rectangle {
+                        width: parent.width * min(1, max(0, root.progress-value));
+                        height: 100%;
+                        background: #5ca9e6;
+                        border-radius: 2px;
+                    }
+                }
+            }
         }
     }
     if root.error-text != "": Rectangle {

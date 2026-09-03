@@ -52,8 +52,8 @@ export component AppHeader inherits Rectangle {
                 edited(value) => { root.search-changed(value); }
             }
         }
-        Text { text: root.result-count; color: #c6d2df; vertical-alignment: center; width: 118px; }
-        Text { text: root.build-text; color: #8292a5; vertical-alignment: center; width: 112px; }
+        Text { text: root.result-count; color: #c6d2df; vertical-alignment: center; width: 110px; }
+        Text { text: root.build-text; color: #8292a5; vertical-alignment: center; width: 190px; overflow: elide; }
         HeaderButton { text: "Clear filters"; clicked => { root.clear-filters(); } }
         HeaderButton { text: "About"; clicked => { root.show-about(); } }
     }

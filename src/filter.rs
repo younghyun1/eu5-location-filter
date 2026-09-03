@@ -4,10 +4,12 @@ use std::sync::Arc;
 
 use crate::model::{Dataset, LocationId, LocationKind, LocationRecord, SymbolId};
 
+mod index;
 mod sort;
 mod text;
 mod types;
 
+pub use index::StoredFilterIndex;
 use sort::SortOrders;
 pub(crate) use text::fold_search;
 pub use types::{
@@ -25,28 +27,41 @@ impl FilterEngine {
     /// Builds normalized search strings and bounded orders for every sortable field.
     #[must_use]
     pub fn new(dataset: Arc<Dataset>) -> Self {
-        let folded_symbols: Vec<String> = dataset
-            .stored
-            .dictionary
-            .iter()
-            .map(|value| fold_search(value))
-            .collect();
-        let searchable = dataset
-            .stored
-            .locations
-            .iter()
-            .map(|record| {
-                let name = dataset.symbol(record.name).unwrap_or_default();
-                let key = dataset.symbol(record.key).unwrap_or_default();
-                format!("{}\0{}", fold_search(name), fold_search(key))
-            })
-            .collect();
+        let (folded_symbols, searchable) = search_data(&dataset);
         let sort_orders = SortOrders::new(&dataset, &folded_symbols);
         Self {
             dataset,
             searchable,
             sort_orders,
         }
+    }
+
+    /// Builds a deterministic payload for the committed filter-index bundle.
+    #[must_use]
+    pub fn build_stored_index(dataset: &Dataset) -> StoredFilterIndex {
+        let (folded_symbols, searchable) = search_data(dataset);
+        let sort_orders = SortOrders::new(dataset, &folded_symbols).into_stored();
+        StoredFilterIndex {
+            format_version: index::INDEX_FORMAT_VERSION,
+            app_id: crate::model::EU5_APP_ID,
+            build_id: dataset.stored.build_id,
+            location_count: u32::try_from(dataset.stored.locations.len()).unwrap_or(u32::MAX),
+            searchable,
+            orders: sort_orders,
+        }
+    }
+
+    /// Restores validated search and sort indexes without rebuilding them.
+    pub fn from_stored_index(
+        dataset: Arc<Dataset>,
+        stored: StoredFilterIndex,
+    ) -> Result<Self, crate::AppError> {
+        stored.validate(&dataset)?;
+        Ok(Self {
+            dataset,
+            searchable: stored.searchable,
+            sort_orders: SortOrders::from_stored(stored.orders),
+        })
     }
 
     /// Scans one pre-sorted index and returns only matching location IDs.
@@ -76,12 +91,7 @@ impl FilterEngine {
         selected.filter(|id| visible.contains(id))
     }
 
-    fn matches(
-        &self,
-        record: &LocationRecord,
-        filters: &FilterSet,
-        query: &str,
-    ) -> bool {
+    fn matches(&self, record: &LocationRecord, filters: &FilterSet, query: &str) -> bool {
         let searchable = usize::try_from(record.id.0)
             .ok()
             .and_then(|index| self.searchable.get(index))
@@ -130,6 +140,26 @@ impl FilterEngine {
                 None => ranges_are_empty(filters.movement_x, filters.movement_y),
             }
     }
+}
+
+fn search_data(dataset: &Dataset) -> (Vec<String>, Vec<String>) {
+    let folded_symbols = dataset
+        .stored
+        .dictionary
+        .iter()
+        .map(|value| fold_search(value))
+        .collect();
+    let searchable = dataset
+        .stored
+        .locations
+        .iter()
+        .map(|record| {
+            let name = dataset.symbol(record.name).unwrap_or_default();
+            let key = dataset.symbol(record.key).unwrap_or_default();
+            format!("{}\0{}", fold_search(name), fold_search(key))
+        })
+        .collect();
+    (folded_symbols, searchable)
 }
 
 fn facet_matches(filter: OptionalFacet, value: Option<SymbolId>) -> bool {

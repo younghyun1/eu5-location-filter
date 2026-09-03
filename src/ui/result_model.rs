@@ -1,4 +1,4 @@
-//! Virtualized Slint model backed by filtered location IDs and prebuilt rows.
+//! Virtualized Slint model backed by filtered IDs and shared dictionary strings.
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -13,21 +13,38 @@ use crate::model::{Dataset, LocationId, LocationRecord, SymbolId};
 /// The only mutable result state is the compact vector of visible IDs.
 pub(super) struct ResultModel {
     ids: RefCell<Vec<LocationId>>,
-    rows: Vec<LocationRow>,
+    dataset: Arc<Dataset>,
+    symbols: Vec<SharedString>,
+    labels: Vec<SharedString>,
     notify: ModelNotify,
 }
 
 impl ResultModel {
     pub(super) fn new(dataset: &Arc<Dataset>, ids: Vec<LocationId>) -> Rc<Self> {
-        let rows = dataset
+        let symbols: Vec<SharedString> = dataset
             .stored
-            .locations
+            .dictionary
             .iter()
-            .map(|record| display_row(dataset, record))
+            .map(String::as_str)
+            .map(SharedString::from)
             .collect();
+        let mut labels = symbols.clone();
+        for localized in &dataset.stored.localizations {
+            let Ok(key) = usize::try_from(localized.key.0) else {
+                continue;
+            };
+            let Ok(value) = usize::try_from(localized.value.0) else {
+                continue;
+            };
+            if let (Some(target), Some(label)) = (labels.get_mut(key), symbols.get(value)) {
+                *target = label.clone();
+            }
+        }
         Rc::new(Self {
             ids: RefCell::new(ids),
-            rows,
+            dataset: Arc::clone(dataset),
+            symbols,
+            labels,
             notify: ModelNotify::default(),
         })
     }
@@ -67,10 +84,8 @@ impl Model for ResultModel {
 
     fn row_data(&self, row: usize) -> Option<Self::Data> {
         let id = self.id_at(row)?;
-        usize::try_from(id.0)
-            .ok()
-            .and_then(|index| self.rows.get(index))
-            .cloned()
+        let record = self.dataset.location(id)?;
+        Some(display_row(&self.symbols, &self.labels, record))
     }
 
     fn model_tracker(&self) -> &dyn ModelTracker {
@@ -82,27 +97,31 @@ impl Model for ResultModel {
     }
 }
 
-fn display_row(dataset: &Dataset, record: &LocationRecord) -> LocationRow {
+fn display_row(
+    symbols: &[SharedString],
+    labels: &[SharedString],
+    record: &LocationRecord,
+) -> LocationRow {
     let [red, green, blue] = record.color.components();
     LocationRow {
         id: i32::try_from(record.id.0).unwrap_or(i32::MAX),
         color: Color::from_rgb_u8(red, green, blue),
         hex: record.color.hex().into(),
-        name: text(dataset, Some(record.name)).into(),
-        key: text(dataset, Some(record.key)).into(),
+        name: shared(symbols, Some(record.name)),
+        key: shared(symbols, Some(record.key)),
         kind: record.kind.label().into(),
-        topography: text(dataset, Some(record.topography)).into(),
-        vegetation: text(dataset, record.vegetation).into(),
-        climate: text(dataset, record.climate).into(),
-        continent: label(dataset, Some(record.hierarchy.continent)).into(),
-        subcontinent: label(dataset, Some(record.hierarchy.subcontinent)).into(),
-        region: label(dataset, Some(record.hierarchy.region)).into(),
-        area: label(dataset, Some(record.hierarchy.area)).into(),
-        province: label(dataset, Some(record.hierarchy.province)).into(),
-        religion: label(dataset, record.religion).into(),
-        culture: label(dataset, record.culture).into(),
-        raw_material: label(dataset, record.raw_material).into(),
-        modifier: label(dataset, record.modifier).into(),
+        topography: shared(labels, Some(record.topography)),
+        vegetation: shared(labels, record.vegetation),
+        climate: shared(labels, record.climate),
+        continent: shared(labels, Some(record.hierarchy.continent)),
+        subcontinent: shared(labels, Some(record.hierarchy.subcontinent)),
+        region: shared(labels, Some(record.hierarchy.region)),
+        area: shared(labels, Some(record.hierarchy.area)),
+        province: shared(labels, Some(record.hierarchy.province)),
+        religion: shared(labels, record.religion),
+        culture: shared(labels, record.culture),
+        raw_material: shared(labels, record.raw_material),
+        modifier: shared(labels, record.modifier),
         rgb: format!("rgb({red}, {green}, {blue})").into(),
         coastal: if record.coastal { "Yes" } else { "No" }.into(),
         river_presence: if record.river.is_some() {
@@ -136,12 +155,16 @@ fn display_row(dataset: &Dataset, record: &LocationRecord) -> LocationRow {
     }
 }
 
-pub(super) fn text(dataset: &Dataset, symbol: Option<SymbolId>) -> &str {
-    symbol.and_then(|id| dataset.symbol(id)).unwrap_or("—")
+fn shared(values: &[SharedString], symbol: Option<SymbolId>) -> SharedString {
+    symbol
+        .and_then(|id| usize::try_from(id.0).ok())
+        .and_then(|index| values.get(index))
+        .cloned()
+        .unwrap_or_else(|| SharedString::from("—"))
 }
 
-fn label(dataset: &Dataset, symbol: Option<SymbolId>) -> &str {
-    symbol.and_then(|id| dataset.label(id)).unwrap_or("—")
+pub(super) fn text(dataset: &Dataset, symbol: Option<SymbolId>) -> &str {
+    symbol.and_then(|id| dataset.symbol(id)).unwrap_or("—")
 }
 
 #[cfg(test)]

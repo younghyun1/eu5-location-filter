@@ -2,7 +2,7 @@
 
 The Slint interface uses the compiled `fluent-dark` style. Shared colors and spacing remain in the `.slint` sources rather than Rust. `app.slint` owns the window, header, virtualized result list, detail pane, progress/error overlays, and About dialog. `filter-rail.slint` owns filter controls and forwards typed events to the window.
 
-Rust prebuilds immutable display rows once after loading. The custom Slint model stores only filtered `LocationId` values and emits one reset notification after a scan; filtering does not rebuild display strings. The import and blob-load path runs on a worker thread and communicates through Slint's event-loop dispatcher.
+Rust converts the bounded dataset dictionary to shared UI strings once. The virtualized Slint model stores only filtered `LocationId` values and materializes rows only when Slint requests visible data; it does not expand every possible column for all 28,573 locations at startup. A filter scan emits one model reset. Embedded bundle loading, decompression, and index validation run on a worker thread and communicate through Slint's event-loop dispatcher.
 
 The window declares preferred and minimum dimensions rather than a fixed width and height, so native resize, maximize, and fullscreen state remain under the window manager's control. Drag handles resize the filter rail, detail pane, and individual result columns. The result table scrolls horizontally when its configured columns exceed the viewport.
 

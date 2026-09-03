@@ -52,12 +52,12 @@ fn verifies_reference_install_import() -> Result<(), eu5_location_filter::AppErr
 }
 
 #[test]
-#[ignore = "timing harness requires a local data blob"]
+#[ignore = "timing harness over the committed embedded bundles"]
 fn measures_repeated_filter_latency() -> Result<(), eu5_location_filter::AppError> {
-    let dataset = load_local_blob()?;
-    let index_started = Instant::now();
-    let engine = FilterEngine::new(Arc::new(dataset));
-    let index_time = index_started.elapsed();
+    let load_started = Instant::now();
+    let (dataset, index) = eu5_location_filter::embedded::load()?;
+    let engine = FilterEngine::from_stored_index(Arc::new(dataset), index)?;
+    let load_time = load_started.elapsed();
     let full = benchmark(&engine, &FilterSet::default(), 100);
     let search = benchmark(
         &engine,
@@ -74,7 +74,7 @@ fn measures_repeated_filter_latency() -> Result<(), eu5_location_filter::AppErro
         sort_max = sort_max.max(started.elapsed());
     }
     eprintln!(
-        "index build: {index_time:?}; full-filter max: {full:?}; name-search max: {search:?}; sort-scan max: {sort_max:?}"
+        "bundle load: {load_time:?}; full-filter max: {full:?}; name-search max: {search:?}; sort-scan max: {sort_max:?}"
     );
     assert!(full < Duration::from_millis(17));
     assert!(search < Duration::from_millis(17));

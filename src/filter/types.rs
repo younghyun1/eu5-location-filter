@@ -2,6 +2,8 @@
 
 use std::collections::HashSet;
 
+use bitcode::{Decode, Encode};
+
 use crate::AppError;
 use crate::model::{LocationKind, MapColor, SymbolId};
 
@@ -131,7 +133,7 @@ impl Default for FilterSet {
 }
 
 /// Sortable result-list fields.
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Decode, Encode, Eq, Hash, PartialEq)]
 pub enum SortField {
     /// Exact RGB color.
     Color,

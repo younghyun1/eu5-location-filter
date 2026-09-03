@@ -1,19 +1,19 @@
 # EU5 Location Filter
 
-EU5 Location Filter is an unofficial desktop browser for the static map locations in a vanilla Europa Universalis V installation. It imports location attributes, hierarchy, colors, ports, and rivers into a local compressed data file, then provides fast compound filtering without reading the game again.
+EU5 Location Filter is an unofficial desktop browser for the static map locations in Europa Universalis V 1.3.11. The executable embeds compressed location data and precomputed search and sort indexes for Steam build `24187685`, then decompresses both into memory at startup without reading a game installation.
 
 ## Install and run
 
-Install from a source checkout with Rust 1.100 or newer:
+Install from a source checkout with the Rust 1.100 nightly toolchain or newer:
 
 ```text
 cargo install --path . --locked
 eu5-location-filter
 ```
 
-On Windows, the first run discovers Steam through the registry and reads app ID `3450310`. On other systems, or for a nonstandard installation, pass `--game-dir PATH`. The default data file is `./eu5-locations.bitcode.zst`. A normal start imports only when that file is absent. Use the Rebuild action or `eu5-location-filter import --force` to replace it explicitly.
+Normal GUI startup uses the embedded bundles. `--data-file PATH` and `--index-file PATH` override them with external bundles. Maintainers can regenerate both committed assets from the local Windows Steam installation with `eu5-location-filter import --force`; `--game-dir PATH` remains available for explicit installations.
 
-The data file contains names and static map metadata derived from the user's installed game. It can be copyrighted game data and can disclose the installed build. Do not redistribute it. Generated blobs and original Paradox files are excluded from this source package.
+The committed bundles contain static names and map metadata derived from the installed game. They do not contain the original Paradox text files or map images. The bundle headers record the represented build, and both files are included in the source repository and compiled executable.
 
 ## Filters
 

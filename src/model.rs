@@ -14,6 +14,8 @@ pub use interner::StringInterner;
 pub const FORMAT_VERSION: u16 = 1;
 /// Steam application identifier for Europa Universalis V.
 pub const EU5_APP_ID: u32 = 3_450_310;
+/// Europa Universalis V version represented by the committed bundles.
+pub const EU5_GAME_VERSION: &str = "1.3.11";
 /// Upper bound that prevents hostile blobs from growing startup memory without limit.
 pub const MAX_SYMBOLS: usize = 200_000;
 /// Upper bound for dictionary text in bytes.

@@ -1,5 +1,6 @@
 /target
 *.bitcode.zst
+!assets/*.bitcode.zst
 *.bitcode.zst.bak
 *.tmp
 /artifacts/

@@ -10,8 +10,8 @@ use slint::{ModelRc, SharedString, VecModel};
 use super::result_model::ResultModel;
 use super::{AppWindow, ColumnSpec, columns, controls, detail, options};
 use crate::AppError;
-use crate::filter::{FilterEngine, FilterSet, SortField};
-use crate::model::{Dataset, LocationId, SymbolId};
+use crate::filter::{FilterEngine, FilterSet, SortField, StoredFilterIndex};
+use crate::model::{Dataset, EU5_GAME_VERSION, LocationId, SymbolId};
 
 pub(super) struct ActiveState {
     pub(super) dataset: Arc<Dataset>,
@@ -31,10 +31,16 @@ pub(super) struct PreparedData {
     engine: FilterEngine,
 }
 
-pub(super) fn prepare(dataset: Dataset) -> PreparedData {
+pub(super) fn prepare(
+    dataset: Dataset,
+    index: Option<StoredFilterIndex>,
+) -> Result<PreparedData, AppError> {
     let dataset = Arc::new(dataset);
-    let engine = FilterEngine::new(Arc::clone(&dataset));
-    PreparedData { dataset, engine }
+    let engine = match index {
+        Some(index) => FilterEngine::from_stored_index(Arc::clone(&dataset), index)?,
+        None => FilterEngine::new(Arc::clone(&dataset)),
+    };
+    Ok(PreparedData { dataset, engine })
 }
 
 impl ActiveState {
@@ -115,7 +121,13 @@ pub(super) fn configure(app: &AppWindow, prepared: PreparedData) {
     };
     app.set_rows(ModelRc::from(model));
     if let Ok(state_ref) = state.try_borrow() {
-        app.set_build_text(format!("Build {}", state_ref.dataset.stored.build_id).into());
+        app.set_build_text(
+            format!(
+                "EU5 {EU5_GAME_VERSION}  |  Build {}",
+                state_ref.dataset.stored.build_id
+            )
+            .into(),
+        );
         options::install(app, &state_ref.dataset);
         app.set_columns(ModelRc::from(Rc::clone(&state_ref.columns)));
         app.set_table_width(columns::total_width(&state_ref.columns));

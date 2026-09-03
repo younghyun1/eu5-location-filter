@@ -31,7 +31,7 @@ pub fn encode_blob(stored: &StoredDataset) -> Result<Vec<u8>, AppError> {
     frame_input.extend_from_slice(MAGIC);
     frame_input.extend_from_slice(&payload_len.to_le_bytes());
     frame_input.extend_from_slice(&payload);
-    let compressed = zstd::stream::encode_all(Cursor::new(frame_input), 9)
+    let compressed = zstd::stream::encode_all(Cursor::new(frame_input), 22)
         .map_err(|error| AppError::Compression(error.to_string()))?;
     if compressed.len() as u64 > MAX_COMPRESSED_SIZE {
         return Err(AppError::InvalidData(

@@ -12,7 +12,7 @@ license = "MIT OR Apache-2.0"
 readme = "README.md"
 keywords = ["eu5", "map", "paradox", "slint"]
 categories = ["games", "visualization"]
-include = ["/build.rs", "/src/**", "/tests/**", "/ui/**", "/docs/**", "/README.md", "/CHANGELOG.md", "/LICENSE-MIT", "/LICENSE-APACHE", "/rust-toolchain.toml"]
+include = ["/assets/**", "/build.rs", "/src/**", "/tests/**", "/ui/**", "/docs/**", "/README.md", "/CHANGELOG.md", "/LICENSE-MIT", "/LICENSE-APACHE", "/rust-toolchain.toml"]
 
 [dependencies]
 bitcode = { version = "0.6.9", default-features = false, features = ["derive", "std"] }

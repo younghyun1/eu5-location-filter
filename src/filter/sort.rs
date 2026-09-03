@@ -4,6 +4,7 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 
 use super::SortField;
+use super::index::StoredSortOrder;
 use crate::model::{Dataset, LocationId, LocationRecord, SymbolId};
 
 struct DirectionOrders {
@@ -52,6 +53,37 @@ impl SortOrders {
                 orders.descending.as_slice()
             }
         })
+    }
+
+    pub(super) fn into_stored(mut self) -> Vec<StoredSortOrder> {
+        let mut stored = Vec::with_capacity(SortField::ALL.len());
+        for field in SortField::ALL {
+            let Some(orders) = self.values.remove(&field) else {
+                continue;
+            };
+            stored.push(StoredSortOrder {
+                field,
+                ascending: orders.ascending,
+                descending: orders.descending,
+            });
+        }
+        stored
+    }
+
+    pub(super) fn from_stored(stored: Vec<StoredSortOrder>) -> Self {
+        let values = stored
+            .into_iter()
+            .map(|orders| {
+                (
+                    orders.field,
+                    DirectionOrders {
+                        ascending: orders.ascending,
+                        descending: orders.descending,
+                    },
+                )
+            })
+            .collect();
+        Self { values }
     }
 }
 
