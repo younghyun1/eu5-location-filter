@@ -63,6 +63,13 @@ export component ResultTable inherits VerticalLayout {
         return "";
     }
 
+    function pan-horizontal(delta: length) {
+        table.viewport-x = max(
+            min(0px, table.visible-width - table.viewport-width),
+            min(0px, table.viewport-x + delta)
+        );
+    }
+
     Rectangle {
         height: 36px;
         background: #151d26;
@@ -99,7 +106,6 @@ export component ResultTable inherits VerticalLayout {
             x: table.viewport-x;
             width: root.table-width * 1px;
             padding-left: 10px;
-            padding-right: 10px;
             spacing: 0px;
             for column in root.columns: Rectangle {
                 visible: column.visible;
@@ -154,7 +160,6 @@ export component ResultTable inherits VerticalLayout {
                 : (Math.mod(index, 2) == 0 ? #121922 : #151e28);
             HorizontalLayout {
                 padding-left: 10px;
-                padding-right: 10px;
                 spacing: 0px;
                 for column in root.columns: Rectangle {
                     visible: column.visible;
@@ -214,9 +219,35 @@ export component ResultTable inherits VerticalLayout {
                 height: 1px;
                 background: #243140;
             }
-            TouchArea {
+            row-touch := TouchArea {
+                property <bool> middle-panning: false;
+                property <length> previous-window-x: 0px;
                 accessible-role: list-item;
                 accessible-label: row.name + ", " + row.key;
+                pointer-event(event) => {
+                    if (event.button == PointerEventButton.middle && event.kind == PointerEventKind.down) {
+                        self.middle-panning = true;
+                        self.previous-window-x = self.absolute-position.x + self.mouse-x;
+                    }
+                    if (event.button == PointerEventButton.middle
+                        && (event.kind == PointerEventKind.up || event.kind == PointerEventKind.cancel)) {
+                        self.middle-panning = false;
+                    }
+                }
+                moved => {
+                    if (self.middle-panning) {
+                        // Window coordinates keep the drag speed independent of the moving row content.
+                        root.pan-horizontal(self.absolute-position.x + self.mouse-x - self.previous-window-x);
+                        self.previous-window-x = self.absolute-position.x + self.mouse-x;
+                    }
+                }
+                scroll-event(event) => {
+                    if (event.modifiers.shift && event.delta-y != 0px) {
+                        root.pan-horizontal(event.delta-y);
+                        return accept;
+                    }
+                    reject
+                }
                 clicked => { root.selected-index = index; root.select-row(index); }
             }
         }

@@ -7,7 +7,7 @@ use slint::{Model, SharedString, VecModel};
 use super::ColumnSpec;
 use crate::filter::SortField;
 
-const TABLE_PADDING: f32 = 20.0;
+const TABLE_LEFT_INSET: f32 = 10.0;
 
 pub(super) fn initial() -> Rc<VecModel<ColumnSpec>> {
     let columns = [
@@ -53,7 +53,7 @@ pub(super) fn set_width(model: &VecModel<ColumnSpec>, key: &str, width: f32) {
 }
 
 pub(super) fn total_width(model: &VecModel<ColumnSpec>) -> f32 {
-    TABLE_PADDING
+    TABLE_LEFT_INSET
         + (0..model.row_count())
             .filter_map(|index| model.row_data(index))
             .filter(|column| column.visible)
@@ -130,6 +130,7 @@ mod tests {
     fn column_updates_are_bounded_and_recompute_width() {
         let columns = initial();
         let before = total_width(&columns);
+        assert_eq!(before, 1_196.0);
         set_visible(&columns, "continent", true);
         assert!(total_width(&columns) > before);
         set_width(&columns, "name", 400.0);
