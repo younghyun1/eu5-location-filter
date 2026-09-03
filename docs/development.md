@@ -14,3 +14,5 @@ cargo publish --dry-run --locked
 ```
 
 Do not run a release build as part of routine implementation. Tests use synthetic fixtures. The ignored real-install checks require `EU5_GAME_DIR`; the ignored filter timing test requires an existing data blob and reports repeated full-filter and name-search timings.
+
+On build `24187685`, 100 repeated development-profile runs measured maximum full-filter latency at 2.66 ms and maximum name-search latency at 4.30 ms. These measurements include stable name ordering and remain below one 16.7 ms frame.

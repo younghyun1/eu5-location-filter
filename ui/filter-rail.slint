@@ -1,0 +1,128 @@
+import { CheckBox, ComboBox, LineEdit, ScrollView } from "std-widgets.slint";
+
+component SectionTitle inherits Text {
+    color: #8fbdea;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    vertical-alignment: center;
+}
+
+component FieldLabel inherits Text {
+    color: #aeb8c5;
+    font-size: 12px;
+    vertical-alignment: center;
+}
+
+export component FilterRail inherits Rectangle {
+    width: 292px;
+    background: #151c25;
+    border-color: #2b3948;
+    border-width: 1px;
+
+    in-out property <bool> show-impassable: true;
+    in property <string> rgb-error: "";
+    in property <string> numeric-error: "";
+    callback toggle-impassable(bool);
+    callback kind-changed(string);
+    callback state-changed(string, string);
+    callback facet-changed(string, string);
+    callback rgb-changed(string);
+    callback numeric-changed(string, string);
+
+    ScrollView {
+        VerticalLayout {
+            padding: 16px;
+            spacing: 8px;
+            SectionTitle { text: "VISIBILITY"; height: 25px; }
+            CheckBox {
+                text: "Show impassable";
+                checked <=> root.show-impassable;
+                accessible-label: "Show impassable wastelands";
+                toggled => { root.toggle-impassable(self.checked); }
+            }
+            FieldLabel { text: "Kind"; }
+            ComboBox {
+                model: ["Any", "Land", "Sea", "Lake", "Impassable", "Unknown"];
+                current-value: "Any";
+                selected(value) => { root.kind-changed(value); }
+            }
+
+            SectionTitle { text: "GEOGRAPHY"; height: 30px; }
+            for field in ["Continent", "Subcontinent", "Region", "Area", "Province"]: VerticalLayout {
+                spacing: 3px;
+                FieldLabel { text: field; }
+                LineEdit {
+                    placeholder-text: "Any; type exact ID or label";
+                    accessible-label: field + " filter";
+                    edited(value) => { root.facet-changed(field, value); }
+                }
+            }
+
+            SectionTitle { text: "TERRAIN & ENVIRONMENT"; height: 30px; }
+            for field in ["Topography", "Vegetation", "Climate", "Religion", "Culture", "Raw material", "Modifier"]: VerticalLayout {
+                spacing: 3px;
+                FieldLabel { text: field; }
+                LineEdit {
+                    placeholder-text: "Any; type exact ID or label";
+                    accessible-label: field + " filter";
+                    edited(value) => { root.facet-changed(field, value); }
+                }
+            }
+
+            SectionTitle { text: "MAP DATA"; height: 30px; }
+            FieldLabel { text: "RGB"; }
+            LineEdit {
+                placeholder-text: "#RRGGBB";
+                accessible-label: "Exact RGB filter";
+                edited(value) => { root.rgb-changed(value); }
+            }
+            Text { text: root.rgb-error; color: #ff8d8d; font-size: 11px; visible: root.rgb-error != ""; }
+            FieldLabel { text: "Coastal"; }
+            ComboBox {
+                model: ["Any", "Yes", "No"];
+                current-value: "Any";
+                selected(value) => { root.state-changed("coastal", value); }
+            }
+            FieldLabel { text: "River"; }
+            ComboBox {
+                model: ["Any", "Present", "Missing"];
+                current-value: "Any";
+                selected(value) => { root.state-changed("river", value); }
+            }
+            HorizontalLayout {
+                spacing: 6px;
+                LineEdit { placeholder-text: "River min"; edited(value) => { root.numeric-changed("river-min", value); } }
+                LineEdit { placeholder-text: "River max"; edited(value) => { root.numeric-changed("river-max", value); } }
+            }
+            FieldLabel { text: "Harbor suitability"; }
+            ComboBox {
+                model: ["Any", "Present", "Missing"];
+                current-value: "Any";
+                selected(value) => { root.state-changed("harbor", value); }
+            }
+            HorizontalLayout {
+                spacing: 6px;
+                LineEdit { placeholder-text: "Harbor min"; edited(value) => { root.numeric-changed("harbor-min", value); } }
+                LineEdit { placeholder-text: "Harbor max"; edited(value) => { root.numeric-changed("harbor-max", value); } }
+            }
+            FieldLabel { text: "Movement assistance"; }
+            ComboBox {
+                model: ["Any", "Present", "Missing"];
+                current-value: "Any";
+                selected(value) => { root.state-changed("movement", value); }
+            }
+            HorizontalLayout {
+                spacing: 6px;
+                LineEdit { placeholder-text: "X min"; edited(value) => { root.numeric-changed("move-x-min", value); } }
+                LineEdit { placeholder-text: "X max"; edited(value) => { root.numeric-changed("move-x-max", value); } }
+            }
+            HorizontalLayout {
+                spacing: 6px;
+                LineEdit { placeholder-text: "Y min"; edited(value) => { root.numeric-changed("move-y-min", value); } }
+                LineEdit { placeholder-text: "Y max"; edited(value) => { root.numeric-changed("move-y-max", value); } }
+            }
+            Text { text: root.numeric-error; color: #ff8d8d; font-size: 11px; visible: root.numeric-error != ""; }
+        }
+    }
+}

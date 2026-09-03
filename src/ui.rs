@@ -18,6 +18,8 @@ mod generated {
 
 use generated::{AppWindow, LocationRow};
 
+mod controls;
+mod detail;
 mod result_model;
 mod state;
 mod worker;

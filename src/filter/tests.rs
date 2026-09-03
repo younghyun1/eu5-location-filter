@@ -63,6 +63,19 @@ fn toggles_impassables_and_preserves_visible_selection() {
     );
 }
 
+#[test]
+fn numeric_bounds_exclude_missing_values() {
+    let engine = FilterEngine::new(Arc::new(fixture()));
+    let filters = FilterSet {
+        river_level_min: Some(0),
+        ..FilterSet::default()
+    };
+    assert_eq!(
+        engine.apply(&filters, SortField::Name, true),
+        vec![LocationId(0)]
+    );
+}
+
 fn fixture() -> Dataset {
     let locations = vec![
         record(

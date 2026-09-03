@@ -5,7 +5,7 @@ use crate::model::{
     RiverWidthMetadata, StoredDataset, SymbolId,
 };
 
-use super::{decode_blob, encode_blob, load_dataset, write_dataset};
+use super::{decode_blob, encode_blob, load_dataset, replace, write_dataset};
 
 #[test]
 fn blob_round_trip_is_deterministic() {
@@ -32,6 +32,23 @@ fn rejects_truncation_and_wrong_schema() {
 }
 
 #[test]
+fn rejects_wrong_envelope_magic() {
+    let Some(encoded) = encode_blob(&fixture()).ok() else {
+        return;
+    };
+    let Some(mut expanded) = zstd::stream::decode_all(std::io::Cursor::new(encoded)).ok() else {
+        return;
+    };
+    if let Some(first) = expanded.first_mut() {
+        *first = b'X';
+    }
+    let Some(corrupt) = zstd::stream::encode_all(std::io::Cursor::new(expanded), 1).ok() else {
+        return;
+    };
+    assert!(decode_blob(&corrupt).is_err());
+}
+
+#[test]
 fn overwrite_requires_force_and_replacement_validates() {
     let directory = std::env::temp_dir().join(format!(
         "eu5-location-filter-storage-{}",
@@ -45,6 +62,21 @@ fn overwrite_requires_force_and_replacement_validates() {
     assert!(write_dataset(&path, &stored, false).is_err());
     assert!(write_dataset(&path, &stored, true).is_ok());
     assert!(load_dataset(&path).is_ok());
+    let _ = fs::remove_dir_all(directory);
+}
+
+#[test]
+fn failed_replacement_restores_existing_file() {
+    let directory = std::env::temp_dir().join(format!(
+        "eu5-location-filter-recovery-{}",
+        std::process::id()
+    ));
+    let _ = fs::remove_dir_all(&directory);
+    assert!(fs::create_dir_all(&directory).is_ok());
+    let target = directory.join("data.bitcode.zst");
+    assert!(fs::write(&target, b"usable").is_ok());
+    assert!(replace(&target, &directory.join("missing.tmp")).is_err());
+    assert_eq!(fs::read(&target).ok(), Some(b"usable".to_vec()));
     let _ = fs::remove_dir_all(directory);
 }
 

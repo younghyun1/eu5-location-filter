@@ -1,166 +1,34 @@
 //! Allocation-bounded filtering and stable sorting over compact records.
 
 use std::cmp::Ordering;
-use std::collections::HashSet;
 use std::sync::Arc;
 
-use crate::AppError;
-use crate::model::{Dataset, LocationId, LocationKind, LocationRecord, MapColor, SymbolId};
+use crate::model::{Dataset, LocationId, LocationKind, LocationRecord, SymbolId};
 
-/// Selection for a nullable categorical field.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum OptionalFacet {
-    /// Do not constrain the field.
-    Any,
-    /// Match records without a value.
-    Missing,
-    /// Match this exact interned value.
-    Value(SymbolId),
-}
+mod types;
 
-/// Selection for nullable numeric fields.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum OptionalNumeric {
-    /// Include missing and present values.
-    Any,
-    /// Include missing values only.
-    Missing,
-    /// Include present values subject to any range.
-    Present,
-}
-
-/// Inclusive floating-point bounds.
-#[derive(Clone, Copy, Debug, Default, PartialEq)]
-pub struct FloatRange {
-    /// Inclusive minimum.
-    pub min: Option<f32>,
-    /// Inclusive maximum.
-    pub max: Option<f32>,
-}
-
-impl FloatRange {
-    fn matches(self, value: f32) -> bool {
-        self.min.is_none_or(|minimum| value >= minimum)
-            && self.max.is_none_or(|maximum| value <= maximum)
-    }
-}
-
-/// Every supported filter. Distinct fields combine with AND.
-#[derive(Clone, Debug)]
-pub struct FilterSet {
-    /// Case-folded name and identifier search.
-    pub search: String,
-    /// OR-selected location kinds.
-    pub kinds: HashSet<LocationKind>,
-    /// OR-selected topographies.
-    pub topographies: HashSet<SymbolId>,
-    /// OR-selected vegetation, including explicit `None`.
-    pub vegetation: HashSet<Option<SymbolId>>,
-    /// OR-selected climate, including explicit `None`.
-    pub climates: HashSet<Option<SymbolId>>,
-    /// Exact hierarchy facets.
-    pub continent: OptionalFacet,
-    /// Exact hierarchy facets.
-    pub subcontinent: OptionalFacet,
-    /// Exact hierarchy facets.
-    pub region: OptionalFacet,
-    /// Exact hierarchy facets.
-    pub area: OptionalFacet,
-    /// Exact hierarchy facets.
-    pub province: OptionalFacet,
-    /// Exact nullable attribute.
-    pub religion: OptionalFacet,
-    /// Exact nullable attribute.
-    pub culture: OptionalFacet,
-    /// Exact nullable attribute.
-    pub raw_material: OptionalFacet,
-    /// Exact nullable attribute.
-    pub modifier: OptionalFacet,
-    /// Exact true-color value.
-    pub rgb: Option<MapColor>,
-    /// Exact coastal state.
-    pub coastal: Option<bool>,
-    /// Exact river presence.
-    pub river_presence: Option<bool>,
-    /// Inclusive minimum river level.
-    pub river_level_min: Option<u8>,
-    /// Inclusive maximum river level.
-    pub river_level_max: Option<u8>,
-    /// Harbor missing/present selector.
-    pub harbor_presence: OptionalNumeric,
-    /// Inclusive harbor bounds.
-    pub harbor_range: FloatRange,
-    /// Exact movement-assistance presence.
-    pub movement_presence: Option<bool>,
-    /// Inclusive first movement component bounds.
-    pub movement_x: FloatRange,
-    /// Inclusive second movement component bounds.
-    pub movement_y: FloatRange,
-    /// Whether impassable locations remain eligible.
-    pub show_impassable: bool,
-}
-
-impl Default for FilterSet {
-    fn default() -> Self {
-        Self {
-            search: String::new(),
-            kinds: HashSet::new(),
-            topographies: HashSet::new(),
-            vegetation: HashSet::new(),
-            climates: HashSet::new(),
-            continent: OptionalFacet::Any,
-            subcontinent: OptionalFacet::Any,
-            region: OptionalFacet::Any,
-            area: OptionalFacet::Any,
-            province: OptionalFacet::Any,
-            religion: OptionalFacet::Any,
-            culture: OptionalFacet::Any,
-            raw_material: OptionalFacet::Any,
-            modifier: OptionalFacet::Any,
-            rgb: None,
-            coastal: None,
-            river_presence: None,
-            river_level_min: None,
-            river_level_max: None,
-            harbor_presence: OptionalNumeric::Any,
-            harbor_range: FloatRange::default(),
-            movement_presence: None,
-            movement_x: FloatRange::default(),
-            movement_y: FloatRange::default(),
-            show_impassable: true,
-        }
-    }
-}
-
-/// Sortable result-list fields.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum SortField {
-    /// English display name.
-    Name,
-    /// Internal identifier.
-    Identifier,
-    /// Derived kind.
-    Kind,
-    /// Topography.
-    Topography,
-    /// Vegetation, nulls last.
-    Vegetation,
-    /// Climate, nulls last.
-    Climate,
-    /// River level, nulls last.
-    RiverLevel,
-}
+pub use types::{
+    FilterSet, FloatRange, OptionalFacet, OptionalNumeric, SortField, parse_optional_number,
+};
 
 /// Precomputed search strings and reusable index scanning logic.
 pub struct FilterEngine {
     dataset: Arc<Dataset>,
     searchable: Vec<String>,
+    folded_symbols: Vec<String>,
+    name_order: Vec<LocationId>,
 }
 
 impl FilterEngine {
     /// Precomputes Unicode-lowercased name and identifier strings once at startup.
     #[must_use]
     pub fn new(dataset: Arc<Dataset>) -> Self {
+        let folded_symbols: Vec<String> = dataset
+            .stored
+            .dictionary
+            .iter()
+            .map(|value| value.to_lowercase())
+            .collect();
         let searchable = dataset
             .stored
             .locations
@@ -171,9 +39,28 @@ impl FilterEngine {
                 format!("{}\0{}", name.to_lowercase(), key.to_lowercase())
             })
             .collect();
+        let mut name_order: Vec<LocationId> = dataset
+            .stored
+            .locations
+            .iter()
+            .map(|record| record.id)
+            .collect();
+        name_order.sort_by(|left, right| {
+            let left_name = dataset
+                .location(*left)
+                .and_then(|record| symbol_key(&folded_symbols, record.name))
+                .unwrap_or_default();
+            let right_name = dataset
+                .location(*right)
+                .and_then(|record| symbol_key(&folded_symbols, record.name))
+                .unwrap_or_default();
+            left_name.cmp(right_name).then_with(|| left.cmp(right))
+        });
         Self {
             dataset,
             searchable,
+            folded_symbols,
+            name_order,
         }
     }
 
@@ -181,15 +68,31 @@ impl FilterEngine {
     #[must_use]
     pub fn apply(&self, filters: &FilterSet, sort: SortField, ascending: bool) -> Vec<LocationId> {
         let query = filters.search.to_lowercase();
-        let mut ids: Vec<LocationId> = self
-            .dataset
-            .stored
-            .locations
-            .iter()
-            .filter(|record| self.matches(record, filters, &query))
-            .map(|record| record.id)
-            .collect();
-        ids.sort_by(|left, right| self.compare(*left, *right, sort, ascending));
+        let mut ids: Vec<LocationId> = if sort == SortField::Name {
+            let ordered: Box<dyn Iterator<Item = LocationId> + '_> = if ascending {
+                Box::new(self.name_order.iter().copied())
+            } else {
+                Box::new(self.name_order.iter().rev().copied())
+            };
+            ordered
+                .filter(|id| {
+                    self.dataset
+                        .location(*id)
+                        .is_some_and(|record| self.matches(record, filters, &query))
+                })
+                .collect()
+        } else {
+            self.dataset
+                .stored
+                .locations
+                .iter()
+                .filter(|record| self.matches(record, filters, &query))
+                .map(|record| record.id)
+                .collect()
+        };
+        if sort != SortField::Name {
+            ids.sort_by(|left, right| self.compare(*left, *right, sort, ascending));
+        }
         ids
     }
 
@@ -229,14 +132,13 @@ impl FilterEngine {
             && filters
                 .river_presence
                 .is_none_or(|value| record.river.is_some() == value)
-            && record.river.as_ref().is_none_or(|river| {
-                filters
-                    .river_level_min
-                    .is_none_or(|minimum| river.level.0 >= minimum)
-                    && filters
-                        .river_level_max
-                        .is_none_or(|maximum| river.level.0 <= maximum)
-            })
+            && optional_range_matches(
+                record.river.as_ref().map(|river| f32::from(river.level.0)),
+                FloatRange {
+                    min: filters.river_level_min.map(f32::from),
+                    max: filters.river_level_max.map(f32::from),
+                },
+            )
             && numeric_matches(
                 filters.harbor_presence,
                 filters.harbor_range,
@@ -245,9 +147,12 @@ impl FilterEngine {
             && filters
                 .movement_presence
                 .is_none_or(|value| record.movement_assistance.is_some() == value)
-            && record.movement_assistance.is_none_or(|value| {
-                filters.movement_x.matches(value[0]) && filters.movement_y.matches(value[1])
-            })
+            && match record.movement_assistance {
+                Some(value) => {
+                    filters.movement_x.matches(value[0]) && filters.movement_y.matches(value[1])
+                }
+                None => ranges_are_empty(filters.movement_x, filters.movement_y),
+            }
     }
 
     fn compare(
@@ -265,27 +170,31 @@ impl FilterEngine {
         };
         let ordering = match field {
             SortField::Name => symbols(
-                &self.dataset,
+                &self.folded_symbols,
                 Some(left_record.name),
                 Some(right_record.name),
             ),
-            SortField::Identifier => {
-                symbols(&self.dataset, Some(left_record.key), Some(right_record.key))
-            }
+            SortField::Identifier => symbols(
+                &self.folded_symbols,
+                Some(left_record.key),
+                Some(right_record.key),
+            ),
             SortField::Kind => left_record.kind.cmp(&right_record.kind),
             SortField::Topography => symbols(
-                &self.dataset,
+                &self.folded_symbols,
                 Some(left_record.topography),
                 Some(right_record.topography),
             ),
             SortField::Vegetation => optional_symbols(
-                &self.dataset,
+                &self.folded_symbols,
                 left_record.vegetation,
                 right_record.vegetation,
             ),
-            SortField::Climate => {
-                optional_symbols(&self.dataset, left_record.climate, right_record.climate)
-            }
+            SortField::Climate => optional_symbols(
+                &self.folded_symbols,
+                left_record.climate,
+                right_record.climate,
+            ),
             SortField::RiverLevel => optional_values(
                 left_record.river.as_ref().map(|value| value.level.0),
                 right_record.river.as_ref().map(|value| value.level.0),
@@ -310,28 +219,44 @@ fn facet_matches(filter: OptionalFacet, value: Option<SymbolId>) -> bool {
 
 fn numeric_matches(filter: OptionalNumeric, range: FloatRange, value: Option<f32>) -> bool {
     match (filter, value) {
-        (OptionalNumeric::Any, None) | (OptionalNumeric::Missing, None) => true,
+        (OptionalNumeric::Any, None) => range.min.is_none() && range.max.is_none(),
+        (OptionalNumeric::Missing, None) => true,
         (OptionalNumeric::Present, None) | (OptionalNumeric::Missing, Some(_)) => false,
         (OptionalNumeric::Any | OptionalNumeric::Present, Some(value)) => range.matches(value),
     }
 }
 
-fn symbols(dataset: &Dataset, left: Option<SymbolId>, right: Option<SymbolId>) -> Ordering {
+fn optional_range_matches(value: Option<f32>, range: FloatRange) -> bool {
+    match value {
+        Some(value) => range.matches(value),
+        None => range.min.is_none() && range.max.is_none(),
+    }
+}
+
+fn ranges_are_empty(first: FloatRange, second: FloatRange) -> bool {
+    first.min.is_none() && first.max.is_none() && second.min.is_none() && second.max.is_none()
+}
+
+fn symbols(folded: &[String], left: Option<SymbolId>, right: Option<SymbolId>) -> Ordering {
     optional_values(
-        left.and_then(|value| dataset.symbol(value))
-            .map(str::to_lowercase),
-        right
-            .and_then(|value| dataset.symbol(value))
-            .map(str::to_lowercase),
+        left.and_then(|value| symbol_key(folded, value)),
+        right.and_then(|value| symbol_key(folded, value)),
     )
 }
 
 fn optional_symbols(
-    dataset: &Dataset,
+    folded: &[String],
     left: Option<SymbolId>,
     right: Option<SymbolId>,
 ) -> Ordering {
-    symbols(dataset, left, right)
+    symbols(folded, left, right)
+}
+
+fn symbol_key(folded: &[String], symbol: SymbolId) -> Option<&str> {
+    usize::try_from(symbol.0)
+        .ok()
+        .and_then(|index| folded.get(index))
+        .map(String::as_str)
 }
 
 fn optional_values<T: Ord>(left: Option<T>, right: Option<T>) -> Ordering {
@@ -360,21 +285,6 @@ fn reverse_non_null(
     } else {
         ordering.reverse()
     }
-}
-
-/// Parses an optional finite numeric bound for inline validation.
-pub fn parse_optional_number(input: &str) -> Result<Option<f32>, AppError> {
-    let trimmed = input.trim();
-    if trimmed.is_empty() {
-        return Ok(None);
-    }
-    let value = trimmed
-        .parse::<f32>()
-        .map_err(|error| AppError::InvalidData(format!("invalid number: {error}")))?;
-    if !value.is_finite() {
-        return Err(AppError::InvalidData("number must be finite".to_owned()));
-    }
-    Ok(Some(value))
 }
 
 #[cfg(test)]
