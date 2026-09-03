@@ -5,6 +5,7 @@ edition = "2024"
 rust-version = "1.92"
 authors = ["Young Hyun Chi"]
 description = "Inspect and filter Europa Universalis V map locations"
+documentation = "https://docs.rs/eu5-location-filter"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 keywords = ["eu5", "map", "paradox", "slint"]

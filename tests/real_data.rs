@@ -28,6 +28,19 @@ fn verifies_reference_install_import() -> Result<(), eu5_location_filter::AppErr
             .river
             .is_none_or(|river| river.level.0 <= dataset.stored.river_widths.level_count)
     }));
+    let river_locations: Vec<_> = dataset
+        .stored
+        .locations
+        .iter()
+        .filter_map(|record| record.river)
+        .collect();
+    assert!(river_locations.len() > 1_000);
+    assert!(river_locations.iter().any(|river| river.has_source));
+    assert!(river_locations.iter().any(|river| river.has_confluence));
+    assert_eq!(
+        river_locations.iter().map(|river| river.level.0).max(),
+        Some(dataset.stored.river_widths.level_count)
+    );
     assert_eq!(dataset.by_color.len(), dataset.stored.locations.len());
     assert_eq!(dataset.by_key.len(), dataset.stored.locations.len());
     Ok(())
