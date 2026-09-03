@@ -1,12 +1,13 @@
 import { Button, CheckBox, ListView, ScrollView } from "std-widgets.slint";
 import { ColumnSpec, LocationRow } from "types.slint";
+import { AppTheme } from "theme.slint";
 
 component ColumnHandle inherits Rectangle {
     width: 1px;
     height: 100%;
     in property <length> target-width;
     callback resized(length);
-    background: drag-area.has-hover || drag-area.pressed ? #6b9bc5 : #30404f;
+    background: drag-area.has-hover || drag-area.pressed ? AppTheme.handle-active : AppTheme.handle;
     drag-area := TouchArea {
         x: -4px;
         width: 9px;
@@ -72,13 +73,13 @@ export component ResultTable inherits VerticalLayout {
 
     Rectangle {
         height: 36px;
-        background: #151d26;
+        background: AppTheme.toolbar;
         HorizontalLayout {
             padding-left: 10px;
             padding-right: 10px;
             Text {
                 text: "RESULT COLUMNS";
-                color: #8295a8;
+                color: AppTheme.text-subtle;
                 font-size: 11px;
                 font-weight: 700;
                 letter-spacing: 1px;
@@ -100,7 +101,7 @@ export component ResultTable inherits VerticalLayout {
     }
     Rectangle {
         height: 44px;
-        background: #18212c;
+        background: AppTheme.raised;
         clip: true;
         HorizontalLayout {
             x: table.viewport-x;
@@ -125,7 +126,7 @@ export component ResultTable inherits VerticalLayout {
                     width: column.width * 1px - (root.sort-key == column.key ? 30px : 16px);
                     height: 100%;
                     text: column.label;
-                    color: #d5dee7;
+                    color: AppTheme.text-secondary;
                     font-size: 12px;
                     horizontal-alignment: center;
                     vertical-alignment: center;
@@ -137,7 +138,7 @@ export component ResultTable inherits VerticalLayout {
                     width: 12px;
                     height: 100%;
                     text: root.sort-ascending ? "^" : "v";
-                    color: #d5dee7;
+                    color: AppTheme.text-secondary;
                     font-size: 12px;
                     horizontal-alignment: center;
                     vertical-alignment: center;
@@ -156,8 +157,8 @@ export component ResultTable inherits VerticalLayout {
         for row[index] in root.rows: Rectangle {
             width: root.table-width * 1px;
             height: 62px;
-            background: root.selected-index == index ? #263b51
-                : (Math.mod(index, 2) == 0 ? #121922 : #151e28);
+            background: root.selected-index == index ? AppTheme.row-selected
+                : (Math.mod(index, 2) == 0 ? AppTheme.row-even : AppTheme.row-odd);
             HorizontalLayout {
                 padding-left: 10px;
                 spacing: 0px;
@@ -178,12 +179,12 @@ export component ResultTable inherits VerticalLayout {
                             height: 30px;
                             border-radius: 4px;
                             border-width: 1px;
-                            border-color: #d5dde6;
+                            border-color: AppTheme.swatch-border;
                             background: row.color;
                         }
                         Text {
                             text: row.hex;
-                            color: #9eacba;
+                            color: AppTheme.text-muted;
                             font-size: 11px;
                             vertical-alignment: center;
                             overflow: elide;
@@ -197,7 +198,7 @@ export component ResultTable inherits VerticalLayout {
                             width: parent.width - (column.key == "name" || column.key == "identifier" ? 12px : 8px);
                             height: 100%;
                             text: root.cell-text(row, column.key);
-                            color: column.key == "river_level" ? #77bff2 : #c3ced9;
+                            color: column.key == "river_level" ? AppTheme.accent-text : AppTheme.text-secondary;
                             font-size: column.key == "name" ? 14px : 12px;
                             font-weight: column.key == "name" ? 600 : 400;
                             horizontal-alignment: column.key == "name" || column.key == "identifier" ? left : center;
@@ -209,7 +210,7 @@ export component ResultTable inherits VerticalLayout {
                         x: column.width * 1px - 1px;
                         width: 1px;
                         height: 100%;
-                        background: #263543;
+                        background: AppTheme.divider;
                     }
                 }
             }
@@ -217,7 +218,7 @@ export component ResultTable inherits VerticalLayout {
                 y: parent.height - 1px;
                 width: 100%;
                 height: 1px;
-                background: #243140;
+                background: AppTheme.divider-muted;
             }
             row-touch := TouchArea {
                 property <bool> middle-panning: false;
@@ -260,15 +261,15 @@ export component ResultTable inherits VerticalLayout {
         height: min(520px, root.columns.length * 34px + 52px);
         close-policy: no-auto-close;
         Rectangle {
-            background: #1b232d;
-            border-color: #516376;
+            background: AppTheme.popup;
+            border-color: AppTheme.border-strong;
             border-width: 1px;
             border-radius: 4px;
             VerticalLayout {
                 padding: 8px;
                 spacing: 6px;
                 HorizontalLayout {
-                    Text { text: "Visible columns"; color: #e5ecf3; font-size: 14px; font-weight: 700; vertical-alignment: center; }
+                    Text { text: "Visible columns"; color: AppTheme.text-primary; font-size: 14px; font-weight: 700; vertical-alignment: center; }
                     Rectangle { horizontal-stretch: 1; }
                     Button { text: "Close"; width: 64px; height: 30px; clicked => { column-popup.close(); } }
                 }

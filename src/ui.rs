@@ -49,6 +49,7 @@ pub fn run(
     game_dir: Option<PathBuf>,
 ) -> Result<(), AppError> {
     let app = AppWindow::new().map_err(|error| AppError::Ui(error.to_string()))?;
+    app.invoke_apply_theme(true);
     worker::install_action_callbacks(
         &app,
         data_file.clone(),
@@ -64,4 +65,11 @@ pub fn run(
 #[wasm_bindgen::prelude::wasm_bindgen(start)]
 pub fn start_web() -> Result<(), wasm_bindgen::JsValue> {
     web::run().map_err(|error| wasm_bindgen::JsValue::from_str(&error.to_string()))
+}
+
+/// Applies a host-selected color scheme to the active browser application.
+#[cfg(all(feature = "web", target_family = "wasm"))]
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub fn set_web_theme(theme: &str) -> Result<(), wasm_bindgen::JsValue> {
+    web::set_theme(theme).map_err(|error| wasm_bindgen::JsValue::from_str(&error.to_string()))
 }

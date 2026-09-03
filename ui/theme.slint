@@ -1,0 +1,39 @@
+export global AppTheme {
+    in-out property <bool> dark: true;
+
+    // These pairs mirror cyhdev's semantic CSS tokens in src/index.css.
+    out property <color> canvas: root.dark ? #000000 : #f6f1e8;
+    out property <color> panel: root.dark ? #141210 : #fdfaf4;
+    out property <color> toolbar: root.dark ? #1d1a17 : #f1eadd;
+    out property <color> raised: root.dark ? #141210 : #fdfaf4;
+    out property <color> recessed: root.dark ? #1d1a17 : #f1eadd;
+    out property <color> popup: root.dark ? #141210 : #fdfaf4;
+    out property <color> dialog: root.dark ? #141210 : #fdfaf4;
+    out property <color> row-even: root.dark ? #000000 : #fdfaf4;
+    out property <color> row-odd: root.dark ? #141210 : #f1eadd;
+    out property <color> row-selected: root.dark ? #422006 : #f6e5c4;
+
+    out property <color> border: root.dark ? #262220 : #e3dacb;
+    out property <color> border-strong: root.dark ? #3d3731 : #c9bfae;
+    out property <color> divider: root.dark ? #262220 : #e3dacb;
+    out property <color> divider-muted: root.dark ? #262220 : #e3dacb;
+    out property <color> handle: root.dark ? #3d3731 : #c9bfae;
+    out property <color> handle-active: root.dark ? #fbbf24 : #b45309;
+
+    out property <color> text-primary: root.dark ? #f0ece5 : #211d18;
+    out property <color> text-secondary: root.dark ? #f0ece5 : #211d18;
+    out property <color> text-muted: root.dark ? #a39a8f : #6e655a;
+    out property <color> text-subtle: root.dark ? #6f675d : #9a9084;
+    out property <color> accent: root.dark ? #fbbf24 : #b45309;
+    out property <color> accent-text: root.dark ? #fcd34d : #92400e;
+    out property <color> error: root.dark ? #fb7185 : #be123c;
+    out property <color> error-title: root.dark ? #fb7185 : #be123c;
+
+    out property <color> progress-track: root.dark ? #3d3731 : #c9bfae;
+    out property <color> progress-fill: root.dark ? #fbbf24 : #b45309;
+    out property <color> swatch-border: root.dark ? #3d3731 : #c9bfae;
+    out property <color> overlay: root.dark ? #b8000000 : #b8f6f1e8;
+    out property <color> error-overlay: root.dark ? #ed000000 : #edf6f1e8;
+    out property <color> about-overlay: root.dark ? #66000000 : #66f6f1e8;
+    out property <color> dialog-shadow: root.dark ? #99000000 : #55211d18;
+}

@@ -3,8 +3,7 @@ fn main() {
         eprintln!("failed to stage embedded data: {error}");
         std::process::exit(1);
     }
-    let configuration =
-        slint_build::CompilerConfiguration::new().with_style("fluent-dark".to_owned());
+    let configuration = slint_build::CompilerConfiguration::new().with_style("fluent".to_owned());
     if let Err(error) = slint_build::compile_with_config("ui/app.slint", configuration) {
         eprintln!("failed to compile Slint UI: {error}");
         std::process::exit(1);

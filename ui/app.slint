@@ -1,9 +1,10 @@
-import { AboutSlint, Button, LineEdit } from "std-widgets.slint";
+import { AboutSlint, Button, LineEdit, Palette } from "std-widgets.slint";
 import { AppHeader } from "header.slint";
 import { DetailPane } from "detail-pane.slint";
 import { FilterRail } from "filter-rail.slint";
 import { ResultTable } from "result-table.slint";
 import { CheckOption, ColumnSpec, DetailField, LocationRow } from "types.slint";
+import { AppTheme } from "theme.slint";
 
 component PaneHandle inherits Rectangle {
     width: 7px;
@@ -14,7 +15,7 @@ component PaneHandle inherits Rectangle {
         x: (parent.width - self.width) / 2;
         width: drag-area.has-hover || drag-area.pressed ? 2px : 1px;
         height: 100%;
-        background: drag-area.has-hover || drag-area.pressed ? #52779a : #2b3948;
+        background: drag-area.has-hover || drag-area.pressed ? AppTheme.handle-active : AppTheme.border;
     }
     drag-area := TouchArea {
         mouse-cursor: col-resize;
@@ -32,7 +33,7 @@ export component AppWindow inherits Window {
     preferred-height: 900px;
     min-width: 1050px;
     min-height: 680px;
-    background: #11161d;
+    background: AppTheme.canvas;
 
     in property <[LocationRow]> rows;
     in property <[ColumnSpec]> columns;
@@ -41,6 +42,7 @@ export component AppWindow inherits Window {
     in property <bool> sort-ascending: true;
     in-out property <string> search-text: "";
     in-out property <bool> show-impassable: true;
+    in-out property <bool> dark-theme <=> AppTheme.dark;
     in-out property <string> install-path: "";
     in property <bool> external-data-controls: true;
     in property <string> result-count: "0 locations";
@@ -58,7 +60,7 @@ export component AppWindow inherits Window {
     in-out property <bool> window-maximized <=> root.maximized;
     in-out property <bool> window-full-screen <=> root.full-screen;
 
-    in property <color> detail-color: #202832;
+    in property <color> detail-color: AppTheme.raised;
     in property <string> detail-name: "Select a location";
     in property <string> detail-key: "";
     in property <string> detail-hex: "#000000";
@@ -102,6 +104,11 @@ export component AppWindow inherits Window {
     callback select-row(int);
     callback retry(string);
     callback rebuild(string);
+
+    public function apply-theme(dark: bool) {
+        root.dark-theme = dark;
+        Palette.color-scheme = dark ? ColorScheme.dark : ColorScheme.light;
+    }
 
     VerticalLayout {
         spacing: 0px;
@@ -186,30 +193,30 @@ export component AppWindow inherits Window {
     }
 
     if root.loading: Rectangle {
-        background: #b811161d;
+        background: AppTheme.overlay;
         z: 80;
         Rectangle {
             width: 440px;
             height: 116px;
             x: (parent.width - self.width) / 2;
             y: (parent.height - self.height) / 2;
-            background: #1b2531;
-            border-color: #40556b;
+            background: AppTheme.dialog;
+            border-color: AppTheme.border-strong;
             border-width: 1px;
             border-radius: 8px;
             VerticalLayout {
                 padding: 20px;
                 spacing: 14px;
                 alignment: center;
-                Text { text: root.progress-stage; color: #eef4fa; font-size: 16px; horizontal-alignment: center; }
+                Text { text: root.progress-stage; color: AppTheme.text-primary; font-size: 16px; horizontal-alignment: center; }
                 Rectangle {
                     height: 4px;
-                    background: #2a3846;
+                    background: AppTheme.progress-track;
                     border-radius: 2px;
                     Rectangle {
                         width: parent.width * min(1, max(0, root.progress-value));
                         height: 100%;
-                        background: #5ca9e6;
+                        background: AppTheme.progress-fill;
                         border-radius: 2px;
                     }
                 }
@@ -217,13 +224,13 @@ export component AppWindow inherits Window {
         }
     }
     if root.error-text != "": Rectangle {
-        background: #ed11161d;
+        background: AppTheme.error-overlay;
         z: 90;
         VerticalLayout {
             alignment: center;
             spacing: 12px;
-            Text { text: "Could not load EU5 locations"; color: #ffb2b2; font-size: 21px; horizontal-alignment: center; }
-            Text { text: root.error-text; color: #e6edf4; width: 640px; wrap: word-wrap; horizontal-alignment: center; }
+            Text { text: "Could not load EU5 locations"; color: AppTheme.error-title; font-size: 21px; horizontal-alignment: center; }
+            Text { text: root.error-text; color: AppTheme.text-primary; width: 640px; wrap: word-wrap; horizontal-alignment: center; }
             if root.external-data-controls: VerticalLayout {
                 alignment: center;
                 spacing: 12px;
@@ -237,31 +244,34 @@ export component AppWindow inherits Window {
         }
     }
     if root.about-open: Rectangle {
-        background: #e910151c;
+        // FemtoVG has no backdrop blur; use a neutral scrim and a blurred dialog shadow.
+        background: AppTheme.about-overlay;
         z: 100;
         Rectangle {
             width: 580px;
             height: 610px;
             x: (parent.width - self.width) / 2;
             y: (parent.height - self.height) / 2;
-            background: #1b2531;
+            background: AppTheme.dialog;
             border-radius: 10px;
-            border-color: #476079;
+            border-color: AppTheme.border-strong;
             border-width: 1px;
+            drop-shadow-blur: 24px;
+            drop-shadow-color: AppTheme.dialog-shadow;
             VerticalLayout {
                 padding: 24px;
                 spacing: 12px;
-                Text { text: "EU5 Location DB"; color: #f2f7fb; font-size: 24px; font-weight: 700; horizontal-alignment: center; }
-                Text { text: "Version 0.1.0  |  " + root.build-text; color: #9fb0c1; horizontal-alignment: center; }
-                Text { text: "Created by Young Hyun Chi"; color: #e4ebf2; font-size: 15px; font-weight: 600; horizontal-alignment: center; }
+                Text { text: "EU5 Location DB"; color: AppTheme.text-primary; font-size: 24px; font-weight: 700; horizontal-alignment: center; }
+                Text { text: "Version 0.1.0  |  " + root.build-text; color: AppTheme.text-muted; horizontal-alignment: center; }
+                Text { text: "Created by Young Hyun Chi"; color: AppTheme.text-primary; font-size: 15px; font-weight: 600; horizontal-alignment: center; }
                 HorizontalLayout {
                     alignment: center;
                     Button { text: "github.com/younghyun1"; clicked => { Platform.open-url("https://github.com/younghyun1"); } }
                     Button { text: "cyhdev.com"; clicked => { Platform.open-url("https://cyhdev.com"); } }
                     Button { text: "LinkedIn"; clicked => { Platform.open-url("https://www.linkedin.com/in/young-hyun-chi-553431376/"); } }
                 }
-                Text { text: "An unofficial static map-data browser. Not affiliated with or endorsed by Paradox Interactive."; color: #d2dbe4; wrap: word-wrap; horizontal-alignment: center; }
-                Text { text: "Source license: MIT OR Apache-2.0\nUI: Slint Royalty-free License 2.0"; color: #aebdca; horizontal-alignment: center; }
+                Text { text: "An unofficial static map-data browser. Not affiliated with or endorsed by Paradox Interactive."; color: AppTheme.text-secondary; wrap: word-wrap; horizontal-alignment: center; }
+                Text { text: "Source license: MIT OR Apache-2.0\nUI: Slint Royalty-free License 2.0"; color: AppTheme.text-muted; horizontal-alignment: center; }
                 AboutSlint { height: 120px; }
                 Rectangle { vertical-stretch: 1; }
                 Button { text: "Close"; height: 36px; clicked => { root.about-open = false; } }

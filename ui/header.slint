@@ -1,4 +1,5 @@
 import { Button, LineEdit } from "std-widgets.slint";
+import { AppTheme } from "theme.slint";
 
 component HeaderButton inherits Rectangle {
     callback clicked;
@@ -16,8 +17,8 @@ component HeaderButton inherits Rectangle {
 
 export component AppHeader inherits Rectangle {
     height: 64px;
-    background: #18212c;
-    border-color: #2b3948;
+    background: AppTheme.raised;
+    border-color: AppTheme.border;
     border-width: 1px;
     in-out property <string> search-text: "";
     in property <string> result-count;
@@ -31,7 +32,7 @@ export component AppHeader inherits Rectangle {
         spacing: 12px;
         Text {
             text: "EU5 LOCATION DB";
-            color: #eef4fa;
+            color: AppTheme.text-primary;
             font-size: 19px;
             font-weight: 700;
             vertical-alignment: center;
@@ -51,8 +52,8 @@ export component AppHeader inherits Rectangle {
                 edited(value) => { root.search-changed(value); }
             }
         }
-        Text { text: root.result-count; color: #c6d2df; vertical-alignment: center; width: 110px; }
-        Text { text: root.build-text; color: #8292a5; vertical-alignment: center; width: 190px; overflow: elide; }
+        Text { text: root.result-count; color: AppTheme.text-secondary; vertical-alignment: center; width: 110px; }
+        Text { text: root.build-text; color: AppTheme.text-subtle; vertical-alignment: center; width: 190px; overflow: elide; }
         HeaderButton { text: "About"; clicked => { root.show-about(); } }
     }
 }

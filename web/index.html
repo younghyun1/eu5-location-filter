@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>EU5 Locations DB</title>
     <style>
-      html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #11161d; }
+      html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000000; }
+      html[data-theme="light"], html[data-theme="light"] body { background: #f6f1e8; }
       canvas {
         display: block;
         width: 100% !important;
@@ -20,8 +21,36 @@
   <body>
     <canvas id="canvas"></canvas>
     <script type="module">
-      import init from "./pkg/eu5_location_filter.js";
-      await init();
+      import init, { set_web_theme } from "./pkg/eu5_location_filter.js";
+
+      const messagePrefix = "cyhdev:eu5-theme:";
+      const readyMessage = "cyhdev:eu5-theme-ready";
+      let initialized = false;
+      let selectedTheme = "dark";
+      document.documentElement.dataset.theme = selectedTheme;
+
+      const applyTheme = (theme) => {
+        if (theme !== "light" && theme !== "dark") return;
+        selectedTheme = theme;
+        document.documentElement.dataset.theme = theme;
+        if (initialized) set_web_theme(theme);
+      };
+      window.addEventListener("message", (event) => {
+        if (event.origin !== window.location.origin || event.source !== window.parent) return;
+        if (typeof event.data !== "string" || !event.data.startsWith(messagePrefix)) return;
+        applyTheme(event.data.slice(messagePrefix.length));
+      });
+      window.parent.postMessage(readyMessage, window.location.origin);
+
+      const finishInitialization = () => {
+        initialized = true;
+        set_web_theme(selectedTheme);
+      };
+      void init().then(finishInitialization, (error) => {
+        const message = error instanceof Error ? error.message : String(error);
+        if (!message.includes("Using exceptions for control flow")) throw error;
+        finishInitialization();
+      });
     </script>
   </body>
 </html>

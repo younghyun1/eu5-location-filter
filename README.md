@@ -15,7 +15,7 @@ eu5-location-filter
 
 Normal GUI startup uses the embedded bundles. `--data-file PATH` and `--index-file PATH` override them with external bundles. Maintainers can regenerate both committed assets from the local Windows Steam installation with `eu5-location-filter import --force`; `--game-dir PATH` remains available for explicit installations.
 
-The browser package is built with `wasm-pack --target web` and renders the same Slint interface into `canvas#canvas`. See [development](docs/development.md) for the development command. Steam discovery, external files, retries, and data rebuilding remain desktop-only.
+The browser package is built with `wasm-pack --target web` and renders the same Slint interface into `canvas#canvas`. Its host document accepts the bounded `cyhdev:eu5-theme:light` and `cyhdev:eu5-theme:dark` same-origin messages, applying the website's semantic cream, black, warm-neutral, and amber palette without reloading the application. See [development](docs/development.md) for the development command. Steam discovery, external files, retries, and data rebuilding remain desktop-only.
 
 The committed bundles contain static names and map metadata derived from the installed game. They do not contain the original Paradox text files or map images. The bundle headers record the represented build, and both files are included in the source repository and compiled executable.
 

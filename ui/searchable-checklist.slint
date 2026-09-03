@@ -1,5 +1,6 @@
 import { CheckBox, LineEdit, ListView } from "std-widgets.slint";
 import { CheckOption } from "types.slint";
+import { AppTheme } from "theme.slint";
 
 export component SearchableChecklist inherits VerticalLayout {
     in property <string> field;
@@ -29,8 +30,8 @@ export component SearchableChecklist inherits VerticalLayout {
         height: root.list-height;
         horizontal-stretch: 1;
         clip: true;
-        background: #19222c;
-        border-color: #354454;
+        background: AppTheme.recessed;
+        border-color: AppTheme.border;
         border-width: 1px;
         border-radius: 3px;
         ListView {

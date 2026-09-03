@@ -1,9 +1,10 @@
 import { Button, CheckBox, LineEdit, ScrollView } from "std-widgets.slint";
 import { SearchableChecklist } from "searchable-checklist.slint";
 import { CheckOption } from "types.slint";
+import { AppTheme } from "theme.slint";
 
 component SectionTitle inherits Text {
-    color: #8fbdea;
+    color: AppTheme.accent;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -29,7 +30,7 @@ component FilterGroup inherits VerticalLayout {
     horizontal-stretch: 1;
     HorizontalLayout {
         height: 26px;
-        Text { text: root.label; color: #aeb8c5; font-size: 12px; vertical-alignment: center; }
+        Text { text: root.label; color: AppTheme.text-muted; font-size: 12px; vertical-alignment: center; }
         Rectangle { horizontal-stretch: 1; }
         Rectangle {
             width: 28px;
@@ -56,8 +57,8 @@ component FilterGroup inherits VerticalLayout {
 }
 
 export component FilterRail inherits Rectangle {
-    background: #151c25;
-    border-color: #2b3948;
+    background: AppTheme.panel;
+    border-color: AppTheme.border;
     border-width: 1px;
     in-out property <bool> expanded: true;
     in-out property <bool> show-impassable: true;
@@ -102,7 +103,7 @@ export component FilterRail inherits Rectangle {
         spacing: 0px;
         Rectangle {
             height: 42px;
-            background: #17202a;
+            background: AppTheme.raised;
             HorizontalLayout {
                 padding-left: 14px;
                 padding-right: 8px;
@@ -166,9 +167,9 @@ export component FilterRail inherits Rectangle {
                 FilterGroup { label: "Raw material"; options: root.raw-material-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
                 FilterGroup { label: "Modifier"; options: root.modifier-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
                 SectionTitle { text: "MAP DATA"; height: 30px; }
-                Text { text: "RGB"; color: #aeb8c5; font-size: 12px; }
+                Text { text: "RGB"; color: AppTheme.text-muted; font-size: 12px; }
                 LineEdit { text <=> root.rgb-text; placeholder-text: "#RRGGBB"; edited(value) => { root.rgb-changed(value); } }
-                Text { text: root.rgb-error; color: #ff8d8d; font-size: 11px; visible: root.rgb-error != ""; }
+                Text { text: root.rgb-error; color: AppTheme.error; font-size: 11px; visible: root.rgb-error != ""; }
                 FilterGroup { label: "Coastal"; options: root.coastal-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
                 FilterGroup { label: "River"; options: root.river-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
                 FilterGroup { label: "Min river bonus"; options: root.river-level-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
@@ -178,7 +179,7 @@ export component FilterRail inherits Rectangle {
                 FilterGroup { label: "Movement assistance"; options: root.movement-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
                 HorizontalLayout { spacing: 6px; RangeLineEdit { text <=> root.move-x-min-text; placeholder-text: "X minimum"; edited(value) => { root.numeric-changed("move-x-min", value); } } RangeLineEdit { text <=> root.move-x-max-text; placeholder-text: "X maximum"; edited(value) => { root.numeric-changed("move-x-max", value); } } }
                 HorizontalLayout { spacing: 6px; RangeLineEdit { text <=> root.move-y-min-text; placeholder-text: "Y minimum"; edited(value) => { root.numeric-changed("move-y-min", value); } } RangeLineEdit { text <=> root.move-y-max-text; placeholder-text: "Y maximum"; edited(value) => { root.numeric-changed("move-y-max", value); } } }
-                Text { text: root.numeric-error; color: #ff8d8d; font-size: 11px; visible: root.numeric-error != ""; }
+                Text { text: root.numeric-error; color: AppTheme.error; font-size: 11px; visible: root.numeric-error != ""; }
             }
         }
     }
