@@ -2,6 +2,7 @@
 
 mod colors;
 mod hierarchy;
+mod map_definition;
 mod population;
 mod ports;
 mod records;
@@ -76,8 +77,9 @@ pub fn import_game(
         &river_defines_path.display().to_string(),
         &read_limited(&river_defines_path, MAX_DEFINES_SIZE)?,
     )?;
-    progress_at(&mut progress, "Reading static capacity factors", 5, 10);
-    let population_factors = population::load(installation)?;
+    progress_at(&mut progress, "Reading static map factors", 5, 10);
+    let map_definition = map_definition::load(installation)?;
+    let population_factors = population::load(installation, map_definition.equator_y)?;
     validate_source_coverage(&templates, &hierarchy, &colors, &ports)?;
 
     progress_at(&mut progress, "Reading English localization", 6, 10);
@@ -93,6 +95,7 @@ pub fn import_game(
         &mut hierarchy,
         &mut colors,
         &ports,
+        &map_definition.impassable,
         &requested,
         &localization,
     )?;

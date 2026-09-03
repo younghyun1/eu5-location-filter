@@ -6,3 +6,5 @@
 - Embed level-22 location and filter-index bundles for EU5 1.3.11 build 24187685.
 - Add bounded searchable checkbox filters, configurable resizable columns, pane splitters, ASCII-folded search, and resolved localization references.
 - Precompute five-tier gameplay river bonuses and static population capacity, including the location's closeness-to-equator contribution.
+- Include EU5's explicit impassable-location list, exclude those locations from static capacity, and correct filter and column resizing geometry.
+- Add Young Hyun Chi's LinkedIn profile to the About dialog.

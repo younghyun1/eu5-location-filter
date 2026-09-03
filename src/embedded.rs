@@ -42,8 +42,17 @@ mod tests {
                 .iter()
                 .filter(|record| record.kind == crate::model::LocationKind::Impassable)
                 .count(),
-            1_577
+            1_870
         );
+        let heard_island = dataset
+            .stored
+            .locations
+            .iter()
+            .find(|record| dataset.symbol(record.key) == Some("heard_island"));
+        assert!(heard_island.is_some_and(|record| {
+            record.kind == crate::model::LocationKind::Impassable
+                && record.static_population_capacity.is_none()
+        }));
         let tortosa = dataset
             .stored
             .locations
@@ -75,5 +84,17 @@ mod tests {
                 .len(),
             28_573
         );
+        let mut heard_filter = FilterSet {
+            search: "heard_island".to_owned(),
+            show_impassable: false,
+            ..FilterSet::default()
+        };
+        assert!(
+            engine
+                .apply(&heard_filter, SortField::Name, true)
+                .is_empty()
+        );
+        heard_filter.show_impassable = true;
+        assert_eq!(engine.apply(&heard_filter, SortField::Name, true).len(), 1);
     }
 }

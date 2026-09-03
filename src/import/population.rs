@@ -23,7 +23,10 @@ pub(super) struct StaticFactors {
     equator_y: f64,
 }
 
-pub(super) fn load(installation: &GameInstallation) -> Result<StaticFactors, AppError> {
+pub(super) fn load(
+    installation: &GameInstallation,
+    equator_y: f64,
+) -> Result<StaticFactors, AppError> {
     let vegetation = definitions(
         &installation.vegetation_definitions(),
         "local_population_capacity",
@@ -63,7 +66,7 @@ pub(super) fn load(installation: &GameInstallation) -> Result<StaticFactors, App
         equator_capacity,
         coastal_modifier,
         river_modifiers,
-        equator_y: map_equator(&installation.map_definition())?,
+        equator_y,
     })
 }
 
@@ -202,23 +205,6 @@ fn scalar_effect(entries: &[Entry], effect: &str) -> Result<Option<f64>, AppErro
         return Err(AppError::InvalidData(format!("modifier repeats {effect}")));
     }
     parse_finite(value).map(Some)
-}
-
-fn map_equator(path: &Path) -> Result<f64, AppError> {
-    let entries = document(path)?;
-    let value = entries.iter().find_map(|entry| match entry {
-        Entry::Assignment(key, Value::Atom(value)) if key == "equator_y" => Some(value.as_str()),
-        _ => None,
-    });
-    let equator = parse_finite(
-        value.ok_or_else(|| AppError::InvalidData("default.map has no equator_y".to_owned()))?,
-    )?;
-    if equator <= 0.0 {
-        return Err(AppError::InvalidData(
-            "equator_y must be positive".to_owned(),
-        ));
-    }
-    Ok(equator)
 }
 
 fn parse_finite(value: &str) -> Result<f64, AppError> {

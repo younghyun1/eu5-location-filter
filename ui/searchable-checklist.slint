@@ -34,8 +34,13 @@ export component SearchableChecklist inherits VerticalLayout {
         border-width: 1px;
         border-radius: 3px;
         ListView {
+            x: 5px;
+            width: parent.width - 10px;
+            viewport-x: 0px;
+            viewport-width: self.visible-width;
             horizontal-scrollbar-policy: always-off;
             for option in root.filtered-options: CheckBox {
+                width: root.width - 12px;
                 height: 30px;
                 text: option.label;
                 checked: option.checked;

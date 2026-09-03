@@ -64,8 +64,12 @@ export component FilterRail inherits Rectangle {
     callback option-toggled(string, string, bool);
     callback clear-options(string);
 
-    ScrollView {
+    filter-scroll := ScrollView {
+        viewport-x: 0px;
+        viewport-width: self.visible-width;
+        horizontal-scrollbar-policy: always-off;
         VerticalLayout {
+            width: filter-scroll.visible-width;
             padding-left: 14px;
             padding-right: 14px;
             padding-top: 12px;

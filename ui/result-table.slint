@@ -2,22 +2,18 @@ import { Button, CheckBox, ListView, ScrollView } from "std-widgets.slint";
 import { ColumnSpec, LocationRow } from "types.slint";
 
 component ColumnHandle inherits Rectangle {
-    width: 6px;
+    width: 1px;
     height: 100%;
     in property <length> target-width;
     callback resized(length);
-    background: transparent;
-    Rectangle {
-        x: (parent.width - self.width) / 2;
-        width: drag-area.has-hover || drag-area.pressed ? 2px : 1px;
-        height: 100%;
-        background: drag-area.has-hover || drag-area.pressed ? #6b9bc5 : #30404f;
-    }
+    background: drag-area.has-hover || drag-area.pressed ? #6b9bc5 : #30404f;
     drag-area := TouchArea {
+        x: -4px;
+        width: 9px;
         mouse-cursor: col-resize;
         moved => {
             if (self.pressed) {
-                root.resized(max(54px, root.target-width + self.mouse-x - root.width / 2));
+                root.resized(max(54px, root.target-width + self.mouse-x - self.pressed-x));
             }
         }
     }
@@ -107,9 +103,9 @@ export component ResultTable inherits VerticalLayout {
             spacing: 0px;
             for column in root.columns: Rectangle {
                 visible: column.visible;
-                width: column.visible ? column.width * 1px + 6px : 0px;
+                width: column.visible ? column.width * 1px : 0px;
                 Button {
-                    width: column.width * 1px;
+                    width: column.width * 1px - 1px;
                     height: 34px;
                     y: (parent.height - self.height) / 2;
                     text: column.label + (root.sort-key == column.key
@@ -117,7 +113,7 @@ export component ResultTable inherits VerticalLayout {
                     clicked => { root.sort-requested(column.key); }
                 }
                 ColumnHandle {
-                    x: column.width * 1px;
+                    x: column.width * 1px - 1px;
                     target-width: column.width * 1px;
                     resized(value) => { root.resize-column(column.key, value / 1px); }
                 }
@@ -138,7 +134,7 @@ export component ResultTable inherits VerticalLayout {
                 spacing: 0px;
                 for column in root.columns: Rectangle {
                     visible: column.visible;
-                    width: column.visible ? column.width * 1px + 6px : 0px;
+                    width: column.visible ? column.width * 1px : 0px;
                     if column.key == "color": HorizontalLayout {
                         width: column.width * 1px;
                         height: 32px;
@@ -174,7 +170,7 @@ export component ResultTable inherits VerticalLayout {
                         overflow: elide;
                     }
                     Rectangle {
-                        x: column.width * 1px + 2px;
+                        x: column.width * 1px - 1px;
                         width: 1px;
                         height: 100%;
                         background: #263543;

@@ -21,7 +21,7 @@ The committed dataset stores a population-capacity estimate derived only from im
 
 ## Filters
 
-The application starts with every location visible, including oceans, lakes, and impassable wastelands. Categorical filters use bounded searchable checkbox lists; numeric ranges and exact RGB remain validated inputs. Filters combine with AND, and empty fields mean any value. Invalid numeric or RGB input is shown inline and does not change the active result set. The result table has sortable, resizable columns, a column-visibility menu covering every filter criterion and static capacity value, and draggable filter and detail pane boundaries.
+The application starts with every location visible, including oceans, lakes, and impassable locations. Impassability includes both `*_wasteland` topographies and EU5's explicit `impassable_mountains` map list. Categorical filters use bounded searchable checkbox lists; numeric ranges and exact RGB remain validated inputs. Filters combine with AND, and empty fields mean any value. Invalid numeric or RGB input is shown inline and does not change the active result set. The result table has sortable, resizable columns, a column-visibility menu covering every filter criterion and static capacity value, and draggable filter and detail pane boundaries.
 
 ## Scope and license
 
@@ -29,4 +29,4 @@ The importer reads only vanilla installation files. Mods, saves, ownership, popu
 
 The source is available under MIT OR Apache-2.0. The UI uses Slint under the Slint Royalty-free License and includes Slint attribution in its About dialog.
 
-Created by Young Hyun Chi. Project links: [GitHub](https://github.com/younghyun1) and [cyhdev.com](https://cyhdev.com).
+Created by Young Hyun Chi. Project links: [GitHub](https://github.com/younghyun1), [cyhdev.com](https://cyhdev.com), and [LinkedIn](https://www.linkedin.com/in/young-hyun-chi-553431376/).

@@ -7,7 +7,6 @@ use slint::{Model, SharedString, VecModel};
 use super::ColumnSpec;
 use crate::filter::SortField;
 
-const HANDLE_WIDTH: f32 = 6.0;
 const TABLE_PADDING: f32 = 20.0;
 
 pub(super) fn initial() -> Rc<VecModel<ColumnSpec>> {
@@ -58,7 +57,7 @@ pub(super) fn total_width(model: &VecModel<ColumnSpec>) -> f32 {
         + (0..model.row_count())
             .filter_map(|index| model.row_data(index))
             .filter(|column| column.visible)
-            .map(|column| column.width + HANDLE_WIDTH)
+            .map(|column| column.width)
             .sum::<f32>()
 }
 

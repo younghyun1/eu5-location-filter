@@ -24,6 +24,7 @@ pub(super) fn build_records(
     hierarchy: &mut HashMap<String, RawHierarchy>,
     colors: &mut HashMap<String, MapColor>,
     ports: &HashMap<String, String>,
+    impassable: &std::collections::HashSet<String>,
     requested: &BTreeSet<String>,
     localization: &HashMap<String, String>,
 ) -> Result<RecordBuild, AppError> {
@@ -53,7 +54,11 @@ pub(super) fn build_records(
             id,
             key,
             name,
-            kind: LocationKind::from_topography(&template.topography),
+            kind: if impassable.contains(&template.key) {
+                LocationKind::Impassable
+            } else {
+                LocationKind::from_topography(&template.topography)
+            },
             color,
             topography: interner.intern(&template.topography)?,
             vegetation: intern_option(&mut interner, template.vegetation.as_deref())?,

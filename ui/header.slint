@@ -47,7 +47,7 @@ export component AppHeader inherits Rectangle {
                 height: 36px;
                 y: (parent.height - self.height) / 2;
                 text <=> root.search-text;
-                placeholder-text: "Search name or ID; ASCII spelling works";
+                placeholder-text: "Search name or ID";
                 accessible-label: "Global location search";
                 edited(value) => { root.search-changed(value); }
             }
