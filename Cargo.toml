@@ -59,4 +59,12 @@ lto = "fat"
 panic = "abort"
 
 [package.metadata.wasm-pack.profile.release]
-wasm-opt = ["-Oz", "--enable-bulk-memory"]
+wasm-opt = [
+    "-Oz",
+    "--enable-mutable-globals",
+    "--enable-nontrapping-float-to-int",
+    "--enable-bulk-memory",
+    "--enable-sign-ext",
+    "--enable-reference-types",
+    "--enable-multivalue",
+]

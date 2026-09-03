@@ -19,7 +19,7 @@ The browser target follows Slint's WebAssembly build model and renders into `web
 wasm-pack build --dev --target web --no-pack --no-typescript -- --locked --no-default-features --features web
 ```
 
-This writes ignored JavaScript and WebAssembly output to `pkg/`. Serve the repository root over HTTP and open `/web/`; browser ES module loading does not work from a `file://` URL. Production builds use the release profile and run `wasm-opt -Oz --enable-bulk-memory` through the package metadata. The feature flag tells Binaryen to preserve and validate the standardized `memory.copy` and `memory.fill` instructions emitted by the Rust toolchain.
+This writes ignored JavaScript and WebAssembly output to `pkg/`. Serve the repository root over HTTP and open `/web/`; browser ES module loading does not work from a `file://` URL. Production builds run `wasm-opt -Oz` through the package metadata with the exact WebAssembly feature set reported by Binaryen's `--print-features` for the generated module. These flags let Binaryen preserve and validate the standardized instructions emitted by the Rust toolchain without enabling unrelated proposal features.
 
 Do not run a release build as part of routine implementation. Tests use synthetic fixtures. The ignored real-install checks require `EU5_GAME_DIR`; the ignored filter timing test requires an existing data blob and reports repeated full-filter and name-search timings.
 
