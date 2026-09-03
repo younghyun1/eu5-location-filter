@@ -19,13 +19,13 @@ The browser target follows Slint's WebAssembly build model and renders into `web
 wasm-pack build --dev --target web --no-pack --no-typescript -- --locked --no-default-features --features web
 ```
 
-This writes ignored JavaScript and WebAssembly output to `pkg/`. Serve the repository root over HTTP and open `/web/`; browser ES module loading does not work from a `file://` URL. Production builds use the release profile and run `wasm-opt -Oz` through the package metadata.
+This writes ignored JavaScript and WebAssembly output to `pkg/`. Serve the repository root over HTTP and open `/web/`; browser ES module loading does not work from a `file://` URL. Production builds use the release profile and run `wasm-opt -Oz --enable-bulk-memory` through the package metadata. The feature flag tells Binaryen to preserve and validate the standardized `memory.copy` and `memory.fill` instructions emitted by the Rust toolchain.
 
 Do not run a release build as part of routine implementation. Tests use synthetic fixtures. The ignored real-install checks require `EU5_GAME_DIR`; the ignored filter timing test requires an existing data blob and reports repeated full-filter and name-search timings.
 
 ## GitHub automation
 
-`CI` runs formatting, Clippy, tests, documentation, and source-package verification on Windows. A separate matrix compile-checks native x86-64 and ARM64 targets on Windows, Linux, and macOS. Linux jobs install the desktop libraries required by Slint's Winit backend. A WASM job runs target-specific Clippy and a development `wasm-pack` smoke build, then checks the generated JavaScript and WASM magic. Workflow actions are pinned to immutable commit hashes.
+`CI` runs formatting, Clippy, tests, documentation, and source-package verification on Windows. A separate matrix compile-checks native x86-64 and ARM64 targets on Windows, Linux, and macOS. Linux jobs install the desktop libraries required by Slint's Winit backend. A WASM job runs target-specific Clippy and an optimized `wasm-pack` smoke build, including Binaryen validation, then checks the generated JavaScript and WASM magic. Workflow actions are pinned to immutable commit hashes.
 
 The tagged-release workflow is dormant until a `v*` tag is pushed. It rejects a tag that does not equal `v` plus the Cargo package version, whose commit is not on `main`, or whose required signing secrets are absent. Successful tags build six native archives; apply Authenticode and Apple Developer ID signatures; notarize and staple macOS applications; generate SHA-256 checksums and GPG signatures; attach provenance attestations; and create a GitHub Release from the existing tag. Configure the credentials in [release signing](signing.md), then prepare a release by updating `Cargo.toml` and `CHANGELOG.md`, committing those changes, creating an annotated matching tag, and pushing that tag. Crates.io publication remains a separate explicit action.
 

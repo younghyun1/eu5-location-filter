@@ -87,8 +87,8 @@ jobs:
         run: cargo clippy --locked --target wasm32-unknown-unknown --no-default-features --features web -- -D warnings
       - name: Install pinned wasm-pack
         run: cargo install wasm-pack --version 0.15.0 --locked
-      - name: Build development browser package
-        run: wasm-pack build --dev --target web --no-pack --no-typescript -- --locked --no-default-features --features web
+      - name: Build optimized browser package
+        run: wasm-pack build --release --target web --no-pack --no-typescript -- --locked --no-default-features --features web
       - name: Verify generated package
         shell: bash
         run: |

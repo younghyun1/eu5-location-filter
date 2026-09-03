@@ -59,4 +59,4 @@ lto = "fat"
 panic = "abort"
 
 [package.metadata.wasm-pack.profile.release]
-wasm-opt = ["-Oz"]
+wasm-opt = ["-Oz", "--enable-bulk-memory"]
