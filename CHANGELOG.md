@@ -10,3 +10,4 @@
 - Add Young Hyun Chi's LinkedIn profile to the About dialog.
 - Move the global clear action into the Visibility header and make the full filter rail collapsible.
 - Add per-filter folding and balanced padding around result-column separators.
+- Elide column labels and cell text when a user narrows a column while keeping the active sort arrow visible.

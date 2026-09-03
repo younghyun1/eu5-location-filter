@@ -104,14 +104,37 @@ export component ResultTable inherits VerticalLayout {
             for column in root.columns: Rectangle {
                 visible: column.visible;
                 width: column.visible ? column.width * 1px : 0px;
+                clip: true;
                 Button {
                     x: 3px;
                     width: column.width * 1px - 7px;
                     height: 34px;
                     y: (parent.height - self.height) / 2;
-                    text: column.label + (root.sort-key == column.key
-                        ? (root.sort-ascending ? "  ^" : "  v") : "");
+                    text: "";
+                    accessible-label: column.label;
                     clicked => { root.sort-requested(column.key); }
+                }
+                Text {
+                    x: 8px;
+                    width: column.width * 1px - (root.sort-key == column.key ? 30px : 16px);
+                    height: 100%;
+                    text: column.label;
+                    color: #d5dee7;
+                    font-size: 12px;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                    overflow: elide;
+                }
+                Text {
+                    visible: root.sort-key == column.key;
+                    x: column.width * 1px - 22px;
+                    width: 12px;
+                    height: 100%;
+                    text: root.sort-ascending ? "^" : "v";
+                    color: #d5dee7;
+                    font-size: 12px;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
                 }
                 ColumnHandle {
                     x: column.width * 1px - 1px;
@@ -136,6 +159,7 @@ export component ResultTable inherits VerticalLayout {
                 for column in root.columns: Rectangle {
                     visible: column.visible;
                     width: column.visible ? column.width * 1px : 0px;
+                    clip: true;
                     if column.key == "color": HorizontalLayout {
                         x: 4px;
                         width: column.width * 1px - 9px;
