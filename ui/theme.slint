@@ -1,39 +1,40 @@
 export global AppTheme {
     in-out property <bool> dark: true;
+    in-out property <float> mix: 1;
 
     // These pairs mirror cyhdev's semantic CSS tokens in src/index.css.
-    out property <color> canvas: root.dark ? #000000 : #f6f1e8;
-    out property <color> panel: root.dark ? #141210 : #fdfaf4;
-    out property <color> toolbar: root.dark ? #1d1a17 : #f1eadd;
-    out property <color> raised: root.dark ? #141210 : #fdfaf4;
-    out property <color> recessed: root.dark ? #1d1a17 : #f1eadd;
-    out property <color> popup: root.dark ? #141210 : #fdfaf4;
-    out property <color> dialog: root.dark ? #141210 : #fdfaf4;
-    out property <color> row-even: root.dark ? #000000 : #fdfaf4;
-    out property <color> row-odd: root.dark ? #141210 : #f1eadd;
-    out property <color> row-selected: root.dark ? #422006 : #f6e5c4;
+    out property <color> canvas: #000000.mix(#f6f1e8, root.mix);
+    out property <color> panel: #141210.mix(#fdfaf4, root.mix);
+    out property <color> toolbar: #1d1a17.mix(#f1eadd, root.mix);
+    out property <color> raised: #141210.mix(#fdfaf4, root.mix);
+    out property <color> recessed: #1d1a17.mix(#f1eadd, root.mix);
+    out property <color> popup: #141210.mix(#fdfaf4, root.mix);
+    out property <color> dialog: #141210.mix(#fdfaf4, root.mix);
+    out property <color> row-even: #000000.mix(#fdfaf4, root.mix);
+    out property <color> row-odd: #141210.mix(#f1eadd, root.mix);
+    out property <color> row-selected: #422006.mix(#f6e5c4, root.mix);
 
-    out property <color> border: root.dark ? #262220 : #e3dacb;
-    out property <color> border-strong: root.dark ? #3d3731 : #c9bfae;
-    out property <color> divider: root.dark ? #262220 : #e3dacb;
-    out property <color> divider-muted: root.dark ? #262220 : #e3dacb;
-    out property <color> handle: root.dark ? #3d3731 : #c9bfae;
-    out property <color> handle-active: root.dark ? #fbbf24 : #b45309;
+    out property <color> border: #262220.mix(#e3dacb, root.mix);
+    out property <color> border-strong: #3d3731.mix(#c9bfae, root.mix);
+    out property <color> divider: #262220.mix(#e3dacb, root.mix);
+    out property <color> divider-muted: #262220.mix(#e3dacb, root.mix);
+    out property <color> handle: #3d3731.mix(#c9bfae, root.mix);
+    out property <color> handle-active: #fbbf24.mix(#b45309, root.mix);
 
-    out property <color> text-primary: root.dark ? #f0ece5 : #211d18;
-    out property <color> text-secondary: root.dark ? #f0ece5 : #211d18;
-    out property <color> text-muted: root.dark ? #a39a8f : #6e655a;
-    out property <color> text-subtle: root.dark ? #6f675d : #9a9084;
-    out property <color> accent: root.dark ? #fbbf24 : #b45309;
-    out property <color> accent-text: root.dark ? #fcd34d : #92400e;
-    out property <color> error: root.dark ? #fb7185 : #be123c;
-    out property <color> error-title: root.dark ? #fb7185 : #be123c;
+    out property <color> text-primary: #f0ece5.mix(#211d18, root.mix);
+    out property <color> text-secondary: #f0ece5.mix(#211d18, root.mix);
+    out property <color> text-muted: #a39a8f.mix(#6e655a, root.mix);
+    out property <color> text-subtle: #6f675d.mix(#9a9084, root.mix);
+    out property <color> accent: #fbbf24.mix(#b45309, root.mix);
+    out property <color> accent-text: #fcd34d.mix(#92400e, root.mix);
+    out property <color> error: #fb7185.mix(#be123c, root.mix);
+    out property <color> error-title: #fb7185.mix(#be123c, root.mix);
 
-    out property <color> progress-track: root.dark ? #3d3731 : #c9bfae;
-    out property <color> progress-fill: root.dark ? #fbbf24 : #b45309;
-    out property <color> swatch-border: root.dark ? #3d3731 : #c9bfae;
-    out property <color> overlay: root.dark ? #b8000000 : #b8f6f1e8;
-    out property <color> error-overlay: root.dark ? #ed000000 : #edf6f1e8;
-    out property <color> about-overlay: root.dark ? #66000000 : #66f6f1e8;
-    out property <color> dialog-shadow: root.dark ? #99000000 : #55211d18;
+    out property <color> progress-track: #3d3731.mix(#c9bfae, root.mix);
+    out property <color> progress-fill: #fbbf24.mix(#b45309, root.mix);
+    out property <color> swatch-border: #3d3731.mix(#c9bfae, root.mix);
+    out property <color> overlay: #b8000000.mix(#b8f6f1e8, root.mix);
+    out property <color> error-overlay: #ed000000.mix(#edf6f1e8, root.mix);
+    out property <color> about-overlay: #66000000.mix(#66f6f1e8, root.mix);
+    out property <color> dialog-shadow: #99000000.mix(#55211d18, root.mix);
 }

@@ -43,6 +43,12 @@ export component AppWindow inherits Window {
     in-out property <string> search-text: "";
     in-out property <bool> show-impassable: true;
     in-out property <bool> dark-theme <=> AppTheme.dark;
+    property <float> theme-mix: root.dark-theme ? 1 : 0;
+    animate theme-mix {
+        duration: 90ms;
+        easing: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    changed theme-mix => { AppTheme.mix = root.theme-mix; }
     in-out property <string> install-path: "";
     in property <bool> external-data-controls: true;
     in property <string> result-count: "0 locations";
