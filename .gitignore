@@ -1,5 +1,6 @@
 /target
 /pkg/
+/web/pkg/
 *.bitcode.zst
 !assets/*.bitcode.zst
 *.bitcode.zst.bak
