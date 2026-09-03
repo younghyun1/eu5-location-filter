@@ -75,7 +75,8 @@ mod tests {
             }),
             Some(2_661)
         );
-        let engine = FilterEngine::from_stored_index(Arc::new(dataset), index);
+        let dataset = Arc::new(dataset);
+        let engine = FilterEngine::from_stored_index(Arc::clone(&dataset), index);
         assert!(engine.is_ok());
         let Ok(engine) = engine else { return };
         assert_eq!(
@@ -84,6 +85,24 @@ mod tests {
                 .len(),
             28_573
         );
+        for search in ["N'Goussa", "N Goussa", "ngoussa", "n_goussa"] {
+            let results = engine.apply(
+                &FilterSet {
+                    search: search.to_owned(),
+                    ..FilterSet::default()
+                },
+                SortField::Name,
+                true,
+            );
+            assert_eq!(results.len(), 1, "unexpected result count for {search:?}");
+            assert_eq!(
+                results
+                    .first()
+                    .and_then(|id| dataset.location(*id))
+                    .and_then(|record| dataset.symbol(record.key)),
+                Some("ngoussa")
+            );
+        }
         let mut heard_filter = FilterSet {
             search: "heard_island".to_owned(),
             show_impassable: false,
