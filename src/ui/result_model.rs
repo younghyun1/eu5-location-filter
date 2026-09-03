@@ -8,7 +8,9 @@ use slint::{Color, Model, ModelNotify, ModelTracker, SharedString};
 
 use super::LocationRow;
 use crate::AppError;
-use crate::model::{Dataset, LocationId, LocationRecord, SymbolId};
+use crate::model::{
+    Dataset, LocationId, LocationRecord, SymbolId, is_food_producing, is_gold_or_silver,
+};
 
 /// The only mutable result state is the compact vector of visible IDs.
 pub(super) struct ResultModel {
@@ -121,6 +123,8 @@ fn display_row(
         religion: shared(labels, record.religion),
         culture: shared(labels, record.culture),
         raw_material: shared(labels, record.raw_material),
+        food_raw_material: symbol_matches(symbols, record.raw_material, is_food_producing),
+        precious_raw_material: symbol_matches(symbols, record.raw_material, is_gold_or_silver),
         modifier: shared(labels, record.modifier),
         rgb: format!("rgb({red}, {green}, {blue})").into(),
         coastal: if record.coastal { "Yes" } else { "No" }.into(),
@@ -171,6 +175,17 @@ fn shared(values: &[SharedString], symbol: Option<SymbolId>) -> SharedString {
         .unwrap_or_else(|| SharedString::from("-"))
 }
 
+fn symbol_matches(
+    values: &[SharedString],
+    symbol: Option<SymbolId>,
+    predicate: impl FnOnce(&str) -> bool,
+) -> bool {
+    symbol
+        .and_then(|id| usize::try_from(id.0).ok())
+        .and_then(|index| values.get(index))
+        .is_some_and(|value| predicate(value.as_str()))
+}
+
 pub(super) fn format_population(value: u32) -> String {
     let digits = value.to_string();
     let mut output = String::with_capacity(digits.len() + digits.len() / 3);
@@ -205,6 +220,28 @@ mod tests {
         assert_eq!(slint::Model::row_count(model.as_ref()), 1);
         assert!(model.reset(Vec::new()).is_ok());
         assert_eq!(slint::Model::row_count(model.as_ref()), 0);
+    }
+
+    #[test]
+    fn rows_classify_food_and_precious_raw_materials() {
+        for (material, food, precious) in [
+            ("wheat", true, false),
+            ("fur", true, false),
+            ("goods_gold", false, true),
+            ("goods_silver", false, true),
+            ("iron", false, false),
+        ] {
+            let mut dataset = fixture();
+            dataset.stored.dictionary.push(material.to_owned());
+            dataset.stored.locations[0].raw_material = Some(SymbolId(1));
+            let dataset = Arc::new(dataset);
+            let model = ResultModel::new(&dataset, vec![LocationId(0)]);
+            assert!(
+                slint::Model::row_data(model.as_ref(), 0).is_some_and(|row| {
+                    row.food_raw_material == food && row.precious_raw_material == precious
+                })
+            );
+        }
     }
 
     fn fixture() -> Dataset {

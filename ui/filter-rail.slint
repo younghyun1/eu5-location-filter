@@ -62,6 +62,7 @@ export component FilterRail inherits Rectangle {
     border-width: 1px;
     in-out property <bool> expanded: true;
     in-out property <bool> show-impassable: true;
+    in-out property <bool> food-producing-only: false;
     in property <string> rgb-error: "";
     in property <string> numeric-error: "";
     in property <int> reset-generation: 0;
@@ -91,6 +92,7 @@ export component FilterRail inherits Rectangle {
     property <string> move-y-min-text: "";
     property <string> move-y-max-text: "";
     callback toggle-impassable(bool);
+    callback toggle-food-producing-only(bool);
     callback rgb-changed(string);
     callback numeric-changed(string, string);
     callback filter-options(string, string) -> [CheckOption];
@@ -165,6 +167,11 @@ export component FilterRail inherits Rectangle {
                 FilterGroup { label: "Religion"; options: root.religion-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
                 FilterGroup { label: "Culture"; options: root.culture-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
                 FilterGroup { label: "Raw material"; options: root.raw-material-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                CheckBox {
+                    text: "Food-producing only";
+                    checked <=> root.food-producing-only;
+                    toggled => { root.toggle-food-producing-only(self.checked); }
+                }
                 FilterGroup { label: "Modifier"; options: root.modifier-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
                 SectionTitle { text: "MAP DATA"; height: 30px; }
                 Text { text: "RGB"; color: AppTheme.text-muted; font-size: 12px; }

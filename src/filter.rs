@@ -1,8 +1,11 @@
 //! Allocation-bounded filtering and precomputed stable sorting.
 
+use std::collections::HashSet;
 use std::sync::Arc;
 
-use crate::model::{Dataset, LocationId, LocationKind, LocationRecord, SymbolId};
+use crate::model::{
+    Dataset, LocationId, LocationKind, LocationRecord, SymbolId, is_food_producing,
+};
 
 mod index;
 mod sort;
@@ -21,6 +24,7 @@ pub struct FilterEngine {
     dataset: Arc<Dataset>,
     searchable: Vec<String>,
     sort_orders: SortOrders,
+    food_raw_materials: HashSet<SymbolId>,
 }
 
 impl FilterEngine {
@@ -29,10 +33,12 @@ impl FilterEngine {
     pub fn new(dataset: Arc<Dataset>) -> Self {
         let (folded_symbols, searchable) = search_data(&dataset);
         let sort_orders = SortOrders::new(&dataset, &folded_symbols);
+        let food_raw_materials = food_raw_materials(&dataset);
         Self {
             dataset,
             searchable,
             sort_orders,
+            food_raw_materials,
         }
     }
 
@@ -57,10 +63,12 @@ impl FilterEngine {
         stored: StoredFilterIndex,
     ) -> Result<Self, crate::AppError> {
         stored.validate(&dataset)?;
+        let food_raw_materials = food_raw_materials(&dataset);
         Ok(Self {
             dataset,
             searchable: stored.searchable,
             sort_orders: SortOrders::from_stored(stored.orders),
+            food_raw_materials,
         })
     }
 
@@ -112,6 +120,10 @@ impl FilterEngine {
             && facet_matches(filters.religion, record.religion)
             && facet_matches(filters.culture, record.culture)
             && facet_matches(filters.raw_material, record.raw_material)
+            && (!filters.food_producing_only
+                || record
+                    .raw_material
+                    .is_some_and(|material| self.food_raw_materials.contains(&material)))
             && facet_matches(filters.modifier, record.modifier)
             && filters.rgb.is_none_or(|color| record.color == color)
             && filters.coastal.is_none_or(|value| record.coastal == value)
@@ -160,6 +172,17 @@ fn search_data(dataset: &Dataset) -> (Vec<String>, Vec<String>) {
         })
         .collect();
     (folded_symbols, searchable)
+}
+
+fn food_raw_materials(dataset: &Dataset) -> HashSet<SymbolId> {
+    dataset
+        .stored
+        .dictionary
+        .iter()
+        .enumerate()
+        .filter(|(_, key)| is_food_producing(key))
+        .filter_map(|(index, _)| u32::try_from(index).ok().map(SymbolId))
+        .collect()
 }
 
 fn facet_matches(filter: OptionalFacet, value: Option<SymbolId>) -> bool {

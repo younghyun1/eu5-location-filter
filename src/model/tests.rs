@@ -18,6 +18,10 @@ fn wasteland_precedes_other_kind_rules() {
         LocationKind::Sea
     );
     assert_eq!(
+        LocationKind::from_topography("salt_pans"),
+        LocationKind::Impassable
+    );
+    assert_eq!(
         LocationKind::from_topography("future_biome"),
         LocationKind::Unknown
     );

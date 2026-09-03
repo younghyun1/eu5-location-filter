@@ -22,6 +22,7 @@ pub fn load() -> Result<(Dataset, StoredFilterIndex), AppError> {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::BTreeSet;
     use std::sync::Arc;
 
     use super::load;
@@ -42,8 +43,13 @@ mod tests {
                 .iter()
                 .filter(|record| record.kind == crate::model::LocationKind::Impassable)
                 .count(),
-            1_870
+            1_902
         );
+        assert!(dataset.stored.locations.iter().all(|record| {
+            dataset.symbol(record.topography) != Some("salt_pans")
+                || (record.kind == crate::model::LocationKind::Impassable
+                    && record.static_population_capacity.is_none())
+        }));
         let heard_island = dataset
             .stored
             .locations
@@ -84,6 +90,47 @@ mod tests {
                 .apply(&FilterSet::default(), SortField::Name, true)
                 .len(),
             28_573
+        );
+        let food_results = engine.apply(
+            &FilterSet {
+                food_producing_only: true,
+                ..FilterSet::default()
+            },
+            SortField::Name,
+            true,
+        );
+        assert_eq!(food_results.len(), 12_035);
+        assert!(food_results.iter().all(|id| {
+            dataset
+                .location(*id)
+                .and_then(|record| record.raw_material)
+                .and_then(|material| dataset.symbol(material))
+                .is_some_and(crate::model::is_food_producing)
+        }));
+        let represented_food_materials: BTreeSet<&str> = food_results
+            .iter()
+            .filter_map(|id| dataset.location(*id))
+            .filter_map(|record| record.raw_material)
+            .filter_map(|material| dataset.symbol(material))
+            .collect();
+        assert_eq!(
+            represented_food_materials,
+            BTreeSet::from([
+                "beeswax",
+                "fish",
+                "fruit",
+                "fur",
+                "legumes",
+                "livestock",
+                "maize",
+                "millet",
+                "olives",
+                "potato",
+                "rice",
+                "wheat",
+                "wild_game",
+                "wool",
+            ])
         );
         for search in ["N'Goussa", "N Goussa", "ngoussa", "n_goussa"] {
             let results = engine.apply(

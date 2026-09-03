@@ -86,6 +86,50 @@ fn river_minimum_excludes_missing_but_maximum_includes_it() {
 }
 
 #[test]
+fn food_producing_filter_can_be_enabled_and_disabled() {
+    let mut dataset = fixture();
+    dataset
+        .stored
+        .dictionary
+        .extend(["wheat".to_owned(), "iron".to_owned()]);
+    dataset.stored.locations[0].raw_material = Some(SymbolId(5));
+    dataset.stored.locations[1].raw_material = Some(SymbolId(6));
+    let engine = FilterEngine::new(Arc::new(dataset));
+    let mut filters = FilterSet {
+        food_producing_only: true,
+        ..FilterSet::default()
+    };
+    assert_eq!(
+        engine.apply(&filters, SortField::Name, true),
+        vec![LocationId(0)]
+    );
+
+    filters.food_producing_only = false;
+    assert_eq!(
+        engine.apply(&filters, SortField::Name, true),
+        vec![LocationId(0), LocationId(1)]
+    );
+}
+
+#[test]
+fn food_producing_filter_combines_with_exact_raw_material() {
+    let mut dataset = fixture();
+    dataset
+        .stored
+        .dictionary
+        .extend(["wheat".to_owned(), "iron".to_owned()]);
+    dataset.stored.locations[0].raw_material = Some(SymbolId(5));
+    dataset.stored.locations[1].raw_material = Some(SymbolId(6));
+    let engine = FilterEngine::new(Arc::new(dataset));
+    let filters = FilterSet {
+        food_producing_only: true,
+        raw_material: OptionalFacet::Value(SymbolId(6)),
+        ..FilterSet::default()
+    };
+    assert!(engine.apply(&filters, SortField::Name, true).is_empty());
+}
+
+#[test]
 fn ascii_search_matches_localized_diacritics() {
     let mut dataset = fixture();
     dataset.stored.dictionary[1] = "Kouřim".to_owned();
@@ -155,7 +199,7 @@ fn punctuation_insensitive_search_preserves_sort_collation() {
 fn rejects_the_previous_search_index_format() {
     let dataset = Arc::new(fixture());
     let mut stored = FilterEngine::build_stored_index(&dataset);
-    stored.format_version = 2;
+    stored.format_version = 3;
     assert!(FilterEngine::from_stored_index(dataset, stored).is_err());
 }
 

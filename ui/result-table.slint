@@ -77,6 +77,7 @@ export component ResultTable inherits VerticalLayout {
         HorizontalLayout {
             padding-left: 10px;
             padding-right: 10px;
+            spacing: 10px;
             Text {
                 text: "RESULT COLUMNS";
                 color: AppTheme.text-subtle;
@@ -86,6 +87,20 @@ export component ResultTable inherits VerticalLayout {
                 vertical-alignment: center;
             }
             Rectangle { horizontal-stretch: 1; }
+            Text {
+                text: "Food-producing";
+                color: AppTheme.food;
+                font-size: 10px;
+                font-weight: 600;
+                vertical-alignment: center;
+            }
+            Text {
+                text: "Gold / silver";
+                color: AppTheme.accent;
+                font-size: 10px;
+                font-weight: 600;
+                vertical-alignment: center;
+            }
             Rectangle {
                 width: 88px;
                 height: 100%;
@@ -198,7 +213,10 @@ export component ResultTable inherits VerticalLayout {
                             width: parent.width - (column.key == "name" || column.key == "identifier" ? 12px : 8px);
                             height: 100%;
                             text: root.cell-text(row, column.key);
-                            color: column.key == "river_level" ? AppTheme.accent-text : AppTheme.text-secondary;
+                            color: column.key == "raw_material" && row.food-raw-material ? AppTheme.food
+                                : column.key == "raw_material" && row.precious-raw-material ? AppTheme.accent
+                                : column.key == "river_level" ? AppTheme.accent-text
+                                : AppTheme.text-secondary;
                             font-size: column.key == "name" ? 14px : 12px;
                             font-weight: column.key == "name" ? 600 : 400;
                             horizontal-alignment: column.key == "name" || column.key == "identifier" ? left : center;

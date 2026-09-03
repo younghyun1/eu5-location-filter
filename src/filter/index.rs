@@ -9,7 +9,7 @@ use crate::AppError;
 use crate::model::{Dataset, EU5_APP_ID, LocationId};
 
 /// Schema version for the independent filter-index bundle.
-pub const INDEX_FORMAT_VERSION: u16 = 3;
+pub const INDEX_FORMAT_VERSION: u16 = 4;
 
 /// One field's precomputed ascending and descending location order.
 #[derive(Clone, Debug, Decode, Encode, PartialEq)]

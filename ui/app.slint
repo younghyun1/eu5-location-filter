@@ -42,6 +42,7 @@ export component AppWindow inherits Window {
     in property <bool> sort-ascending: true;
     in-out property <string> search-text: "";
     in-out property <bool> show-impassable: true;
+    in-out property <bool> food-producing-only: false;
     in-out property <bool> dark-theme <=> AppTheme.dark;
     property <float> theme-mix: root.dark-theme ? 1 : 0;
     animate theme-mix {
@@ -98,6 +99,7 @@ export component AppWindow inherits Window {
 
     callback search-changed(string);
     callback toggle-impassable(bool);
+    callback toggle-food-producing-only(bool);
     callback rgb-changed(string);
     callback numeric-changed(string, string);
     callback filter-options(string, string) -> [CheckOption];
@@ -131,6 +133,7 @@ export component AppWindow inherits Window {
                 width: root.filter-pane-expanded ? root.filter-pane-width : 44px;
                 expanded <=> root.filter-pane-expanded;
                 show-impassable <=> root.show-impassable;
+                food-producing-only <=> root.food-producing-only;
                 rgb-error: root.rgb-error;
                 numeric-error: root.numeric-error;
                 reset-generation: root.filter-reset-generation;
@@ -153,6 +156,7 @@ export component AppWindow inherits Window {
                 harbor-options: root.harbor-options;
                 movement-options: root.movement-options;
                 toggle-impassable(value) => { root.toggle-impassable(value); }
+                toggle-food-producing-only(value) => { root.toggle-food-producing-only(value); }
                 rgb-changed(value) => { root.rgb-changed(value); }
                 numeric-changed(field, value) => { root.numeric-changed(field, value); }
                 filter-options(field, query) => { return root.filter-options(field, query); }

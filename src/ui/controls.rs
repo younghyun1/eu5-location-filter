@@ -38,6 +38,13 @@ pub(super) fn install(app: &AppWindow, state: &Rc<RefCell<ActiveState>>) {
             state.filters.show_impassable = value;
         });
     });
+    let weak = app.as_weak();
+    let shared = Rc::clone(state);
+    app.on_toggle_food_producing_only(move |value| {
+        update(&weak, &shared, |state| {
+            state.filters.food_producing_only = value;
+        });
+    });
     install_values(app, state);
     install_sort_and_selection(app, state);
     column_controls::install(app, state);
@@ -125,6 +132,7 @@ fn install_sort_and_selection(app: &AppWindow, state: &Rc<RefCell<ActiveState>>)
         let Some(app) = weak.upgrade() else { return };
         app.set_search_text(SharedString::new());
         app.set_show_impassable(true);
+        app.set_food_producing_only(false);
         app.set_filter_reset_generation(app.get_filter_reset_generation().wrapping_add(1));
         update_direct(&app, &shared, |state| {
             state.filters = FilterSet::default();

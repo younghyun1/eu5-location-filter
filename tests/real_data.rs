@@ -21,12 +21,17 @@ fn verifies_reference_install_import() -> Result<(), eu5_location_filter::AppErr
             .iter()
             .filter(|record| record.kind == LocationKind::Impassable)
             .count(),
-        1_870
+        1_902
     );
     assert!(dataset.stored.locations.iter().any(|record| {
         dataset.symbol(record.key) == Some("heard_island")
             && record.kind == LocationKind::Impassable
             && record.static_population_capacity.is_none()
+    }));
+    assert!(dataset.stored.locations.iter().all(|record| {
+        dataset.symbol(record.topography) != Some("salt_pans")
+            || (record.kind == LocationKind::Impassable
+                && record.static_population_capacity.is_none())
     }));
     assert!(dataset.stored.locations.iter().all(|record| {
         record

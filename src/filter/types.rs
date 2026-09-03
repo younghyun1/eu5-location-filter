@@ -74,6 +74,8 @@ pub struct FilterSet {
     pub culture: OptionalFacet,
     /// Exact nullable attribute.
     pub raw_material: OptionalFacet,
+    /// Restrict raw materials to goods with positive food output.
+    pub food_producing_only: bool,
     /// Exact nullable attribute.
     pub modifier: OptionalFacet,
     /// Exact true-color value.
@@ -116,6 +118,7 @@ impl Default for FilterSet {
             religion: OptionalFacet::Any,
             culture: OptionalFacet::Any,
             raw_material: OptionalFacet::Any,
+            food_producing_only: false,
             modifier: OptionalFacet::Any,
             rgb: None,
             coastal: None,

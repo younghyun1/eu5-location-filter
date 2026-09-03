@@ -8,12 +8,14 @@ use crate::AppError;
 
 mod attributes;
 mod interner;
+mod raw_materials;
 
 pub use attributes::{PopulationAmount, RiverLevel, StaticPopulationCapacity};
 pub use interner::StringInterner;
+pub(crate) use raw_materials::{is_food_producing, is_gold_or_silver};
 
 /// Current on-disk schema version.
-pub const FORMAT_VERSION: u16 = 2;
+pub const FORMAT_VERSION: u16 = 3;
 /// Steam application identifier for Europa Universalis V.
 pub const EU5_APP_ID: u32 = 3_450_310;
 /// Europa Universalis V version represented by the committed bundles.
@@ -82,7 +84,7 @@ pub enum LocationKind {
     Sea,
     /// Inland lake.
     Lake,
-    /// Any topography ending in `_wasteland`.
+    /// Any wasteland or otherwise non-traversable land topography.
     Impassable,
     /// A future topography not known to this importer.
     Unknown,
@@ -92,15 +94,13 @@ impl LocationKind {
     /// Derives a kind while retaining unknown topography in the record itself.
     #[must_use]
     pub fn from_topography(value: &str) -> Self {
-        if value.ends_with("_wasteland") {
+        if value.ends_with("_wasteland") || value == "salt_pans" {
             return Self::Impassable;
         }
         match value {
             "lakes" | "high_lakes" => Self::Lake,
             "coastal_ocean" | "deep_ocean" | "inland_sea" | "narrows" | "ocean" => Self::Sea,
-            "atoll" | "flatland" | "hills" | "mountains" | "plateau" | "salt_pans" | "wetlands" => {
-                Self::Land
-            }
+            "atoll" | "flatland" | "hills" | "mountains" | "plateau" | "wetlands" => Self::Land,
             _ => Self::Unknown,
         }
     }
