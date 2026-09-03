@@ -35,7 +35,7 @@ pub(super) fn initial() -> Rc<VecModel<ColumnSpec>> {
         spec("movement_presence", "Movement", 100.0, false),
         spec("movement_x", "Movement X", 104.0, false),
         spec("movement_y", "Movement Y", 104.0, false),
-        spec("static_capacity", "Static capacity", 126.0, true),
+        spec("static_capacity", "Base pop. cap.", 126.0, true),
         spec("equator_capacity", "Equator capacity", 130.0, false),
     ];
     Rc::new(VecModel::from(columns.to_vec()))
@@ -131,6 +131,13 @@ mod tests {
         let columns = initial();
         let before = total_width(&columns);
         assert_eq!(before, 1_196.0);
+        let capacity = (0..columns.row_count())
+            .filter_map(|index| columns.row_data(index))
+            .find(|column| column.key == "static_capacity");
+        assert_eq!(
+            capacity.as_ref().map(|column| column.label.as_str()),
+            Some("Base pop. cap.")
+        );
         set_visible(&columns, "continent", true);
         assert!(total_width(&columns) > before);
         set_width(&columns, "name", 400.0);
