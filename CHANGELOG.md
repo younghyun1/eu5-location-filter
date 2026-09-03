@@ -8,3 +8,5 @@
 - Precompute five-tier gameplay river bonuses and static population capacity, including the location's closeness-to-equator contribution.
 - Include EU5's explicit impassable-location list, exclude those locations from static capacity, and correct filter and column resizing geometry.
 - Add Young Hyun Chi's LinkedIn profile to the About dialog.
+- Move the global clear action into the Visibility header and make the full filter rail collapsible.
+- Add per-filter folding and balanced padding around result-column separators.

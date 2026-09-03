@@ -52,6 +52,7 @@ export component AppWindow inherits Window {
     in property <string> numeric-error: "";
     in-out property <int> filter-reset-generation: 0;
     in-out property <bool> about-open: false;
+    in-out property <bool> filter-pane-expanded: true;
     in-out property <int> selected-index: -1;
     in-out property <bool> window-maximized <=> root.maximized;
     in-out property <bool> window-full-screen <=> root.full-screen;
@@ -108,13 +109,13 @@ export component AppWindow inherits Window {
             result-count: root.result-count;
             build-text: root.build-text;
             search-changed(value) => { root.search-changed(value); }
-            clear-filters => { root.clear-filters(); }
             show-about => { root.about-open = true; }
         }
         HorizontalLayout {
             spacing: 0px;
             FilterRail {
-                width: root.filter-pane-width;
+                width: root.filter-pane-expanded ? root.filter-pane-width : 44px;
+                expanded <=> root.filter-pane-expanded;
                 show-impassable <=> root.show-impassable;
                 rgb-error: root.rgb-error;
                 numeric-error: root.numeric-error;
@@ -143,8 +144,11 @@ export component AppWindow inherits Window {
                 filter-options(field, query) => { return root.filter-options(field, query); }
                 option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); }
                 clear-options(field) => { root.clear-options(field); }
+                clear-filters => { root.clear-filters(); }
+                toggle-expanded(value) => { root.filter-pane-expanded = value; }
             }
             PaneHandle {
+                visible: root.filter-pane-expanded;
                 dragged(delta) => {
                     root.filter-pane-width = min(400px, max(245px, root.filter-pane-width + delta));
                 }

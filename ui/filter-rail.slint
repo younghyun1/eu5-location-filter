@@ -1,4 +1,4 @@
-import { CheckBox, LineEdit, ScrollView } from "std-widgets.slint";
+import { Button, CheckBox, LineEdit, ScrollView } from "std-widgets.slint";
 import { SearchableChecklist } from "searchable-checklist.slint";
 import { CheckOption } from "types.slint";
 
@@ -17,11 +17,29 @@ component FilterGroup inherits VerticalLayout {
     callback option-toggled(string, string, bool);
     callback clear-options(string);
     in property <int> reset-generation: 0;
+    property <bool> expanded: true;
     spacing: 3px;
     min-width: 0px;
     horizontal-stretch: 1;
-    Text { text: root.label; color: #aeb8c5; font-size: 12px; }
-    checklist := SearchableChecklist {
+    HorizontalLayout {
+        height: 26px;
+        Text { text: root.label; color: #aeb8c5; font-size: 12px; vertical-alignment: center; }
+        Rectangle { horizontal-stretch: 1; }
+        Rectangle {
+            width: 28px;
+            height: 100%;
+            Button {
+                width: 26px;
+                height: 24px;
+                x: 1px;
+                y: (parent.height - self.height) / 2;
+                text: root.expanded ? "-" : "+";
+                accessible-label: (root.expanded ? "Collapse " : "Expand ") + root.label;
+                clicked => { root.expanded = !root.expanded; }
+            }
+        }
+    }
+    if root.expanded: SearchableChecklist {
         field: root.label;
         options: root.options;
         reset-generation: root.reset-generation;
@@ -35,6 +53,7 @@ export component FilterRail inherits Rectangle {
     background: #151c25;
     border-color: #2b3948;
     border-width: 1px;
+    in-out property <bool> expanded: true;
     in-out property <bool> show-impassable: true;
     in property <string> rgb-error: "";
     in property <string> numeric-error: "";
@@ -57,64 +76,118 @@ export component FilterRail inherits Rectangle {
     in property <[CheckOption]> river-level-options;
     in property <[CheckOption]> harbor-options;
     in property <[CheckOption]> movement-options;
+    property <string> rgb-text: "";
+    property <string> harbor-min-text: "";
+    property <string> harbor-max-text: "";
+    property <string> move-x-min-text: "";
+    property <string> move-x-max-text: "";
+    property <string> move-y-min-text: "";
+    property <string> move-y-max-text: "";
     callback toggle-impassable(bool);
     callback rgb-changed(string);
     callback numeric-changed(string, string);
     callback filter-options(string, string) -> [CheckOption];
     callback option-toggled(string, string, bool);
     callback clear-options(string);
+    callback clear-filters;
+    callback toggle-expanded(bool);
 
-    filter-scroll := ScrollView {
-        viewport-x: 0px;
-        viewport-width: self.visible-width;
-        horizontal-scrollbar-policy: always-off;
-        VerticalLayout {
-            width: filter-scroll.visible-width;
-            padding-left: 14px;
-            padding-right: 14px;
-            padding-top: 12px;
-            padding-bottom: 14px;
-            spacing: 9px;
-            SectionTitle { text: "VISIBILITY"; height: 24px; }
-            CheckBox {
-                text: "Show impassable";
-                checked <=> root.show-impassable;
-                toggled => { root.toggle-impassable(self.checked); }
+    if root.expanded: VerticalLayout {
+        spacing: 0px;
+        Rectangle {
+            height: 42px;
+            background: #17202a;
+            HorizontalLayout {
+                padding-left: 14px;
+                padding-right: 8px;
+                spacing: 6px;
+                SectionTitle { text: "VISIBILITY"; }
+                Rectangle { horizontal-stretch: 1; }
+                Rectangle {
+                    width: 56px;
+                    height: 100%;
+                    Button {
+                        width: 56px;
+                        height: 28px;
+                        y: (parent.height - self.height) / 2;
+                        text: "Clear";
+                        clicked => { root.clear-filters(); }
+                    }
+                }
+                Rectangle {
+                    width: 30px;
+                    height: 100%;
+                    Button {
+                        width: 30px;
+                        height: 28px;
+                        y: (parent.height - self.height) / 2;
+                        text: "<";
+                        accessible-label: "Collapse filters";
+                        clicked => { root.toggle-expanded(false); }
+                    }
+                }
             }
-            kind-group := FilterGroup { label: "Kind"; options: root.kind-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            SectionTitle { text: "GEOGRAPHY"; height: 30px; }
-            continent-group := FilterGroup { label: "Continent"; options: root.continent-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            subcontinent-group := FilterGroup { label: "Subcontinent"; options: root.subcontinent-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            region-group := FilterGroup { label: "Region"; options: root.region-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            area-group := FilterGroup { label: "Area"; options: root.area-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            province-group := FilterGroup { label: "Province"; options: root.province-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            SectionTitle { text: "TERRAIN & ENVIRONMENT"; height: 30px; }
-            topography-group := FilterGroup { label: "Topography"; options: root.topography-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            vegetation-group := FilterGroup { label: "Vegetation"; options: root.vegetation-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            climate-group := FilterGroup { label: "Climate"; options: root.climate-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            religion-group := FilterGroup { label: "Religion"; options: root.religion-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            culture-group := FilterGroup { label: "Culture"; options: root.culture-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            raw-material-group := FilterGroup { label: "Raw material"; options: root.raw-material-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            modifier-group := FilterGroup { label: "Modifier"; options: root.modifier-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            SectionTitle { text: "MAP DATA"; height: 30px; }
-            Text { text: "RGB"; color: #aeb8c5; font-size: 12px; }
-            rgb-input := LineEdit { placeholder-text: "#RRGGBB"; edited(value) => { root.rgb-changed(value); } }
-            Text { text: root.rgb-error; color: #ff8d8d; font-size: 11px; visible: root.rgb-error != ""; }
-            coastal-group := FilterGroup { label: "Coastal"; options: root.coastal-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            river-group := FilterGroup { label: "River"; options: root.river-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            river-min-group := FilterGroup { label: "Min river bonus"; options: root.river-level-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            river-max-group := FilterGroup { label: "Max river bonus"; options: root.river-level-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            harbor-group := FilterGroup { label: "Harbor suitability"; options: root.harbor-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            HorizontalLayout { spacing: 6px; harbor-min-input := LineEdit { placeholder-text: "Minimum"; input-type: decimal; edited(value) => { root.numeric-changed("harbor-min", value); } } harbor-max-input := LineEdit { placeholder-text: "Maximum"; input-type: decimal; edited(value) => { root.numeric-changed("harbor-max", value); } } }
-            movement-group := FilterGroup { label: "Movement assistance"; options: root.movement-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
-            HorizontalLayout { spacing: 6px; move-x-min-input := LineEdit { placeholder-text: "X minimum"; input-type: decimal; edited(value) => { root.numeric-changed("move-x-min", value); } } move-x-max-input := LineEdit { placeholder-text: "X maximum"; input-type: decimal; edited(value) => { root.numeric-changed("move-x-max", value); } } }
-            HorizontalLayout { spacing: 6px; move-y-min-input := LineEdit { placeholder-text: "Y minimum"; input-type: decimal; edited(value) => { root.numeric-changed("move-y-min", value); } } move-y-max-input := LineEdit { placeholder-text: "Y maximum"; input-type: decimal; edited(value) => { root.numeric-changed("move-y-max", value); } } }
-            Text { text: root.numeric-error; color: #ff8d8d; font-size: 11px; visible: root.numeric-error != ""; }
         }
+        filter-scroll := ScrollView {
+            viewport-x: 0px;
+            viewport-width: self.visible-width;
+            horizontal-scrollbar-policy: always-off;
+            VerticalLayout {
+                width: filter-scroll.visible-width;
+                padding-left: 14px;
+                padding-right: 14px;
+                padding-top: 10px;
+                padding-bottom: 14px;
+                spacing: 9px;
+                CheckBox {
+                    text: "Show impassable";
+                    checked <=> root.show-impassable;
+                    toggled => { root.toggle-impassable(self.checked); }
+                }
+                FilterGroup { label: "Kind"; options: root.kind-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                SectionTitle { text: "GEOGRAPHY"; height: 30px; }
+                FilterGroup { label: "Continent"; options: root.continent-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Subcontinent"; options: root.subcontinent-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Region"; options: root.region-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Area"; options: root.area-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Province"; options: root.province-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                SectionTitle { text: "TERRAIN & ENVIRONMENT"; height: 30px; }
+                FilterGroup { label: "Topography"; options: root.topography-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Vegetation"; options: root.vegetation-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Climate"; options: root.climate-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Religion"; options: root.religion-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Culture"; options: root.culture-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Raw material"; options: root.raw-material-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Modifier"; options: root.modifier-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                SectionTitle { text: "MAP DATA"; height: 30px; }
+                Text { text: "RGB"; color: #aeb8c5; font-size: 12px; }
+                LineEdit { text <=> root.rgb-text; placeholder-text: "#RRGGBB"; edited(value) => { root.rgb-changed(value); } }
+                Text { text: root.rgb-error; color: #ff8d8d; font-size: 11px; visible: root.rgb-error != ""; }
+                FilterGroup { label: "Coastal"; options: root.coastal-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "River"; options: root.river-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Min river bonus"; options: root.river-level-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Max river bonus"; options: root.river-level-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Harbor suitability"; options: root.harbor-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                HorizontalLayout { spacing: 6px; LineEdit { text <=> root.harbor-min-text; placeholder-text: "Minimum"; input-type: decimal; edited(value) => { root.numeric-changed("harbor-min", value); } } LineEdit { text <=> root.harbor-max-text; placeholder-text: "Maximum"; input-type: decimal; edited(value) => { root.numeric-changed("harbor-max", value); } } }
+                FilterGroup { label: "Movement assistance"; options: root.movement-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                HorizontalLayout { spacing: 6px; LineEdit { text <=> root.move-x-min-text; placeholder-text: "X minimum"; input-type: decimal; edited(value) => { root.numeric-changed("move-x-min", value); } } LineEdit { text <=> root.move-x-max-text; placeholder-text: "X maximum"; input-type: decimal; edited(value) => { root.numeric-changed("move-x-max", value); } } }
+                HorizontalLayout { spacing: 6px; LineEdit { text <=> root.move-y-min-text; placeholder-text: "Y minimum"; input-type: decimal; edited(value) => { root.numeric-changed("move-y-min", value); } } LineEdit { text <=> root.move-y-max-text; placeholder-text: "Y maximum"; input-type: decimal; edited(value) => { root.numeric-changed("move-y-max", value); } } }
+                Text { text: root.numeric-error; color: #ff8d8d; font-size: 11px; visible: root.numeric-error != ""; }
+            }
+        }
+    }
+    if !root.expanded: Button {
+        x: 7px;
+        y: 10px;
+        width: 30px;
+        height: 30px;
+        text: ">";
+        accessible-label: "Expand filters";
+        clicked => { root.toggle-expanded(true); }
     }
 
     changed reset-generation => {
-        rgb-input.text = ""; harbor-min-input.text = ""; harbor-max-input.text = "";
-        move-x-min-input.text = ""; move-x-max-input.text = ""; move-y-min-input.text = ""; move-y-max-input.text = "";
+        root.rgb-text = ""; root.harbor-min-text = ""; root.harbor-max-text = "";
+        root.move-x-min-text = ""; root.move-x-max-text = ""; root.move-y-min-text = ""; root.move-y-max-text = "";
     }
 }

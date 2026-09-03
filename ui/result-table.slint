@@ -105,7 +105,8 @@ export component ResultTable inherits VerticalLayout {
                 visible: column.visible;
                 width: column.visible ? column.width * 1px : 0px;
                 Button {
-                    width: column.width * 1px - 1px;
+                    x: 3px;
+                    width: column.width * 1px - 7px;
                     height: 34px;
                     y: (parent.height - self.height) / 2;
                     text: column.label + (root.sort-key == column.key
@@ -136,7 +137,8 @@ export component ResultTable inherits VerticalLayout {
                     visible: column.visible;
                     width: column.visible ? column.width * 1px : 0px;
                     if column.key == "color": HorizontalLayout {
-                        width: column.width * 1px;
+                        x: 4px;
+                        width: column.width * 1px - 9px;
                         height: 32px;
                         y: (parent.height - self.height) / 2;
                         padding-left: 6px;
@@ -158,16 +160,21 @@ export component ResultTable inherits VerticalLayout {
                             overflow: elide;
                         }
                     }
-                    if column.key != "color": Text {
-                        width: column.width * 1px;
+                    if column.key != "color": Rectangle {
+                        width: column.width * 1px - 1px;
                         height: 100%;
-                        text: root.cell-text(row, column.key);
-                        color: column.key == "river_level" ? #77bff2 : #c3ced9;
-                        font-size: column.key == "name" ? 14px : 12px;
-                        font-weight: column.key == "name" ? 600 : 400;
-                        horizontal-alignment: column.key == "name" || column.key == "identifier" ? left : center;
-                        vertical-alignment: center;
-                        overflow: elide;
+                        Text {
+                            x: column.key == "name" || column.key == "identifier" ? 8px : 4px;
+                            width: parent.width - (column.key == "name" || column.key == "identifier" ? 12px : 8px);
+                            height: 100%;
+                            text: root.cell-text(row, column.key);
+                            color: column.key == "river_level" ? #77bff2 : #c3ced9;
+                            font-size: column.key == "name" ? 14px : 12px;
+                            font-weight: column.key == "name" ? 600 : 400;
+                            horizontal-alignment: column.key == "name" || column.key == "identifier" ? left : center;
+                            vertical-alignment: center;
+                            overflow: elide;
+                        }
                     }
                     Rectangle {
                         x: column.width * 1px - 1px;
