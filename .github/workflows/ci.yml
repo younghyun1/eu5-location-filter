@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  quality:
+    name: Format, lint, test, and package
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install rolling nightly
+        run: rustup toolchain install nightly --profile minimal --component rust-src,rustfmt,clippy
+      - name: Check formatting
+        run: cargo fmt --check
+      - name: Run Clippy
+        run: cargo clippy --locked --all-targets -- -D warnings
+      - name: Run tests
+        run: cargo test --locked --all-targets
+      - name: Build documentation
+        run: cargo doc --locked --no-deps
+      - name: Verify source package
+        run: cargo package --locked
+
+  platform-check:
+    name: Check ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows x86-64-v3
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - name: Windows ARMv8-A
+            os: windows-11-arm
+            target: aarch64-pc-windows-msvc
+          - name: Linux x86-64-v3
+            os: ubuntu-24.04
+            target: x86_64-unknown-linux-gnu
+          - name: Linux ARMv8-A
+            os: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-gnu
+          - name: macOS Intel x86-64-v3
+            os: macos-15-intel
+            target: x86_64-apple-darwin
+          - name: macOS Apple Silicon
+            os: macos-15
+            target: aarch64-apple-darwin
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install rolling nightly
+        run: rustup toolchain install nightly --profile minimal --component rust-src
+      - name: Install Linux desktop dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libfontconfig1-dev libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev libx11-xcb-dev libxcursor-dev libxkbcommon-x11-dev libx11-dev libgl1-mesa-dev
+      - name: Check target
+        run: cargo check --locked --all-targets --target ${{ matrix.target }}

@@ -1,0 +1,127 @@
+name: Tagged release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  validate-tag:
+    name: Validate version tag
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out source and tags
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Require tag to match Cargo package version
+        shell: bash
+        run: |
+          version="$(cargo metadata --locked --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "eu5-location-filter") | .version')"
+          test "$GITHUB_REF_NAME" = "v$version"
+      - name: Require tagged commit on main
+        shell: bash
+        run: |
+          git fetch origin main
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+
+  build:
+    name: Build ${{ matrix.name }}
+    needs: validate-tag
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows x86-64-v3
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+            format: zip
+          - name: Windows ARMv8-A
+            os: windows-11-arm
+            target: aarch64-pc-windows-msvc
+            format: zip
+          - name: Linux x86-64-v3
+            os: ubuntu-24.04
+            target: x86_64-unknown-linux-gnu
+            format: tar
+          - name: Linux ARMv8-A
+            os: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-gnu
+            format: tar
+          - name: macOS Intel x86-64-v3
+            os: macos-15-intel
+            target: x86_64-apple-darwin
+            format: tar
+          - name: macOS Apple Silicon
+            os: macos-15
+            target: aarch64-apple-darwin
+            format: tar
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install rolling nightly
+        run: rustup toolchain install nightly --profile minimal --component rust-src
+      - name: Install Linux desktop dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libfontconfig1-dev libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev libx11-xcb-dev libxcursor-dev libxkbcommon-x11-dev libx11-dev libgl1-mesa-dev
+      - name: Build release binary
+        run: cargo build --locked --release --target ${{ matrix.target }}
+      - name: Package Windows binary
+        if: matrix.format == 'zip'
+        shell: pwsh
+        run: |
+          $package = "eu5-location-filter-$env:GITHUB_REF_NAME-${{ matrix.target }}"
+          New-Item -ItemType Directory -Path "dist/$package" -Force | Out-Null
+          Copy-Item "target/${{ matrix.target }}/release/eu5-location-filter.exe" "dist/$package/"
+          Copy-Item README.md,LICENSE-MIT,LICENSE-APACHE "dist/$package/"
+          Compress-Archive -Path "dist/$package" -DestinationPath "dist/$package.zip"
+      - name: Package Unix binary
+        if: matrix.format == 'tar'
+        shell: bash
+        run: |
+          package="eu5-location-filter-$GITHUB_REF_NAME-${{ matrix.target }}"
+          mkdir -p "dist/$package"
+          cp "target/${{ matrix.target }}/release/eu5-location-filter" README.md LICENSE-MIT LICENSE-APACHE "dist/$package/"
+          chmod +x "dist/$package/eu5-location-filter"
+          tar -C dist -czf "dist/$package.tar.gz" "$package"
+      - name: Upload packaged binary
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: eu5-location-filter-${{ matrix.target }}
+          path: |
+            dist/*.zip
+            dist/*.tar.gz
+          if-no-files-found: error
+
+  publish-release:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Download packaged binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Generate checksums
+        shell: bash
+        run: |
+          cd dist
+          sha256sum *.zip *.tar.gz > SHA256SUMS
+      - name: Publish release for existing tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --generate-notes --title "$GITHUB_REF_NAME"

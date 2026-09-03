@@ -1,7 +1,16 @@
 [build]
 target = "x86_64-pc-windows-msvc"
+
+[target.'cfg(target_arch = "x86_64")']
 rustflags = [
-    "-C", "target-cpu=native",
+    "-C", "target-cpu=x86-64-v3",
+    "-Z", "unstable-options",
+    "-C", "panic=immediate-abort",
+]
+
+[target.'cfg(target_arch = "aarch64")']
+rustflags = [
+    "-C", "target-cpu=generic",
     "-Z", "unstable-options",
     "-C", "panic=immediate-abort",
 ]
