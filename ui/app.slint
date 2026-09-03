@@ -1,0 +1,350 @@
+import { AboutSlint, Button, CheckBox, ComboBox, LineEdit, ListView, ProgressIndicator, ScrollView } from "std-widgets.slint";
+
+export struct LocationRow {
+    id: int,
+    color: color,
+    hex: string,
+    name: string,
+    key: string,
+    kind: string,
+    topography: string,
+    vegetation: string,
+    climate: string,
+    river: string,
+}
+
+component SectionTitle inherits Text {
+    color: #8fbdea;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    vertical-alignment: center;
+}
+
+component FieldLabel inherits Text {
+    color: #aeb8c5;
+    font-size: 12px;
+    vertical-alignment: center;
+}
+
+export component AppWindow inherits Window {
+    title: "EU5 Location Filter";
+    width: 1440px;
+    height: 900px;
+    background: #11161d;
+
+    in property <[LocationRow]> rows;
+    in-out property <string> search-text: "";
+    in-out property <bool> show-impassable: true;
+    in-out property <string> install-path: "";
+    in property <string> result-count: "0 locations";
+    in property <string> build-text: "Build -";
+    in property <bool> loading: true;
+    in property <string> progress-stage: "Starting";
+    in property <float> progress-value: 0;
+    in property <string> error-text: "";
+    in property <string> rgb-error: "";
+    in property <string> numeric-error: "";
+    in-out property <bool> about-open: false;
+    in-out property <int> selected-index: -1;
+
+    in property <color> detail-color: #202832;
+    in property <string> detail-name: "Select a location";
+    in property <string> detail-key: "";
+    in property <string> detail-hex: "#000000";
+    in property <string> detail-rgb: "rgb(0, 0, 0)";
+    in property <string> detail-breadcrumb: "";
+    in property <string> detail-fields: "";
+
+    callback search-changed(string);
+    callback toggle-impassable(bool);
+    callback kind-changed(string);
+    callback state-changed(string, string);
+    callback facet-changed(string, string);
+    callback rgb-changed(string);
+    callback numeric-changed(string, string);
+    callback clear-filters();
+    callback sort-requested(string);
+    callback select-row(int);
+    callback retry(string);
+    callback rebuild(string);
+
+    VerticalLayout {
+        spacing: 0px;
+
+        Rectangle {
+            height: 72px;
+            background: #18212c;
+            border-color: #2b3948;
+            border-width: 1px;
+            HorizontalLayout {
+                padding-left: 22px;
+                padding-right: 18px;
+                spacing: 16px;
+                Text {
+                    text: "EU5 LOCATION FILTER";
+                    color: #eef4fa;
+                    font-size: 20px;
+                    font-weight: 700;
+                    vertical-alignment: center;
+                    width: 230px;
+                }
+                LineEdit {
+                    text <=> root.search-text;
+                    placeholder-text: "Search English name or internal ID";
+                    accessible-label: "Global location search";
+                    edited(value) => { root.search-changed(value); }
+                    vertical-stretch: 0;
+                    height: 38px;
+                }
+                Text { text: root.result-count; color: #c6d2df; vertical-alignment: center; width: 130px; }
+                Text { text: root.build-text; color: #8292a5; vertical-alignment: center; width: 125px; }
+                Button { text: "Clear filters"; clicked => { root.clear-filters(); } }
+                Button { text: "About"; clicked => { root.about-open = true; } }
+            }
+        }
+
+        HorizontalLayout {
+            spacing: 0px;
+            Rectangle {
+                width: 292px;
+                background: #151c25;
+                border-color: #2b3948;
+                border-width: 1px;
+                ScrollView {
+                    VerticalLayout {
+                        padding: 16px;
+                        spacing: 8px;
+                        SectionTitle { text: "VISIBILITY"; height: 25px; }
+                        CheckBox {
+                            text: "Show impassable";
+                            checked <=> root.show-impassable;
+                            accessible-label: "Show impassable wastelands";
+                            toggled => { root.toggle-impassable(self.checked); }
+                        }
+                        FieldLabel { text: "Kind"; }
+                        ComboBox {
+                            model: ["Any", "Land", "Sea", "Lake", "Impassable", "Unknown"];
+                            current-value: "Any";
+                            selected(value) => { root.kind-changed(value); }
+                        }
+
+                        SectionTitle { text: "GEOGRAPHY"; height: 30px; }
+                        for field in ["Continent", "Subcontinent", "Region", "Area", "Province"]: VerticalLayout {
+                            spacing: 3px;
+                            FieldLabel { text: field; }
+                            LineEdit {
+                                placeholder-text: "Any; type exact ID or label";
+                                accessible-label: field + " filter";
+                                edited(value) => { root.facet-changed(field, value); }
+                            }
+                        }
+
+                        SectionTitle { text: "TERRAIN & ENVIRONMENT"; height: 30px; }
+                        for field in ["Topography", "Vegetation", "Climate", "Religion", "Culture", "Raw material", "Modifier"]: VerticalLayout {
+                            spacing: 3px;
+                            FieldLabel { text: field; }
+                            LineEdit {
+                                placeholder-text: "Any; type exact ID or label";
+                                accessible-label: field + " filter";
+                                edited(value) => { root.facet-changed(field, value); }
+                            }
+                        }
+
+                        SectionTitle { text: "MAP DATA"; height: 30px; }
+                        FieldLabel { text: "RGB"; }
+                        LineEdit {
+                            placeholder-text: "#RRGGBB";
+                            accessible-label: "Exact RGB filter";
+                            edited(value) => { root.rgb-changed(value); }
+                        }
+                        Text { text: root.rgb-error; color: #ff8d8d; font-size: 11px; visible: root.rgb-error != ""; }
+                        FieldLabel { text: "Coastal"; }
+                        ComboBox {
+                            model: ["Any", "Yes", "No"];
+                            current-value: "Any";
+                            selected(value) => { root.state-changed("coastal", value); }
+                        }
+                        FieldLabel { text: "River"; }
+                        ComboBox {
+                            model: ["Any", "Present", "Missing"];
+                            current-value: "Any";
+                            selected(value) => { root.state-changed("river", value); }
+                        }
+                        HorizontalLayout {
+                            spacing: 6px;
+                            LineEdit { placeholder-text: "River min"; edited(value) => { root.numeric-changed("river-min", value); } }
+                            LineEdit { placeholder-text: "River max"; edited(value) => { root.numeric-changed("river-max", value); } }
+                        }
+                        FieldLabel { text: "Harbor suitability"; }
+                        ComboBox {
+                            model: ["Any", "Present", "Missing"];
+                            current-value: "Any";
+                            selected(value) => { root.state-changed("harbor", value); }
+                        }
+                        HorizontalLayout {
+                            spacing: 6px;
+                            LineEdit { placeholder-text: "Harbor min"; edited(value) => { root.numeric-changed("harbor-min", value); } }
+                            LineEdit { placeholder-text: "Harbor max"; edited(value) => { root.numeric-changed("harbor-max", value); } }
+                        }
+                        FieldLabel { text: "Movement assistance"; }
+                        ComboBox {
+                            model: ["Any", "Present", "Missing"];
+                            current-value: "Any";
+                            selected(value) => { root.state-changed("movement", value); }
+                        }
+                        HorizontalLayout {
+                            spacing: 6px;
+                            LineEdit { placeholder-text: "X min"; edited(value) => { root.numeric-changed("move-x-min", value); } }
+                            LineEdit { placeholder-text: "X max"; edited(value) => { root.numeric-changed("move-x-max", value); } }
+                        }
+                        HorizontalLayout {
+                            spacing: 6px;
+                            LineEdit { placeholder-text: "Y min"; edited(value) => { root.numeric-changed("move-y-min", value); } }
+                            LineEdit { placeholder-text: "Y max"; edited(value) => { root.numeric-changed("move-y-max", value); } }
+                        }
+                        Text { text: root.numeric-error; color: #ff8d8d; font-size: 11px; visible: root.numeric-error != ""; }
+                    }
+                }
+            }
+
+            VerticalLayout {
+                spacing: 0px;
+                Rectangle {
+                    height: 42px;
+                    background: #18212c;
+                    HorizontalLayout {
+                        padding-left: 12px;
+                        spacing: 8px;
+                        Button { text: "Name"; clicked => { root.sort-requested("name"); } }
+                        Button { text: "ID"; clicked => { root.sort-requested("id"); } }
+                        Button { text: "Kind"; clicked => { root.sort-requested("kind"); } }
+                        Button { text: "Topography"; clicked => { root.sort-requested("topography"); } }
+                        Button { text: "Vegetation"; clicked => { root.sort-requested("vegetation"); } }
+                        Button { text: "Climate"; clicked => { root.sort-requested("climate"); } }
+                        Button { text: "River"; clicked => { root.sort-requested("river"); } }
+                    }
+                }
+                ListView {
+                    for row[index] in root.rows: Rectangle {
+                        height: 62px;
+                        background: root.selected-index == index ? #263b51 : (Math.mod(index, 2) == 0 ? #121922 : #151e28);
+                        border-color: #243140;
+                        border-width: 1px;
+                        HorizontalLayout {
+                            padding-left: 12px;
+                            padding-right: 12px;
+                            spacing: 10px;
+                            Rectangle {
+                                width: 34px;
+                                height: 34px;
+                                border-radius: 4px;
+                                border-width: 1px;
+                                border-color: #d5dde6;
+                                background: row.color;
+                            }
+                            VerticalLayout {
+                                spacing: 1px;
+                                Text { text: row.name; color: #eef4fa; font-size: 14px; font-weight: 600; overflow: elide; }
+                                Text { text: row.key + "  " + row.hex; color: #8596a8; font-size: 11px; overflow: elide; }
+                            }
+                            Text { text: row.kind; color: #c4d0dc; width: 78px; vertical-alignment: center; }
+                            Text { text: row.topography; color: #aab7c4; width: 110px; vertical-alignment: center; overflow: elide; }
+                            Text { text: row.vegetation; color: #aab7c4; width: 100px; vertical-alignment: center; overflow: elide; }
+                            Text { text: row.climate; color: #aab7c4; width: 95px; vertical-alignment: center; overflow: elide; }
+                            Text { text: row.river; color: #77bff2; width: 62px; vertical-alignment: center; }
+                        }
+                        TouchArea {
+                            accessible-role: list-item;
+                            accessible-label: row.name + ", " + row.key;
+                            clicked => { root.selected-index = index; root.select-row(index); }
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                width: 342px;
+                background: #151c25;
+                border-color: #2b3948;
+                border-width: 1px;
+                ScrollView {
+                    VerticalLayout {
+                        padding: 20px;
+                        spacing: 12px;
+                        Rectangle {
+                            height: 154px;
+                            background: root.detail-color;
+                            border-radius: 8px;
+                            border-width: 1px;
+                            border-color: #d8e0e8;
+                        }
+                        Text { text: root.detail-name; color: #f3f7fb; font-size: 22px; font-weight: 700; wrap: word-wrap; }
+                        Text { text: root.detail-key; color: #91a4b7; font-size: 13px; wrap: word-wrap; }
+                        HorizontalLayout {
+                            Text { text: root.detail-hex; color: #d5e0ea; font-size: 13px; }
+                            Text { text: root.detail-rgb; color: #d5e0ea; font-size: 13px; horizontal-alignment: right; }
+                        }
+                        Rectangle { height: 1px; background: #2a3746; }
+                        Text { text: root.detail-breadcrumb; color: #8fc6ed; font-size: 12px; wrap: word-wrap; }
+                        Text { text: root.detail-fields; color: #c0ccd8; font-size: 13px; wrap: word-wrap; }
+                    }
+                }
+            }
+        }
+    }
+
+    if root.loading: Rectangle {
+        background: #d911161d;
+        z: 80;
+        VerticalLayout {
+            alignment: center;
+            spacing: 14px;
+            Text { text: root.progress-stage; color: #eef4fa; font-size: 18px; horizontal-alignment: center; }
+            ProgressIndicator { progress: root.progress-value; width: 420px; }
+        }
+    }
+
+    if root.error-text != "": Rectangle {
+        background: #ed11161d;
+        z: 90;
+        VerticalLayout {
+            alignment: center;
+            spacing: 12px;
+            Text { text: "Could not load EU5 locations"; color: #ffb2b2; font-size: 21px; horizontal-alignment: center; }
+            Text { text: root.error-text; color: #e6edf4; width: 640px; wrap: word-wrap; horizontal-alignment: center; }
+            LineEdit { text <=> root.install-path; placeholder-text: "Europa Universalis V installation directory"; width: 640px; }
+            HorizontalLayout {
+                alignment: center;
+                Button { text: "Retry"; clicked => { root.retry(root.install-path); } }
+                Button { text: "Rebuild data"; clicked => { root.rebuild(root.install-path); } }
+            }
+        }
+    }
+
+    if root.about-open: Rectangle {
+        background: #e910151c;
+        z: 100;
+        Rectangle {
+            width: 560px;
+            height: 570px;
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2;
+            background: #1b2531;
+            border-radius: 10px;
+            border-color: #476079;
+            border-width: 1px;
+            VerticalLayout {
+                padding: 24px;
+                spacing: 12px;
+                Text { text: "EU5 Location Filter"; color: #f2f7fb; font-size: 24px; font-weight: 700; horizontal-alignment: center; }
+                Text { text: "Version 0.1.0  •  " + root.build-text; color: #9fb0c1; horizontal-alignment: center; }
+                Text { text: "An unofficial static map-data browser. Not affiliated with or endorsed by Paradox Interactive."; color: #d2dbe4; wrap: word-wrap; horizontal-alignment: center; }
+                Text { text: "Source license: MIT OR Apache-2.0\nUI: Slint Royalty-free License 2.0"; color: #aebdca; horizontal-alignment: center; }
+                AboutSlint { height: 120px; }
+                Rectangle { vertical-stretch: 1; }
+                Button { text: "Close"; clicked => { root.about-open = false; } }
+            }
+        }
+    }
+}

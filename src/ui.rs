@@ -1,0 +1,37 @@
+//! Slint desktop interface and background loading orchestration.
+
+#![allow(missing_docs)]
+
+mod generated {
+    #![allow(
+        clippy::all,
+        clippy::expect_used,
+        clippy::panic,
+        clippy::todo,
+        clippy::unimplemented,
+        clippy::unwrap_used,
+        missing_docs
+    )]
+
+    slint::include_modules!();
+}
+
+use generated::{AppWindow, LocationRow};
+
+mod result_model;
+mod state;
+mod worker;
+
+use std::path::PathBuf;
+
+use slint::ComponentHandle;
+
+use crate::AppError;
+
+/// Opens the desktop UI and starts loading or importing on a worker thread.
+pub fn run(data_file: PathBuf, game_dir: Option<PathBuf>) -> Result<(), AppError> {
+    let app = AppWindow::new().map_err(|error| AppError::Ui(error.to_string()))?;
+    worker::install_action_callbacks(&app, data_file.clone(), game_dir.clone());
+    worker::start_load(app.as_weak(), data_file, game_dir, false);
+    app.run().map_err(|error| AppError::Ui(error.to_string()))
+}

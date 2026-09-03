@@ -1,6 +1,32 @@
 [package]
-name = "eu5_provinces_filter"
+name = "eu5-location-filter"
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.92"
+authors = ["Young Hyun Chi"]
+description = "Inspect and filter Europa Universalis V map locations"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+keywords = ["eu5", "map", "paradox", "slint"]
+categories = ["games", "visualization"]
+include = ["/build.rs", "/src/**", "/ui/**", "/docs/**", "/README.md", "/CHANGELOG.md", "/LICENSE-MIT", "/LICENSE-APACHE", "/rust-toolchain.toml"]
 
 [dependencies]
+bitcode = { version = "0.6.9", default-features = false, features = ["derive", "std"] }
+clap = { version = "4.6.6", default-features = false, features = ["derive", "error-context", "help", "std", "suggestions", "usage"] }
+png = { version = "0.18.1", default-features = false }
+slint = { version = "1.17.1", default-features = false, features = ["accessibility", "backend-winit", "compat-1-2", "renderer-femtovg", "renderer-software", "std"] }
+thiserror = "2.0.20"
+zstd = { version = "0.13.3", default-features = false }
+
+[build-dependencies]
+slint-build = "1.17.1"
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+debug = false
+incremental = false
+strip = true
+lto = "fat"
+panic = "unwind"
