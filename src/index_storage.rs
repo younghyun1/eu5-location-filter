@@ -3,12 +3,14 @@
 #[cfg(feature = "desktop")]
 use std::fs::{self, OpenOptions};
 #[cfg(feature = "desktop")]
+use std::io::Cursor;
+#[cfg(feature = "desktop")]
 use std::io::Write;
-use std::io::{Cursor, Read};
 #[cfg(feature = "desktop")]
 use std::path::{Path, PathBuf};
 
 use crate::AppError;
+use crate::compression::decode_limited;
 use crate::filter::StoredFilterIndex;
 
 const MAGIC: &[u8; 8] = b"EU5IDX\0\x01";
@@ -16,6 +18,7 @@ const MAX_COMPRESSED_SIZE: u64 = 128 * 1024 * 1024;
 const MAX_DECOMPRESSED_SIZE: u64 = 128 * 1024 * 1024;
 
 /// Encodes a deterministic index payload as one maximum-level zstd frame.
+#[cfg(feature = "desktop")]
 pub fn encode_index(index: &StoredFilterIndex) -> Result<Vec<u8>, AppError> {
     let payload = bitcode::encode(index);
     let length = u64::try_from(payload.len())
@@ -46,18 +49,7 @@ pub fn decode_index(compressed: &[u8]) -> Result<StoredFilterIndex, AppError> {
             "compressed filter index exceeds its size limit".to_owned(),
         ));
     }
-    let decoder = zstd::stream::read::Decoder::new(Cursor::new(compressed))
-        .map_err(|error| AppError::Compression(error.to_string()))?;
-    let mut expanded = Vec::new();
-    decoder
-        .take(MAX_DECOMPRESSED_SIZE + 1)
-        .read_to_end(&mut expanded)
-        .map_err(|error| AppError::Compression(error.to_string()))?;
-    if expanded.len() as u64 > MAX_DECOMPRESSED_SIZE {
-        return Err(AppError::InvalidData(
-            "decompressed filter index exceeds its size limit".to_owned(),
-        ));
-    }
+    let expanded = decode_limited(compressed, MAX_DECOMPRESSED_SIZE)?;
     if expanded.get(..8) != Some(MAGIC.as_slice()) {
         return Err(AppError::InvalidData(
             "filter index magic or envelope version is unsupported".to_owned(),
@@ -172,7 +164,7 @@ fn remove_if_exists(path: &Path) -> Result<(), AppError> {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "desktop"))]
 mod tests {
     use super::{decode_index, encode_index};
     use crate::filter::StoredFilterIndex;

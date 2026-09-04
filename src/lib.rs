@@ -9,6 +9,8 @@
 
 //! Import, storage, filtering, and UI support for EU5 map locations.
 
+mod compression;
+
 pub mod embedded;
 pub mod error;
 pub mod filter;

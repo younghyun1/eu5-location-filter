@@ -75,3 +75,11 @@ pub fn start_web() -> Result<(), wasm_bindgen::JsValue> {
 pub fn set_web_theme(theme: &str) -> Result<(), wasm_bindgen::JsValue> {
     web::set_theme(theme).map_err(|error| wasm_bindgen::JsValue::from_str(&error.to_string()))
 }
+
+/// Runs bounded real-data filter scans for browser optimization comparisons.
+#[cfg(all(feature = "web-benchmark", feature = "web", target_family = "wasm"))]
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub fn benchmark_filter_work(iterations: u32) -> Result<u32, wasm_bindgen::JsValue> {
+    web::benchmark_filter_work(iterations)
+        .map_err(|error| wasm_bindgen::JsValue::from_str(&error.to_string()))
+}

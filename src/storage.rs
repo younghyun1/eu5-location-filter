@@ -4,12 +4,14 @@ use std::collections::HashMap;
 #[cfg(feature = "desktop")]
 use std::fs::{self, OpenOptions};
 #[cfg(feature = "desktop")]
+use std::io::Cursor;
+#[cfg(feature = "desktop")]
 use std::io::Write;
-use std::io::{Cursor, Read};
 #[cfg(feature = "desktop")]
 use std::path::{Path, PathBuf};
 
 use crate::AppError;
+use crate::compression::decode_limited;
 use crate::model::{Dataset, StoredDataset};
 
 mod validation;
@@ -21,6 +23,7 @@ const MAX_COMPRESSED_SIZE: u64 = 256 * 1024 * 1024;
 const MAX_DECOMPRESSED_SIZE: u64 = 128 * 1024 * 1024;
 
 /// Encodes a deterministic zstd frame containing the versioned bitcode payload.
+#[cfg(feature = "desktop")]
 pub fn encode_blob(stored: &StoredDataset) -> Result<Vec<u8>, AppError> {
     validate_stored(stored)?;
     let payload = bitcode::encode(stored);
@@ -52,18 +55,7 @@ pub fn decode_blob(compressed: &[u8]) -> Result<Dataset, AppError> {
             "compressed dataset exceeds size limit".to_owned(),
         ));
     }
-    let decoder = zstd::stream::read::Decoder::new(Cursor::new(compressed))
-        .map_err(|error| AppError::Compression(error.to_string()))?;
-    let mut expanded = Vec::new();
-    decoder
-        .take(MAX_DECOMPRESSED_SIZE + 1)
-        .read_to_end(&mut expanded)
-        .map_err(|error| AppError::Compression(error.to_string()))?;
-    if expanded.len() as u64 > MAX_DECOMPRESSED_SIZE {
-        return Err(AppError::InvalidData(
-            "decompressed dataset exceeds size limit".to_owned(),
-        ));
-    }
+    let expanded = decode_limited(compressed, MAX_DECOMPRESSED_SIZE)?;
     if expanded.get(..MAGIC.len()) != Some(MAGIC.as_slice()) {
         return Err(AppError::InvalidData(
             "dataset magic or envelope version is unsupported".to_owned(),

@@ -33,6 +33,7 @@ desktop = [
     "slint/renderer-software",
 ]
 web = ["slint/backend-winit", "slint/renderer-femtovg"]
+web-benchmark = ["web"]
 
 [dependencies]
 bitcode = { version = "0.6.9", default-features = false, features = ["derive", "std"] }
@@ -41,9 +42,12 @@ memchr = { version = "2.8.3", default-features = false, features = ["std"] }
 png = { version = "0.18.1", default-features = false, optional = true }
 slint = { version = "1.17.1", default-features = false, features = ["compat-1-2", "std"] }
 thiserror = "2.0.20"
+
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
 zstd = { version = "0.13.3", default-features = false }
 
 [target.'cfg(target_family = "wasm")'.dependencies]
+ruzstd = { version = "0.9.0", default-features = false, features = ["std"] }
 wasm-bindgen = "0.2.103"
 
 [build-dependencies]
@@ -61,6 +65,7 @@ panic = "abort"
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = [
     "-Oz",
+    "--enable-simd",
     "--enable-mutable-globals",
     "--enable-nontrapping-float-to-int",
     "--enable-bulk-memory",
