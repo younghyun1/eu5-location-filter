@@ -171,14 +171,7 @@ mod tests {
 
     #[test]
     fn index_envelope_round_trips() {
-        let index = StoredFilterIndex {
-            format_version: 1,
-            app_id: crate::model::EU5_APP_ID,
-            build_id: 42,
-            location_count: 0,
-            searchable: Vec::new(),
-            orders: Vec::new(),
-        };
+        let index = StoredFilterIndex::default();
         let encoded = encode_index(&index);
         assert!(encoded.is_ok());
         assert_eq!(

@@ -224,7 +224,7 @@ fn punctuation_insensitive_search_preserves_sort_collation() {
 fn rejects_the_previous_search_index_format() {
     let dataset = Arc::new(fixture());
     let mut stored = FilterEngine::build_stored_index(&dataset);
-    stored.format_version = 3;
+    stored.format_version = 4;
     assert!(FilterEngine::from_stored_index(dataset, stored).is_err());
 }
 

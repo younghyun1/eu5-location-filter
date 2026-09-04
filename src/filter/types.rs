@@ -17,6 +17,7 @@ pub struct FloatRange {
 }
 
 impl FloatRange {
+    #[cfg(test)]
     pub(super) fn matches(self, value: f32) -> bool {
         self.min.is_none_or(|minimum| value >= minimum)
             && self.max.is_none_or(|maximum| value <= maximum)

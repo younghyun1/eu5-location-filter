@@ -1,17 +1,28 @@
-//! Allocation-bounded filtering and precomputed stable sorting.
+//! Allocation-bounded queries over bundled facet, numeric, search, and sort indexes.
 
-use std::collections::HashSet;
+use crate::model::{Dataset, LocationId};
 use std::sync::Arc;
 
-use crate::model::{
-    Dataset, LocationId, LocationKind, LocationRecord, SymbolId, is_food_producing,
-};
-
+mod bitmap;
+mod facets;
 mod index;
+#[cfg(test)]
+mod indexed_tests;
+mod numeric;
+mod posting;
+mod query;
+#[cfg(test)]
+mod reference;
+mod search;
 mod sort;
+mod sort_compare;
 #[cfg(test)]
 mod test_fixture;
+#[cfg(test)]
+mod tests;
 mod text;
+#[cfg(all(test, feature = "desktop"))]
+mod timings;
 mod types;
 
 pub use index::StoredFilterIndex;
@@ -19,75 +30,67 @@ use sort::SortOrders;
 pub(crate) use text::fold_search;
 pub use types::{FilterSet, FloatRange, SortField, parse_optional_number};
 
-/// Precomputed search text and fixed sort indexes over one immutable dataset.
+/// Immutable precomputed indexes; queries allocate only bounded masks and result IDs.
 pub struct FilterEngine {
     dataset: Arc<Dataset>,
     searchable: Vec<String>,
     sort_orders: SortOrders,
-    food_raw_materials: HashSet<SymbolId>,
+    query_index: query::QueryIndex,
+    #[cfg(test)]
+    reference_food: std::collections::HashSet<crate::model::SymbolId>,
 }
 
 impl FilterEngine {
-    /// Builds normalized search strings and bounded orders for every sortable field.
+    /// Builds indexes for an external dataset or a synthetic test fixture.
     #[must_use]
     pub fn new(dataset: Arc<Dataset>) -> Self {
-        let (folded_symbols, searchable) = search_data(&dataset);
-        let sort_orders = SortOrders::new(&dataset, &folded_symbols);
-        let food_raw_materials = food_raw_materials(&dataset);
-        Self {
-            dataset,
-            searchable,
-            sort_orders,
-            food_raw_materials,
-        }
+        let stored = Self::build_stored_index(&dataset);
+        Self::restore(dataset, stored)
     }
 
-    /// Builds a deterministic payload for the committed filter-index bundle.
+    /// Builds the deterministic payload offline, without accessing the game installation.
     #[must_use]
     pub fn build_stored_index(dataset: &Dataset) -> StoredFilterIndex {
         let (folded_symbols, searchable) = search_data(dataset);
-        let sort_orders = SortOrders::new(dataset, &folded_symbols).into_stored();
+        let query = query::QueryIndex::build(dataset, &searchable);
         StoredFilterIndex {
             format_version: index::INDEX_FORMAT_VERSION,
             app_id: crate::model::EU5_APP_ID,
             build_id: dataset.stored.build_id,
             location_count: u32::try_from(dataset.stored.locations.len()).unwrap_or(u32::MAX),
             searchable,
-            orders: sort_orders,
+            orders: SortOrders::new(dataset, &folded_symbols).into_stored(),
+            query,
         }
     }
 
-    /// Restores validated search and sort indexes without rebuilding them.
+    /// Restores validated indexes without runtime index generation or sorting.
     pub fn from_stored_index(
         dataset: Arc<Dataset>,
         stored: StoredFilterIndex,
     ) -> Result<Self, crate::AppError> {
         stored.validate(&dataset)?;
-        let food_raw_materials = food_raw_materials(&dataset);
-        Ok(Self {
+        Ok(Self::restore(dataset, stored))
+    }
+
+    fn restore(dataset: Arc<Dataset>, stored: StoredFilterIndex) -> Self {
+        Self {
+            #[cfg(test)]
+            reference_food: reference::food_raw_materials(&dataset),
             dataset,
             searchable: stored.searchable,
             sort_orders: SortOrders::from_stored(stored.orders),
-            food_raw_materials,
-        })
+            query_index: stored.query,
+        }
     }
 
-    /// Scans one pre-sorted index and returns only matching location IDs.
+    /// Intersects indexed criteria, verifies search candidates, and orders matching IDs.
     #[must_use]
     pub fn apply(&self, filters: &FilterSet, sort: SortField, ascending: bool) -> Vec<LocationId> {
-        let query = fold_search(&filters.search);
-        let Some(order) = self.sort_orders.get(sort, ascending) else {
-            return Vec::new();
-        };
-        order
-            .iter()
-            .copied()
-            .filter(|id| {
-                self.dataset
-                    .location(*id)
-                    .is_some_and(|record| self.matches(record, filters, &query))
-            })
-            .collect()
+        let mask = self
+            .query_index
+            .apply(&self.dataset, &self.searchable, filters);
+        self.sort_orders.select(&mask, sort, ascending)
     }
 
     /// Preserves selection only while its ID remains in the filtered index.
@@ -97,53 +100,6 @@ impl FilterEngine {
         visible: &[LocationId],
     ) -> Option<LocationId> {
         selected.filter(|id| visible.contains(id))
-    }
-
-    fn matches(&self, record: &LocationRecord, filters: &FilterSet, query: &str) -> bool {
-        let searchable = usize::try_from(record.id.0)
-            .ok()
-            .and_then(|index| self.searchable.get(index))
-            .map(String::as_str)
-            .unwrap_or_default();
-        (filters.show_impassable || record.kind != LocationKind::Impassable)
-            && (query.is_empty() || searchable.contains(query))
-            && (filters.kinds.is_empty() || filters.kinds.contains(&record.kind))
-            && (filters.topographies.is_empty()
-                || filters.topographies.contains(&record.topography))
-            && (filters.vegetation.is_empty() || filters.vegetation.contains(&record.vegetation))
-            && (filters.climates.is_empty() || filters.climates.contains(&record.climate))
-            && facet_matches(&filters.continents, Some(record.hierarchy.continent))
-            && facet_matches(&filters.subcontinents, Some(record.hierarchy.subcontinent))
-            && facet_matches(&filters.regions, Some(record.hierarchy.region))
-            && facet_matches(&filters.areas, Some(record.hierarchy.area))
-            && facet_matches(&filters.provinces, Some(record.hierarchy.province))
-            && facet_matches(&filters.religions, record.religion)
-            && facet_matches(&filters.cultures, record.culture)
-            && facet_matches(&filters.raw_materials, record.raw_material)
-            && (!filters.food_producing_only
-                || record
-                    .raw_material
-                    .is_some_and(|material| self.food_raw_materials.contains(&material)))
-            && facet_matches(&filters.modifiers, record.modifier)
-            && filters.rgb.is_none_or(|color| record.color == color)
-            && selection_matches(&filters.coastal, record.coastal)
-            && selection_matches(&filters.river_presence, record.river.is_some())
-            && river_range_matches(record.river.as_ref().map(|river| river.level.0), filters)
-            && numeric_matches(
-                &filters.harbor_presence,
-                filters.harbor_range,
-                record.harbor_suitability,
-            )
-            && selection_matches(
-                &filters.movement_presence,
-                record.movement_assistance.is_some(),
-            )
-            && match record.movement_assistance {
-                Some(value) => {
-                    filters.movement_x.matches(value[0]) && filters.movement_y.matches(value[1])
-                }
-                None => ranges_are_empty(filters.movement_x, filters.movement_y),
-            }
     }
 }
 
@@ -166,58 +122,3 @@ fn search_data(dataset: &Dataset) -> (Vec<String>, Vec<String>) {
         .collect();
     (folded_symbols, searchable)
 }
-
-fn food_raw_materials(dataset: &Dataset) -> HashSet<SymbolId> {
-    dataset
-        .stored
-        .dictionary
-        .iter()
-        .enumerate()
-        .filter(|(_, key)| is_food_producing(key))
-        .filter_map(|(index, _)| u32::try_from(index).ok().map(SymbolId))
-        .collect()
-}
-
-fn facet_matches(filter: &HashSet<Option<SymbolId>>, value: Option<SymbolId>) -> bool {
-    filter.is_empty() || filter.contains(&value)
-}
-
-fn numeric_matches(filter: &HashSet<bool>, range: FloatRange, value: Option<f32>) -> bool {
-    match value {
-        Some(value) => selection_matches(filter, true) && range.matches(value),
-        None => {
-            (filter.contains(&false) || filter.is_empty())
-                && range.min.is_none()
-                && range.max.is_none()
-        }
-    }
-}
-
-fn selection_matches<T: Eq + std::hash::Hash>(filter: &HashSet<T>, value: T) -> bool {
-    filter.is_empty() || filter.contains(&value)
-}
-
-fn river_range_matches(value: Option<u8>, filters: &FilterSet) -> bool {
-    match value {
-        Some(value) => {
-            (filters.river_level_min.is_empty()
-                || filters
-                    .river_level_min
-                    .iter()
-                    .any(|minimum| value >= *minimum))
-                && (filters.river_level_max.is_empty()
-                    || filters
-                        .river_level_max
-                        .iter()
-                        .any(|maximum| value <= *maximum))
-        }
-        None => filters.river_level_min.is_empty(),
-    }
-}
-
-fn ranges_are_empty(first: FloatRange, second: FloatRange) -> bool {
-    first.min.is_none() && first.max.is_none() && second.min.is_none() && second.max.is_none()
-}
-
-#[cfg(test)]
-mod tests;

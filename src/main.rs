@@ -27,6 +27,12 @@ struct Cli {
 
 #[derive(Debug, Subcommand)]
 enum Command {
+    /// Rebuild only the query index from an existing blob, without reading EU5 files.
+    Reindex {
+        /// Replace an existing index bundle.
+        #[arg(long)]
+        force: bool,
+    },
     /// Import a vanilla EU5 installation without opening the GUI.
     Import {
         /// Replace an existing valid data file.
@@ -44,6 +50,9 @@ fn main() -> ExitCode {
         }
     };
     let result = match cli.command {
+        Some(Command::Reindex { force }) => {
+            run_reindex(cli.data_file.as_deref(), cli.index_file.as_deref(), force)
+        }
         Some(Command::Import { force }) => run_import(
             cli.data_file.as_deref(),
             cli.index_file.as_deref(),
@@ -59,6 +68,27 @@ fn main() -> ExitCode {
             ExitCode::from(1)
         }
     }
+}
+
+fn run_reindex(
+    data_file: Option<&std::path::Path>,
+    index_file: Option<&std::path::Path>,
+    force: bool,
+) -> Result<(), eu5_location_filter::AppError> {
+    let data_file =
+        data_file.unwrap_or_else(|| std::path::Path::new("assets/eu5-locations.bitcode.zst"));
+    let index_file =
+        index_file.unwrap_or_else(|| std::path::Path::new("assets/eu5-indexes.bitcode.zst"));
+    let dataset = storage::load_dataset(data_file)?;
+    let index = FilterEngine::build_stored_index(&dataset);
+    index.validate(&dataset)?;
+    index_storage::write_index(index_file, &index, force)?;
+    println!(
+        "Indexed {} locations into {}",
+        dataset.stored.locations.len(),
+        index_file.display()
+    );
+    Ok(())
 }
 
 fn run_import(

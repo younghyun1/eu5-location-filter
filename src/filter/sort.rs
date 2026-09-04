@@ -1,24 +1,16 @@
-//! Precomputed bounded sort orders for constant-time sort selection.
+//! Adaptive output ordering from bundled permutations and their inverse ranks.
 
-use std::cmp::Ordering;
+use super::{SortField, bitmap::Bitmap, index::StoredSortOrder, sort_compare::compare};
+use crate::model::{Dataset, LocationId};
 use std::collections::HashMap;
 
-use super::SortField;
-use super::index::StoredSortOrder;
-use crate::model::{Dataset, LocationId, LocationRecord, SymbolId};
-
-struct DirectionOrders {
-    ascending: Vec<LocationId>,
-    descending: Vec<LocationId>,
-}
-
 pub(super) struct SortOrders {
-    values: HashMap<SortField, DirectionOrders>,
+    values: HashMap<SortField, StoredSortOrder>,
 }
 
 impl SortOrders {
-    pub(super) fn new(dataset: &Dataset, folded_symbols: &[String]) -> Self {
-        let base: Vec<LocationId> = dataset
+    pub(super) fn new(dataset: &Dataset, folded: &[String]) -> Self {
+        let base: Vec<_> = dataset
             .stored
             .locations
             .iter()
@@ -27,16 +19,19 @@ impl SortOrders {
         let mut values = HashMap::with_capacity(SortField::ALL.len());
         for field in SortField::ALL {
             let mut ascending = base.clone();
-            ascending.sort_by(|left, right| {
-                compare(dataset, folded_symbols, *left, *right, field, true)
-            });
             let mut descending = base.clone();
-            descending.sort_by(|left, right| {
-                compare(dataset, folded_symbols, *left, *right, field, false)
+            ascending.sort_unstable_by(|left, right| {
+                compare(dataset, folded, *left, *right, field, true)
+            });
+            descending.sort_unstable_by(|left, right| {
+                compare(dataset, folded, *left, *right, field, false)
             });
             values.insert(
                 field,
-                DirectionOrders {
+                StoredSortOrder {
+                    field,
+                    ascending_ranks: ranks(&ascending),
+                    descending_ranks: ranks(&descending),
                     ascending,
                     descending,
                 },
@@ -45,215 +40,79 @@ impl SortOrders {
         Self { values }
     }
 
+    #[cfg(test)]
     pub(super) fn get(&self, field: SortField, ascending: bool) -> Option<&[LocationId]> {
-        self.values.get(&field).map(|orders| {
+        self.values.get(&field).map(|order| {
             if ascending {
-                orders.ascending.as_slice()
+                order.ascending.as_slice()
             } else {
-                orders.descending.as_slice()
+                order.descending.as_slice()
             }
         })
     }
 
-    pub(super) fn into_stored(mut self) -> Vec<StoredSortOrder> {
-        let mut stored = Vec::with_capacity(SortField::ALL.len());
-        for field in SortField::ALL {
-            let Some(orders) = self.values.remove(&field) else {
-                continue;
-            };
-            stored.push(StoredSortOrder {
-                field,
-                ascending: orders.ascending,
-                descending: orders.descending,
-            });
+    pub(super) fn select(
+        &self,
+        mask: &Bitmap,
+        field: SortField,
+        ascending: bool,
+    ) -> Vec<LocationId> {
+        let Some(stored) = self.values.get(&field) else {
+            return Vec::new();
+        };
+        let (order, ranks) = if ascending {
+            (&stored.ascending, &stored.ascending_ranks)
+        } else {
+            (&stored.descending, &stored.descending_ranks)
+        };
+        let count = mask.count();
+        if count == order.len() {
+            return order.clone();
         }
-        stored
+        if count == 0 {
+            return Vec::new();
+        }
+        // Sparse output pays only integer rank comparisons. Dense output scans the
+        // permutation once; the conservative crossover avoids sorting broad results.
+        if use_ranks(count, order.len()) {
+            let mut ids = Vec::with_capacity(count);
+            ids.extend(mask.ids());
+            ids.sort_unstable_by_key(|id| ranks.get(id.0 as usize).copied().unwrap_or(u32::MAX));
+            ids
+        } else {
+            let mut ids = Vec::with_capacity(count);
+            ids.extend(order.iter().copied().filter(|id| mask.contains(*id)));
+            ids
+        }
+    }
+
+    pub(super) fn into_stored(mut self) -> Vec<StoredSortOrder> {
+        SortField::ALL
+            .into_iter()
+            .filter_map(|field| self.values.remove(&field))
+            .collect()
     }
 
     pub(super) fn from_stored(stored: Vec<StoredSortOrder>) -> Self {
-        let values = stored
-            .into_iter()
-            .map(|orders| {
-                (
-                    orders.field,
-                    DirectionOrders {
-                        ascending: orders.ascending,
-                        descending: orders.descending,
-                    },
-                )
-            })
-            .collect();
-        Self { values }
-    }
-}
-
-fn compare(
-    dataset: &Dataset,
-    folded: &[String],
-    left: LocationId,
-    right: LocationId,
-    field: SortField,
-    ascending: bool,
-) -> Ordering {
-    let Some(left_record) = dataset.location(left) else {
-        return Ordering::Equal;
-    };
-    let Some(right_record) = dataset.location(right) else {
-        return Ordering::Equal;
-    };
-    let ordering = compare_records(folded, left_record, right_record, field);
-    let directed = if ascending {
-        ordering
-    } else {
-        reverse_non_null(ordering, field, left_record, right_record)
-    };
-    directed.then_with(|| left.cmp(&right))
-}
-
-fn compare_records(
-    folded: &[String],
-    left: &LocationRecord,
-    right: &LocationRecord,
-    field: SortField,
-) -> Ordering {
-    match field {
-        SortField::Color => left.color.cmp(&right.color),
-        SortField::Name => symbols(folded, Some(left.name), Some(right.name)),
-        SortField::Identifier => symbols(folded, Some(left.key), Some(right.key)),
-        SortField::Kind => left.kind.cmp(&right.kind),
-        SortField::Topography => symbols(folded, Some(left.topography), Some(right.topography)),
-        SortField::Vegetation => symbols(folded, left.vegetation, right.vegetation),
-        SortField::Climate => symbols(folded, left.climate, right.climate),
-        SortField::Continent => symbols(
-            folded,
-            Some(left.hierarchy.continent),
-            Some(right.hierarchy.continent),
-        ),
-        SortField::Subcontinent => symbols(
-            folded,
-            Some(left.hierarchy.subcontinent),
-            Some(right.hierarchy.subcontinent),
-        ),
-        SortField::Region => symbols(
-            folded,
-            Some(left.hierarchy.region),
-            Some(right.hierarchy.region),
-        ),
-        SortField::Area => symbols(
-            folded,
-            Some(left.hierarchy.area),
-            Some(right.hierarchy.area),
-        ),
-        SortField::Province => symbols(
-            folded,
-            Some(left.hierarchy.province),
-            Some(right.hierarchy.province),
-        ),
-        SortField::Religion => symbols(folded, left.religion, right.religion),
-        SortField::Culture => symbols(folded, left.culture, right.culture),
-        SortField::RawMaterial => symbols(folded, left.raw_material, right.raw_material),
-        SortField::Modifier => symbols(folded, left.modifier, right.modifier),
-        SortField::Coastal => left.coastal.cmp(&right.coastal),
-        SortField::RiverPresence => left.river.is_some().cmp(&right.river.is_some()),
-        SortField::RiverLevel => optional_values(
-            left.river.as_ref().map(|value| value.level.0),
-            right.river.as_ref().map(|value| value.level.0),
-        ),
-        SortField::HarborSuitability => {
-            optional_floats(left.harbor_suitability, right.harbor_suitability)
+        Self {
+            values: stored
+                .into_iter()
+                .map(|order| (order.field, order))
+                .collect(),
         }
-        SortField::MovementPresence => left
-            .movement_assistance
-            .is_some()
-            .cmp(&right.movement_assistance.is_some()),
-        SortField::MovementX => {
-            optional_floats(movement_component(left, 0), movement_component(right, 0))
+    }
+}
+
+pub(super) fn use_ranks(count: usize, total: usize) -> bool {
+    count.saturating_mul(count.checked_ilog2().unwrap_or(0) as usize + 1) < total / 2
+}
+
+fn ranks(order: &[LocationId]) -> Vec<u32> {
+    let mut values = vec![0; order.len()];
+    for (rank, id) in order.iter().enumerate() {
+        if let Some(slot) = values.get_mut(id.0 as usize) {
+            *slot = u32::try_from(rank).unwrap_or(u32::MAX);
         }
-        SortField::MovementY => {
-            optional_floats(movement_component(left, 1), movement_component(right, 1))
-        }
-        SortField::StaticPopulationCapacity => optional_values(
-            left.static_population_capacity.map(|value| value.total.0),
-            right.static_population_capacity.map(|value| value.total.0),
-        ),
-        SortField::EquatorCapacity => optional_values(
-            left.static_population_capacity.map(|value| value.equator.0),
-            right
-                .static_population_capacity
-                .map(|value| value.equator.0),
-        ),
     }
-}
-
-fn symbols(folded: &[String], left: Option<SymbolId>, right: Option<SymbolId>) -> Ordering {
-    optional_values(
-        left.and_then(|value| symbol_key(folded, value)),
-        right.and_then(|value| symbol_key(folded, value)),
-    )
-}
-
-fn symbol_key(folded: &[String], symbol: SymbolId) -> Option<&str> {
-    usize::try_from(symbol.0)
-        .ok()
-        .and_then(|index| folded.get(index))
-        .map(String::as_str)
-}
-
-fn optional_values<T: Ord>(left: Option<T>, right: Option<T>) -> Ordering {
-    match (left, right) {
-        (Some(left), Some(right)) => left.cmp(&right),
-        (Some(_), None) => Ordering::Less,
-        (None, Some(_)) => Ordering::Greater,
-        (None, None) => Ordering::Equal,
-    }
-}
-
-fn optional_floats(left: Option<f32>, right: Option<f32>) -> Ordering {
-    match (left, right) {
-        (Some(left), Some(right)) => left.partial_cmp(&right).unwrap_or(Ordering::Equal),
-        (Some(_), None) => Ordering::Less,
-        (None, Some(_)) => Ordering::Greater,
-        (None, None) => Ordering::Equal,
-    }
-}
-
-fn movement_component(record: &LocationRecord, index: usize) -> Option<f32> {
-    record
-        .movement_assistance
-        .and_then(|value| value.get(index).copied())
-}
-
-fn reverse_non_null(
-    ordering: Ordering,
-    field: SortField,
-    left: &LocationRecord,
-    right: &LocationRecord,
-) -> Ordering {
-    let nullable = match field {
-        SortField::Vegetation => (left.vegetation.is_none(), right.vegetation.is_none()),
-        SortField::Climate => (left.climate.is_none(), right.climate.is_none()),
-        SortField::Religion => (left.religion.is_none(), right.religion.is_none()),
-        SortField::Culture => (left.culture.is_none(), right.culture.is_none()),
-        SortField::RawMaterial => (left.raw_material.is_none(), right.raw_material.is_none()),
-        SortField::Modifier => (left.modifier.is_none(), right.modifier.is_none()),
-        SortField::RiverLevel => (left.river.is_none(), right.river.is_none()),
-        SortField::HarborSuitability => (
-            left.harbor_suitability.is_none(),
-            right.harbor_suitability.is_none(),
-        ),
-        SortField::MovementX | SortField::MovementY => (
-            left.movement_assistance.is_none(),
-            right.movement_assistance.is_none(),
-        ),
-        SortField::StaticPopulationCapacity | SortField::EquatorCapacity => (
-            left.static_population_capacity.is_none(),
-            right.static_population_capacity.is_none(),
-        ),
-        _ => (false, false),
-    };
-    if nullable.0 != nullable.1 {
-        ordering
-    } else {
-        ordering.reverse()
-    }
+    values
 }

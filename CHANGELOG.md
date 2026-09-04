@@ -2,6 +2,7 @@
 
 ## 0.1.0 - Unreleased
 
+- Bundle adaptive facet bitmaps, numeric range indexes, substring postings, and inverse sort ranks; add offline reindexing and scan-equivalence timing tests.
 - Add the initial EU5 location importer, versioned data blob, filters, command-line interface, and desktop UI.
 - Embed level-22 location and filter-index bundles for EU5 1.3.11 build 24187685.
 - Add bounded searchable checkbox filters, configurable resizable columns, pane splitters, ASCII-folded search, and resolved localization references.
