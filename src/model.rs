@@ -12,9 +12,7 @@ mod raw_materials;
 
 pub use attributes::{PopulationAmount, RiverLevel, StaticPopulationCapacity};
 pub use interner::StringInterner;
-#[cfg(test)]
-pub(crate) use raw_materials::raw_material_icon;
-pub(crate) use raw_materials::{is_food_producing, is_gold_or_silver, raw_material_display};
+pub(crate) use raw_materials::{is_food_producing, is_gold_or_silver};
 
 /// Current on-disk schema version.
 pub const FORMAT_VERSION: u16 = 3;

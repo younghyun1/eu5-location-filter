@@ -34,7 +34,9 @@ fn rows_classify_food_and_precious_raw_materials() {
         let model = ResultModel::new(&dataset, vec![LocationId(0)]);
         assert!(
             slint::Model::row_data(model.as_ref(), 0).is_some_and(|row| {
-                row.food_raw_material == food && row.precious_raw_material == precious
+                row.raw_material == material
+                    && row.food_raw_material == food
+                    && row.precious_raw_material == precious
             })
         );
     }

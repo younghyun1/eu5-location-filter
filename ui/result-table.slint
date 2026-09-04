@@ -47,9 +47,15 @@ export component ResultTable inherits Rectangle {
     }
 
     Rectangle {
+        x: 0px;
+        y: 0px;
+        width: 100%;
         height: 36px;
+        z: 1;
         background: AppTheme.toolbar;
         HorizontalLayout {
+            width: 100%;
+            height: 100%;
             padding-left: 10px;
             padding-right: 10px;
             spacing: 10px;
@@ -102,13 +108,17 @@ export component ResultTable inherits Rectangle {
         }
     }
     Rectangle {
+        x: 0px;
         y: 36px;
+        width: 100%;
         height: 44px;
+        z: 1;
         background: AppTheme.raised;
         clip: true;
         HorizontalLayout {
             x: table.viewport-x;
             width: root.table-width * 1px;
+            height: 100%;
             padding-left: 10px;
             spacing: 0px;
             for column in root.columns: Rectangle {
@@ -155,7 +165,9 @@ export component ResultTable inherits Rectangle {
         }
     }
     table := ListView {
+        x: 0px;
         y: 80px;
+        width: 100%;
         height: root.height - 80px;
         viewport-width: max(self.visible-width, root.table-width * 1px);
         horizontal-scrollbar-policy: as-needed;

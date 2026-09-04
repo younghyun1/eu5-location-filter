@@ -10,7 +10,6 @@ use super::LocationRow;
 use crate::AppError;
 use crate::model::{
     Dataset, LocationId, LocationRecord, SymbolId, is_food_producing, is_gold_or_silver,
-    raw_material_display,
 };
 
 /// The only mutable result state is the compact vector of visible IDs.
@@ -123,7 +122,7 @@ fn display_row(
         province: shared(labels, Some(record.hierarchy.province)),
         religion: shared(labels, record.religion),
         culture: shared(labels, record.culture),
-        raw_material: raw_material(symbols, labels, record.raw_material),
+        raw_material: shared(labels, record.raw_material),
         food_raw_material: symbol_matches(symbols, record.raw_material, is_food_producing),
         precious_raw_material: symbol_matches(symbols, record.raw_material, is_gold_or_silver),
         modifier: shared(labels, record.modifier),
@@ -174,20 +173,6 @@ fn shared(values: &[SharedString], symbol: Option<SymbolId>) -> SharedString {
         .and_then(|index| values.get(index))
         .cloned()
         .unwrap_or_else(|| SharedString::from("-"))
-}
-
-fn raw_material(
-    symbols: &[SharedString],
-    labels: &[SharedString],
-    symbol: Option<SymbolId>,
-) -> SharedString {
-    let Some(index) = symbol.and_then(|id| usize::try_from(id.0).ok()) else {
-        return SharedString::from("-");
-    };
-    match (symbols.get(index), labels.get(index)) {
-        (Some(key), Some(label)) => raw_material_display(key, label).into(),
-        _ => SharedString::from("-"),
-    }
 }
 
 fn symbol_matches(

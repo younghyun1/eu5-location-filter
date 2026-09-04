@@ -81,12 +81,6 @@ mod tests {
             }),
             Some(2_661)
         );
-        assert!(dataset.stored.locations.iter().all(|record| {
-            record
-                .raw_material
-                .and_then(|material| dataset.symbol(material))
-                .is_none_or(|material| crate::model::raw_material_icon(material).is_some())
-        }));
         let dataset = Arc::new(dataset);
         let engine = FilterEngine::from_stored_index(Arc::clone(&dataset), index);
         assert!(engine.is_ok());

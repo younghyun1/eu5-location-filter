@@ -4,7 +4,7 @@ use slint::{Color, ModelRc, SharedString};
 
 use super::result_model::{format_population, text};
 use super::{AppWindow, DetailField};
-use crate::model::{Dataset, LocationId, LocationRecord, raw_material_display};
+use crate::model::{Dataset, LocationId, LocationRecord};
 
 pub(super) fn show(app: &AppWindow, dataset: &Dataset, id: LocationId) {
     let Some(record) = dataset.location(id) else {
@@ -81,7 +81,7 @@ fn fields(dataset: &Dataset, record: &LocationRecord) -> Vec<DetailField> {
         || "-".to_owned(),
         |symbol| {
             let key = dataset.symbol(symbol).unwrap_or("-");
-            raw_material_display(key, dataset.label(symbol).unwrap_or(key))
+            dataset.label(symbol).unwrap_or(key).to_owned()
         },
     );
     vec![
