@@ -25,6 +25,8 @@ mod detail;
 mod filter_selection;
 mod options;
 mod result_model;
+#[cfg(test)]
+mod result_model_tests;
 mod state;
 #[cfg(feature = "desktop")]
 mod worker;

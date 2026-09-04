@@ -7,28 +7,6 @@ use bitcode::{Decode, Encode};
 use crate::AppError;
 use crate::model::{LocationKind, MapColor, SymbolId};
 
-/// Selection for a nullable categorical field.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum OptionalFacet {
-    /// Do not constrain the field.
-    Any,
-    /// Match records without a value.
-    Missing,
-    /// Match this exact interned value.
-    Value(SymbolId),
-}
-
-/// Selection for nullable numeric fields.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum OptionalNumeric {
-    /// Include missing and present values.
-    Any,
-    /// Include missing values only.
-    Missing,
-    /// Include present values subject to any range.
-    Present,
-}
-
 /// Inclusive floating-point bounds.
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct FloatRange {
@@ -58,42 +36,42 @@ pub struct FilterSet {
     pub vegetation: HashSet<Option<SymbolId>>,
     /// OR-selected climate, including explicit `None`.
     pub climates: HashSet<Option<SymbolId>>,
-    /// Exact hierarchy facets.
-    pub continent: OptionalFacet,
-    /// Exact hierarchy facets.
-    pub subcontinent: OptionalFacet,
-    /// Exact hierarchy facets.
-    pub region: OptionalFacet,
-    /// Exact hierarchy facets.
-    pub area: OptionalFacet,
-    /// Exact hierarchy facets.
-    pub province: OptionalFacet,
-    /// Exact nullable attribute.
-    pub religion: OptionalFacet,
-    /// Exact nullable attribute.
-    pub culture: OptionalFacet,
-    /// Exact nullable attribute.
-    pub raw_material: OptionalFacet,
+    /// OR-selected continents.
+    pub continents: HashSet<Option<SymbolId>>,
+    /// OR-selected subcontinents.
+    pub subcontinents: HashSet<Option<SymbolId>>,
+    /// OR-selected regions.
+    pub regions: HashSet<Option<SymbolId>>,
+    /// OR-selected areas.
+    pub areas: HashSet<Option<SymbolId>>,
+    /// OR-selected provinces.
+    pub provinces: HashSet<Option<SymbolId>>,
+    /// OR-selected religions, including explicit `None`.
+    pub religions: HashSet<Option<SymbolId>>,
+    /// OR-selected cultures, including explicit `None`.
+    pub cultures: HashSet<Option<SymbolId>>,
+    /// OR-selected raw materials, including explicit `None`.
+    pub raw_materials: HashSet<Option<SymbolId>>,
     /// Restrict raw materials to goods with positive food output.
     pub food_producing_only: bool,
-    /// Exact nullable attribute.
-    pub modifier: OptionalFacet,
+    /// OR-selected modifiers, including explicit `None`.
+    pub modifiers: HashSet<Option<SymbolId>>,
     /// Exact true-color value.
     pub rgb: Option<MapColor>,
-    /// Exact coastal state.
-    pub coastal: Option<bool>,
-    /// Exact river presence.
-    pub river_presence: Option<bool>,
-    /// Inclusive minimum gameplay river bonus tier.
-    pub river_level_min: Option<u8>,
-    /// Inclusive maximum gameplay river bonus tier.
-    pub river_level_max: Option<u8>,
-    /// Harbor missing/present selector.
-    pub harbor_presence: OptionalNumeric,
+    /// OR-selected coastal states.
+    pub coastal: HashSet<bool>,
+    /// OR-selected river-presence states.
+    pub river_presence: HashSet<bool>,
+    /// OR-selected inclusive minimum gameplay river bonus tiers.
+    pub river_level_min: HashSet<u8>,
+    /// OR-selected inclusive maximum gameplay river bonus tiers.
+    pub river_level_max: HashSet<u8>,
+    /// OR-selected harbor missing/present states, represented by presence.
+    pub harbor_presence: HashSet<bool>,
     /// Inclusive harbor bounds.
     pub harbor_range: FloatRange,
-    /// Exact movement-assistance presence.
-    pub movement_presence: Option<bool>,
+    /// OR-selected movement-assistance presence states.
+    pub movement_presence: HashSet<bool>,
     /// Inclusive first movement component bounds.
     pub movement_x: FloatRange,
     /// Inclusive second movement component bounds.
@@ -110,28 +88,38 @@ impl Default for FilterSet {
             topographies: HashSet::new(),
             vegetation: HashSet::new(),
             climates: HashSet::new(),
-            continent: OptionalFacet::Any,
-            subcontinent: OptionalFacet::Any,
-            region: OptionalFacet::Any,
-            area: OptionalFacet::Any,
-            province: OptionalFacet::Any,
-            religion: OptionalFacet::Any,
-            culture: OptionalFacet::Any,
-            raw_material: OptionalFacet::Any,
+            continents: HashSet::new(),
+            subcontinents: HashSet::new(),
+            regions: HashSet::new(),
+            areas: HashSet::new(),
+            provinces: HashSet::new(),
+            religions: HashSet::new(),
+            cultures: HashSet::new(),
+            raw_materials: HashSet::new(),
             food_producing_only: false,
-            modifier: OptionalFacet::Any,
+            modifiers: HashSet::new(),
             rgb: None,
-            coastal: None,
-            river_presence: None,
-            river_level_min: None,
-            river_level_max: None,
-            harbor_presence: OptionalNumeric::Any,
+            coastal: HashSet::new(),
+            river_presence: HashSet::new(),
+            river_level_min: HashSet::new(),
+            river_level_max: HashSet::new(),
+            harbor_presence: HashSet::new(),
             harbor_range: FloatRange::default(),
-            movement_presence: None,
+            movement_presence: HashSet::new(),
             movement_x: FloatRange::default(),
             movement_y: FloatRange::default(),
             show_impassable: true,
         }
+    }
+}
+
+impl FilterSet {
+    /// Returns the initial interactive filter state, limited to traversable land.
+    #[must_use]
+    pub fn land_only() -> Self {
+        let mut filters = Self::default();
+        filters.kinds.insert(LocationKind::Land);
+        filters
     }
 }
 

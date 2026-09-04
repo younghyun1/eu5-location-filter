@@ -135,7 +135,7 @@ fn install_sort_and_selection(app: &AppWindow, state: &Rc<RefCell<ActiveState>>)
         app.set_food_producing_only(false);
         app.set_filter_reset_generation(app.get_filter_reset_generation().wrapping_add(1));
         update_direct(&app, &shared, |state| {
-            state.filters = FilterSet::default();
+            state.filters = FilterSet::land_only();
         });
     });
 }

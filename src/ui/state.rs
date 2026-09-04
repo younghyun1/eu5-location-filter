@@ -46,7 +46,7 @@ pub(super) fn prepare(
 impl ActiveState {
     fn new(prepared: PreparedData) -> Self {
         let PreparedData { dataset, engine } = prepared;
-        let filters = FilterSet::default();
+        let filters = FilterSet::land_only();
         let ids = engine.apply(&filters, SortField::Name, true);
         let model = ResultModel::new(&dataset, ids);
         let columns = columns::initial();
@@ -115,27 +115,29 @@ impl ActiveState {
 
 pub(super) fn configure(app: &AppWindow, prepared: PreparedData) {
     let state = Rc::new(RefCell::new(ActiveState::new(prepared)));
-    let model = match state.try_borrow() {
-        Ok(state_ref) => state_ref.model.clone(),
+    let (model, dataset, column_model) = match state.try_borrow() {
+        Ok(state_ref) => (
+            state_ref.model.clone(),
+            Arc::clone(&state_ref.dataset),
+            Rc::clone(&state_ref.columns),
+        ),
         Err(_) => return,
     };
     app.set_rows(ModelRc::from(model));
-    if let Ok(state_ref) = state.try_borrow() {
-        app.set_build_text(
-            format!(
-                "EU5 {EU5_GAME_VERSION}  |  Build {}",
-                state_ref.dataset.stored.build_id
-            )
-            .into(),
-        );
-        options::install(app, &state_ref.dataset);
-        app.set_columns(ModelRc::from(Rc::clone(&state_ref.columns)));
-        app.set_table_width(columns::total_width(&state_ref.columns));
-    }
+    controls::install(app, &state);
+    app.set_build_text(
+        format!(
+            "EU5 {EU5_GAME_VERSION}  |  Build {}",
+            dataset.stored.build_id
+        )
+        .into(),
+    );
+    options::install(app, &dataset);
+    app.set_columns(ModelRc::from(Rc::clone(&column_model)));
+    app.set_table_width(columns::total_width(&column_model));
     app.set_error_text(SharedString::new());
     app.set_loading(false);
     if let Ok(mut state_ref) = state.try_borrow_mut() {
         let _ = state_ref.refresh(app);
     }
-    controls::install(app, &state);
 }

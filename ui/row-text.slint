@@ -1,0 +1,32 @@
+import { LocationRow } from "types.slint";
+
+export global RowText {
+    public pure function cell(row: LocationRow, key: string) -> string {
+        if (key == "name") { return row.name; }
+        if (key == "identifier") { return row.key; }
+        if (key == "kind") { return row.kind; }
+        if (key == "topography") { return row.topography; }
+        if (key == "vegetation") { return row.vegetation; }
+        if (key == "climate") { return row.climate; }
+        if (key == "continent") { return row.continent; }
+        if (key == "subcontinent") { return row.subcontinent; }
+        if (key == "region") { return row.region; }
+        if (key == "area") { return row.area; }
+        if (key == "province") { return row.province; }
+        if (key == "religion") { return row.religion; }
+        if (key == "culture") { return row.culture; }
+        if (key == "raw_material") { return row.raw-material; }
+        if (key == "modifier") { return row.modifier; }
+        if (key == "rgb") { return row.rgb; }
+        if (key == "coastal") { return row.coastal; }
+        if (key == "river_presence") { return row.river-presence; }
+        if (key == "river_level") { return row.river-level; }
+        if (key == "harbor") { return row.harbor; }
+        if (key == "movement_presence") { return row.movement-presence; }
+        if (key == "movement_x") { return row.movement-x; }
+        if (key == "movement_y") { return row.movement-y; }
+        if (key == "static_capacity") { return row.static-capacity; }
+        if (key == "equator_capacity") { return row.equator-capacity; }
+        return "";
+    }
+}

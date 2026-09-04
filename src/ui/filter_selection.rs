@@ -4,12 +4,11 @@ use std::collections::HashSet;
 use std::hash::Hash;
 
 use super::state::ActiveState;
-use crate::filter::{OptionalFacet, OptionalNumeric};
 use crate::model::{LocationKind, SymbolId};
 
 pub(super) fn is_checked(state: &ActiveState, field: &str, key: &str) -> bool {
     match field {
-        "Kind" => kind(key).is_some_and(|value| state.filters.kinds.contains(&value)),
+        "Type" => kind(key).is_some_and(|value| state.filters.kinds.contains(&value)),
         "Topography" => {
             symbol(state, key).is_some_and(|value| state.filters.topographies.contains(&value))
         }
@@ -18,22 +17,24 @@ pub(super) fn is_checked(state: &ActiveState, field: &str, key: &str) -> bool {
         "Climate" => {
             optional_symbol(state, key).is_some_and(|value| state.filters.climates.contains(&value))
         }
-        "Continent" => facet_checked(state.filters.continent, state, key),
-        "Subcontinent" => facet_checked(state.filters.subcontinent, state, key),
-        "Region" => facet_checked(state.filters.region, state, key),
-        "Area" => facet_checked(state.filters.area, state, key),
-        "Province" => facet_checked(state.filters.province, state, key),
-        "Religion" => facet_checked(state.filters.religion, state, key),
-        "Culture" => facet_checked(state.filters.culture, state, key),
-        "Raw material" => facet_checked(state.filters.raw_material, state, key),
-        "Modifier" => facet_checked(state.filters.modifier, state, key),
-        "Coastal" => presence_checked(state.filters.coastal, key, "yes", "no"),
-        "River" => presence_checked(state.filters.river_presence, key, "present", "missing"),
-        "Min river bonus" => numeric_checked(state.filters.river_level_min, key),
-        "Max river bonus" => numeric_checked(state.filters.river_level_max, key),
-        "Harbor suitability" => numeric_presence_checked(state.filters.harbor_presence, key),
+        "Continent" => facet_checked(&state.filters.continents, state, key),
+        "Subcontinent" => facet_checked(&state.filters.subcontinents, state, key),
+        "Region" => facet_checked(&state.filters.regions, state, key),
+        "Area" => facet_checked(&state.filters.areas, state, key),
+        "Province" => facet_checked(&state.filters.provinces, state, key),
+        "Religion" => facet_checked(&state.filters.religions, state, key),
+        "Culture" => facet_checked(&state.filters.cultures, state, key),
+        "Raw material" => facet_checked(&state.filters.raw_materials, state, key),
+        "Modifier" => facet_checked(&state.filters.modifiers, state, key),
+        "Coastal" => presence_checked(&state.filters.coastal, key, "yes", "no"),
+        "River" => presence_checked(&state.filters.river_presence, key, "present", "missing"),
+        "Min river bonus" => numeric_checked(&state.filters.river_level_min, key),
+        "Max river bonus" => numeric_checked(&state.filters.river_level_max, key),
+        "Harbor suitability" => {
+            presence_checked(&state.filters.harbor_presence, key, "present", "missing")
+        }
         "Movement assistance" => {
-            presence_checked(state.filters.movement_presence, key, "present", "missing")
+            presence_checked(&state.filters.movement_presence, key, "present", "missing")
         }
         _ => false,
     }
@@ -41,8 +42,13 @@ pub(super) fn is_checked(state: &ActiveState, field: &str, key: &str) -> bool {
 
 pub(super) fn toggle(state: &mut ActiveState, field: &str, key: &str, checked: bool) {
     let resolved = state.resolve(key);
+    let optional_resolved = if key == "__missing__" {
+        Some(None)
+    } else {
+        resolved.map(Some)
+    };
     match field {
-        "Kind" => update_set(&mut state.filters.kinds, kind(key), checked),
+        "Type" => update_set(&mut state.filters.kinds, kind(key), checked),
         "Topography" => {
             let value = symbol(state, key);
             update_set(&mut state.filters.topographies, value, checked);
@@ -55,26 +61,41 @@ pub(super) fn toggle(state: &mut ActiveState, field: &str, key: &str, checked: b
             let value = optional_symbol(state, key);
             update_set(&mut state.filters.climates, value, checked);
         }
-        "Continent" => set_facet(&mut state.filters.continent, resolved, key, checked),
-        "Subcontinent" => set_facet(&mut state.filters.subcontinent, resolved, key, checked),
-        "Region" => set_facet(&mut state.filters.region, resolved, key, checked),
-        "Area" => set_facet(&mut state.filters.area, resolved, key, checked),
-        "Province" => set_facet(&mut state.filters.province, resolved, key, checked),
-        "Religion" => set_facet(&mut state.filters.religion, resolved, key, checked),
-        "Culture" => set_facet(&mut state.filters.culture, resolved, key, checked),
-        "Raw material" => set_facet(&mut state.filters.raw_material, resolved, key, checked),
-        "Modifier" => set_facet(&mut state.filters.modifier, resolved, key, checked),
-        "Coastal" => set_presence(&mut state.filters.coastal, key, "yes", checked),
-        "River" => set_presence(&mut state.filters.river_presence, key, "present", checked),
+        "Continent" => update_set(&mut state.filters.continents, resolved.map(Some), checked),
+        "Subcontinent" => update_set(
+            &mut state.filters.subcontinents,
+            resolved.map(Some),
+            checked,
+        ),
+        "Region" => update_set(&mut state.filters.regions, resolved.map(Some), checked),
+        "Area" => update_set(&mut state.filters.areas, resolved.map(Some), checked),
+        "Province" => update_set(&mut state.filters.provinces, resolved.map(Some), checked),
+        "Religion" => update_set(&mut state.filters.religions, optional_resolved, checked),
+        "Culture" => update_set(&mut state.filters.cultures, optional_resolved, checked),
+        "Raw material" => update_set(&mut state.filters.raw_materials, optional_resolved, checked),
+        "Modifier" => update_set(&mut state.filters.modifiers, optional_resolved, checked),
+        "Coastal" => set_presence(&mut state.filters.coastal, key, "yes", "no", checked),
+        "River" => set_presence(
+            &mut state.filters.river_presence,
+            key,
+            "present",
+            "missing",
+            checked,
+        ),
         "Min river bonus" => set_numeric(&mut state.filters.river_level_min, key, checked),
         "Max river bonus" => set_numeric(&mut state.filters.river_level_max, key, checked),
-        "Harbor suitability" => {
-            set_numeric_presence(&mut state.filters.harbor_presence, key, checked)
-        }
+        "Harbor suitability" => set_presence(
+            &mut state.filters.harbor_presence,
+            key,
+            "present",
+            "missing",
+            checked,
+        ),
         "Movement assistance" => set_presence(
             &mut state.filters.movement_presence,
             key,
             "present",
+            "missing",
             checked,
         ),
         _ => {}
@@ -83,25 +104,25 @@ pub(super) fn toggle(state: &mut ActiveState, field: &str, key: &str, checked: b
 
 pub(super) fn clear(state: &mut ActiveState, field: &str) {
     match field {
-        "Kind" => state.filters.kinds.clear(),
+        "Type" => state.filters.kinds.clear(),
         "Topography" => state.filters.topographies.clear(),
         "Vegetation" => state.filters.vegetation.clear(),
         "Climate" => state.filters.climates.clear(),
-        "Continent" => state.filters.continent = OptionalFacet::Any,
-        "Subcontinent" => state.filters.subcontinent = OptionalFacet::Any,
-        "Region" => state.filters.region = OptionalFacet::Any,
-        "Area" => state.filters.area = OptionalFacet::Any,
-        "Province" => state.filters.province = OptionalFacet::Any,
-        "Religion" => state.filters.religion = OptionalFacet::Any,
-        "Culture" => state.filters.culture = OptionalFacet::Any,
-        "Raw material" => state.filters.raw_material = OptionalFacet::Any,
-        "Modifier" => state.filters.modifier = OptionalFacet::Any,
-        "Coastal" => state.filters.coastal = None,
-        "River" => state.filters.river_presence = None,
-        "Min river bonus" => state.filters.river_level_min = None,
-        "Max river bonus" => state.filters.river_level_max = None,
-        "Harbor suitability" => state.filters.harbor_presence = OptionalNumeric::Any,
-        "Movement assistance" => state.filters.movement_presence = None,
+        "Continent" => state.filters.continents.clear(),
+        "Subcontinent" => state.filters.subcontinents.clear(),
+        "Region" => state.filters.regions.clear(),
+        "Area" => state.filters.areas.clear(),
+        "Province" => state.filters.provinces.clear(),
+        "Religion" => state.filters.religions.clear(),
+        "Culture" => state.filters.cultures.clear(),
+        "Raw material" => state.filters.raw_materials.clear(),
+        "Modifier" => state.filters.modifiers.clear(),
+        "Coastal" => state.filters.coastal.clear(),
+        "River" => state.filters.river_presence.clear(),
+        "Min river bonus" => state.filters.river_level_min.clear(),
+        "Max river bonus" => state.filters.river_level_max.clear(),
+        "Harbor suitability" => state.filters.harbor_presence.clear(),
+        "Movement assistance" => state.filters.movement_presence.clear(),
         _ => {}
     }
 }
@@ -138,75 +159,38 @@ fn optional_symbol(state: &ActiveState, key: &str) -> Option<Option<SymbolId>> {
     }
 }
 
-fn facet_checked(facet: OptionalFacet, state: &ActiveState, key: &str) -> bool {
-    match facet {
-        OptionalFacet::Any => false,
-        OptionalFacet::Missing => key == "__missing__",
-        OptionalFacet::Value(value) => symbol(state, key) == Some(value),
+fn facet_checked(facet: &HashSet<Option<SymbolId>>, state: &ActiveState, key: &str) -> bool {
+    optional_symbol(state, key).is_some_and(|value| facet.contains(&value))
+}
+
+fn presence_checked(values: &HashSet<bool>, key: &str, true_key: &str, false_key: &str) -> bool {
+    presence_value(key, true_key, false_key).is_some_and(|value| values.contains(&value))
+}
+
+fn set_presence(
+    values: &mut HashSet<bool>,
+    key: &str,
+    true_key: &str,
+    false_key: &str,
+    checked: bool,
+) {
+    update_set(values, presence_value(key, true_key, false_key), checked);
+}
+
+fn presence_value(key: &str, true_key: &str, false_key: &str) -> Option<bool> {
+    match key {
+        value if value == true_key => Some(true),
+        value if value == false_key => Some(false),
+        _ => None,
     }
 }
 
-fn set_facet(facet: &mut OptionalFacet, value: Option<SymbolId>, key: &str, checked: bool) {
-    let next = if key == "__missing__" {
-        OptionalFacet::Missing
-    } else if let Some(value) = value {
-        OptionalFacet::Value(value)
-    } else {
-        return;
-    };
-    if checked {
-        *facet = next;
-    } else if *facet == next {
-        *facet = OptionalFacet::Any;
-    }
+fn numeric_checked(values: &HashSet<u8>, key: &str) -> bool {
+    key.parse::<u8>()
+        .ok()
+        .is_some_and(|value| values.contains(&value))
 }
 
-fn presence_checked(value: Option<bool>, key: &str, true_key: &str, false_key: &str) -> bool {
-    value == Some(key == true_key) && (key == true_key || key == false_key)
-}
-
-fn set_presence(value: &mut Option<bool>, key: &str, true_key: &str, checked: bool) {
-    let Some(next) =
-        (key == true_key || key == "no" || key == "missing").then_some(key == true_key)
-    else {
-        return;
-    };
-    if checked {
-        *value = Some(next);
-    } else if *value == Some(next) {
-        *value = None;
-    }
-}
-
-fn numeric_checked(value: Option<u8>, key: &str) -> bool {
-    key.parse::<u8>().ok() == value
-}
-
-fn set_numeric(value: &mut Option<u8>, key: &str, checked: bool) {
-    let Ok(next) = key.parse::<u8>() else { return };
-    if checked {
-        *value = Some(next);
-    } else if *value == Some(next) {
-        *value = None;
-    }
-}
-
-fn numeric_presence_checked(value: OptionalNumeric, key: &str) -> bool {
-    matches!(
-        (value, key),
-        (OptionalNumeric::Present, "present") | (OptionalNumeric::Missing, "missing")
-    )
-}
-
-fn set_numeric_presence(value: &mut OptionalNumeric, key: &str, checked: bool) {
-    let next = match key {
-        "present" => OptionalNumeric::Present,
-        "missing" => OptionalNumeric::Missing,
-        _ => return,
-    };
-    if checked {
-        *value = next;
-    } else if *value == next {
-        *value = OptionalNumeric::Any;
-    }
+fn set_numeric(values: &mut HashSet<u8>, key: &str, checked: bool) {
+    update_set(values, key.parse::<u8>().ok(), checked);
 }

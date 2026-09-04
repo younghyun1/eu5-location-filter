@@ -14,7 +14,7 @@ pub(super) fn initial() -> Rc<VecModel<ColumnSpec>> {
         spec("color", "Color", 108.0, true),
         spec("name", "Name", 210.0, true),
         spec("identifier", "Identifier", 150.0, true),
-        spec("kind", "Kind", 76.0, true),
+        spec("kind", "Type", 76.0, true),
         spec("topography", "Topography", 110.0, true),
         spec("vegetation", "Vegetation", 110.0, true),
         spec("climate", "Climate", 100.0, true),
@@ -25,7 +25,7 @@ pub(super) fn initial() -> Rc<VecModel<ColumnSpec>> {
         spec("province", "Province", 160.0, false),
         spec("religion", "Religion", 130.0, false),
         spec("culture", "Culture", 130.0, false),
-        spec("raw_material", "Raw material", 130.0, false),
+        spec("raw_material", "Raw material", 150.0, true),
         spec("modifier", "Modifier", 150.0, false),
         spec("rgb", "RGB", 150.0, false),
         spec("coastal", "Coastal", 82.0, false),
@@ -130,7 +130,7 @@ mod tests {
     fn column_updates_are_bounded_and_recompute_width() {
         let columns = initial();
         let before = total_width(&columns);
-        assert_eq!(before, 1_196.0);
+        assert_eq!(before, 1_346.0);
         let capacity = (0..columns.row_count())
             .filter_map(|index| columns.row_data(index))
             .find(|column| column.key == "static_capacity");

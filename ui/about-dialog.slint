@@ -1,0 +1,46 @@
+import { AboutSlint, Button } from "std-widgets.slint";
+import { AppTheme } from "theme.slint";
+
+export component AboutDialog inherits Rectangle {
+    in property <string> build-text;
+    callback close;
+    // Slint exposes shadow blur but not backdrop blur; use a neutral modal scrim.
+    background: AppTheme.about-overlay;
+    TouchArea {
+        accessible-role: button;
+        accessible-label: "Close About dialog";
+        clicked => { root.close(); }
+    }
+    Rectangle {
+        width: 580px;
+        height: 610px;
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+        background: AppTheme.dialog;
+        border-radius: 10px;
+        border-color: AppTheme.border-strong;
+        border-width: 1px;
+        drop-shadow-blur: 24px;
+        drop-shadow-color: AppTheme.dialog-shadow;
+        // Consume clicks on dialog whitespace instead of closing through the scrim.
+        TouchArea {}
+        VerticalLayout {
+            padding: 24px;
+            spacing: 12px;
+            Text { text: "EU5 Location DB"; color: AppTheme.text-primary; font-size: 24px; font-weight: 700; horizontal-alignment: center; }
+            Text { text: "Version 0.1.0  |  " + root.build-text; color: AppTheme.text-muted; horizontal-alignment: center; }
+            Text { text: "Created by Young Hyun Chi"; color: AppTheme.text-primary; font-size: 15px; font-weight: 600; horizontal-alignment: center; }
+            HorizontalLayout {
+                alignment: center;
+                Button { text: "github.com/younghyun1"; clicked => { Platform.open-url("https://github.com/younghyun1"); } }
+                Button { text: "cyhdev.com"; clicked => { Platform.open-url("https://cyhdev.com"); } }
+                Button { text: "LinkedIn"; clicked => { Platform.open-url("https://www.linkedin.com/in/young-hyun-chi-553431376/"); } }
+            }
+            Text { text: "An unofficial static map-data browser. Not affiliated with or endorsed by Paradox Interactive."; color: AppTheme.text-secondary; wrap: word-wrap; horizontal-alignment: center; }
+            Text { text: "Source license: MIT OR Apache-2.0\nUI: Slint Royalty-free License 2.0"; color: AppTheme.text-muted; horizontal-alignment: center; }
+            AboutSlint { height: 120px; }
+            Rectangle { vertical-stretch: 1; }
+            Button { text: "Close"; height: 36px; clicked => { root.close(); } }
+        }
+    }
+}

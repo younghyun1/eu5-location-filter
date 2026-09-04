@@ -9,15 +9,15 @@ use crate::model::{
 
 mod index;
 mod sort;
+#[cfg(test)]
+mod test_fixture;
 mod text;
 mod types;
 
 pub use index::StoredFilterIndex;
 use sort::SortOrders;
 pub(crate) use text::fold_search;
-pub use types::{
-    FilterSet, FloatRange, OptionalFacet, OptionalNumeric, SortField, parse_optional_number,
-};
+pub use types::{FilterSet, FloatRange, SortField, parse_optional_number};
 
 /// Precomputed search text and fixed sort indexes over one immutable dataset.
 pub struct FilterEngine {
@@ -112,39 +112,32 @@ impl FilterEngine {
                 || filters.topographies.contains(&record.topography))
             && (filters.vegetation.is_empty() || filters.vegetation.contains(&record.vegetation))
             && (filters.climates.is_empty() || filters.climates.contains(&record.climate))
-            && facet_matches(filters.continent, Some(record.hierarchy.continent))
-            && facet_matches(filters.subcontinent, Some(record.hierarchy.subcontinent))
-            && facet_matches(filters.region, Some(record.hierarchy.region))
-            && facet_matches(filters.area, Some(record.hierarchy.area))
-            && facet_matches(filters.province, Some(record.hierarchy.province))
-            && facet_matches(filters.religion, record.religion)
-            && facet_matches(filters.culture, record.culture)
-            && facet_matches(filters.raw_material, record.raw_material)
+            && facet_matches(&filters.continents, Some(record.hierarchy.continent))
+            && facet_matches(&filters.subcontinents, Some(record.hierarchy.subcontinent))
+            && facet_matches(&filters.regions, Some(record.hierarchy.region))
+            && facet_matches(&filters.areas, Some(record.hierarchy.area))
+            && facet_matches(&filters.provinces, Some(record.hierarchy.province))
+            && facet_matches(&filters.religions, record.religion)
+            && facet_matches(&filters.cultures, record.culture)
+            && facet_matches(&filters.raw_materials, record.raw_material)
             && (!filters.food_producing_only
                 || record
                     .raw_material
                     .is_some_and(|material| self.food_raw_materials.contains(&material)))
-            && facet_matches(filters.modifier, record.modifier)
+            && facet_matches(&filters.modifiers, record.modifier)
             && filters.rgb.is_none_or(|color| record.color == color)
-            && filters.coastal.is_none_or(|value| record.coastal == value)
-            && filters
-                .river_presence
-                .is_none_or(|value| record.river.is_some() == value)
-            && optional_range_matches(
-                record.river.as_ref().map(|river| f32::from(river.level.0)),
-                FloatRange {
-                    min: filters.river_level_min.map(f32::from),
-                    max: filters.river_level_max.map(f32::from),
-                },
-            )
+            && selection_matches(&filters.coastal, record.coastal)
+            && selection_matches(&filters.river_presence, record.river.is_some())
+            && river_range_matches(record.river.as_ref().map(|river| river.level.0), filters)
             && numeric_matches(
-                filters.harbor_presence,
+                &filters.harbor_presence,
                 filters.harbor_range,
                 record.harbor_suitability,
             )
-            && filters
-                .movement_presence
-                .is_none_or(|value| record.movement_assistance.is_some() == value)
+            && selection_matches(
+                &filters.movement_presence,
+                record.movement_assistance.is_some(),
+            )
             && match record.movement_assistance {
                 Some(value) => {
                     filters.movement_x.matches(value[0]) && filters.movement_y.matches(value[1])
@@ -185,27 +178,40 @@ fn food_raw_materials(dataset: &Dataset) -> HashSet<SymbolId> {
         .collect()
 }
 
-fn facet_matches(filter: OptionalFacet, value: Option<SymbolId>) -> bool {
-    match filter {
-        OptionalFacet::Any => true,
-        OptionalFacet::Missing => value.is_none(),
-        OptionalFacet::Value(expected) => value == Some(expected),
-    }
+fn facet_matches(filter: &HashSet<Option<SymbolId>>, value: Option<SymbolId>) -> bool {
+    filter.is_empty() || filter.contains(&value)
 }
 
-fn numeric_matches(filter: OptionalNumeric, range: FloatRange, value: Option<f32>) -> bool {
-    match (filter, value) {
-        (OptionalNumeric::Any, None) => range.min.is_none() && range.max.is_none(),
-        (OptionalNumeric::Missing, None) => true,
-        (OptionalNumeric::Present, None) | (OptionalNumeric::Missing, Some(_)) => false,
-        (OptionalNumeric::Any | OptionalNumeric::Present, Some(value)) => range.matches(value),
-    }
-}
-
-fn optional_range_matches(value: Option<f32>, range: FloatRange) -> bool {
+fn numeric_matches(filter: &HashSet<bool>, range: FloatRange, value: Option<f32>) -> bool {
     match value {
-        Some(value) => range.matches(value),
-        None => range.min.is_none(),
+        Some(value) => selection_matches(filter, true) && range.matches(value),
+        None => {
+            (filter.contains(&false) || filter.is_empty())
+                && range.min.is_none()
+                && range.max.is_none()
+        }
+    }
+}
+
+fn selection_matches<T: Eq + std::hash::Hash>(filter: &HashSet<T>, value: T) -> bool {
+    filter.is_empty() || filter.contains(&value)
+}
+
+fn river_range_matches(value: Option<u8>, filters: &FilterSet) -> bool {
+    match value {
+        Some(value) => {
+            (filters.river_level_min.is_empty()
+                || filters
+                    .river_level_min
+                    .iter()
+                    .any(|minimum| value >= *minimum))
+                && (filters.river_level_max.is_empty()
+                    || filters
+                        .river_level_max
+                        .iter()
+                        .any(|maximum| value <= *maximum))
+        }
+        None => filters.river_level_min.is_empty(),
     }
 }
 

@@ -1,4 +1,5 @@
-import { AboutSlint, Button, LineEdit, Palette } from "std-widgets.slint";
+import { Button, LineEdit, Palette } from "std-widgets.slint";
+import { AboutDialog } from "about-dialog.slint";
 import { AppHeader } from "header.slint";
 import { DetailPane } from "detail-pane.slint";
 import { FilterRail } from "filter-rail.slint";
@@ -63,6 +64,7 @@ export component AppWindow inherits Window {
     in-out property <int> filter-reset-generation: 0;
     in-out property <bool> about-open: false;
     in-out property <bool> filter-pane-expanded: true;
+    in-out property <bool> detail-pane-expanded: true;
     in-out property <int> selected-index: -1;
     in-out property <bool> window-maximized <=> root.maximized;
     in-out property <bool> window-full-screen <=> root.full-screen;
@@ -177,18 +179,20 @@ export component AppWindow inherits Window {
                 table-width: root.table-width;
                 sort-key: root.sort-key;
                 sort-ascending: root.sort-ascending;
+                detail-collapsed: !root.detail-pane-expanded;
                 selected-index <=> root.selected-index;
                 sort-requested(field) => { root.sort-requested(field); }
                 select-row(index) => { root.select-row(index); }
                 toggle-column(key, visible) => { root.toggle-column(key, visible); }
                 resize-column(key, width) => { root.resize-column(key, width); }
+                show-detail => { root.detail-pane-expanded = true; }
             }
-            PaneHandle {
+            if root.detail-pane-expanded: PaneHandle {
                 dragged(delta) => {
                     root.detail-pane-width = min(520px, max(280px, root.detail-pane-width - delta));
                 }
             }
-            DetailPane {
+            if root.detail-pane-expanded: DetailPane {
                 width: root.detail-pane-width;
                 has-selection: root.selected-index >= 0;
                 detail-color: root.detail-color;
@@ -198,6 +202,7 @@ export component AppWindow inherits Window {
                 detail-rgb: root.detail-rgb;
                 detail-breadcrumb: root.detail-breadcrumb;
                 detail-fields: root.detail-fields;
+                collapse => { root.detail-pane-expanded = false; }
             }
         }
     }
@@ -253,39 +258,9 @@ export component AppWindow inherits Window {
             }
         }
     }
-    if root.about-open: Rectangle {
-        // FemtoVG has no backdrop blur; use a neutral scrim and a blurred dialog shadow.
-        background: AppTheme.about-overlay;
+    if root.about-open: AboutDialog {
         z: 100;
-        Rectangle {
-            width: 580px;
-            height: 610px;
-            x: (parent.width - self.width) / 2;
-            y: (parent.height - self.height) / 2;
-            background: AppTheme.dialog;
-            border-radius: 10px;
-            border-color: AppTheme.border-strong;
-            border-width: 1px;
-            drop-shadow-blur: 24px;
-            drop-shadow-color: AppTheme.dialog-shadow;
-            VerticalLayout {
-                padding: 24px;
-                spacing: 12px;
-                Text { text: "EU5 Location DB"; color: AppTheme.text-primary; font-size: 24px; font-weight: 700; horizontal-alignment: center; }
-                Text { text: "Version 0.1.0  |  " + root.build-text; color: AppTheme.text-muted; horizontal-alignment: center; }
-                Text { text: "Created by Young Hyun Chi"; color: AppTheme.text-primary; font-size: 15px; font-weight: 600; horizontal-alignment: center; }
-                HorizontalLayout {
-                    alignment: center;
-                    Button { text: "github.com/younghyun1"; clicked => { Platform.open-url("https://github.com/younghyun1"); } }
-                    Button { text: "cyhdev.com"; clicked => { Platform.open-url("https://cyhdev.com"); } }
-                    Button { text: "LinkedIn"; clicked => { Platform.open-url("https://www.linkedin.com/in/young-hyun-chi-553431376/"); } }
-                }
-                Text { text: "An unofficial static map-data browser. Not affiliated with or endorsed by Paradox Interactive."; color: AppTheme.text-secondary; wrap: word-wrap; horizontal-alignment: center; }
-                Text { text: "Source license: MIT OR Apache-2.0\nUI: Slint Royalty-free License 2.0"; color: AppTheme.text-muted; horizontal-alignment: center; }
-                AboutSlint { height: 120px; }
-                Rectangle { vertical-stretch: 1; }
-                Button { text: "Close"; height: 36px; clicked => { root.about-open = false; } }
-            }
-        }
+        build-text: root.build-text;
+        close => { root.about-open = false; }
     }
 }

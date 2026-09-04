@@ -1,4 +1,4 @@
-import { ScrollView } from "std-widgets.slint";
+import { Button, ScrollView } from "std-widgets.slint";
 import { DetailField } from "types.slint";
 import { AppTheme } from "theme.slint";
 
@@ -14,37 +14,63 @@ export component DetailPane inherits Rectangle {
     in property <string> detail-rgb;
     in property <string> detail-breadcrumb;
     in property <[DetailField]> detail-fields;
+    callback collapse;
 
-    if !root.has-selection: VerticalLayout {
-        alignment: center;
-        padding: 28px;
-        spacing: 8px;
-        Text { text: "Select a location"; color: AppTheme.text-primary; font-size: 20px; font-weight: 700; horizontal-alignment: center; }
-        Text { text: "Location details, hierarchy, color, and river data appear here."; color: AppTheme.text-subtle; font-size: 12px; wrap: word-wrap; horizontal-alignment: center; }
-    }
-    if root.has-selection: ScrollView {
-        VerticalLayout {
-            padding: 18px;
-            spacing: 10px;
-            Rectangle {
-                height: 108px;
-                background: root.detail-color;
-                border-radius: 8px;
-                border-width: 1px;
-                border-color: AppTheme.swatch-border;
-            }
-            Text { text: root.detail-name; color: AppTheme.text-primary; font-size: 20px; font-weight: 700; wrap: word-wrap; }
-            Text { text: root.detail-key; color: AppTheme.text-muted; font-size: 13px; wrap: word-wrap; }
+    VerticalLayout {
+        spacing: 0px;
+        Rectangle {
+            height: 36px;
+            background: AppTheme.toolbar;
             HorizontalLayout {
-                Text { text: root.detail-hex; color: AppTheme.text-secondary; font-size: 13px; }
-                Text { text: root.detail-rgb; color: AppTheme.text-secondary; font-size: 13px; horizontal-alignment: right; }
+                padding-left: 12px;
+                padding-right: 6px;
+                Text { text: "LOCATION DETAILS"; color: AppTheme.text-subtle; font-size: 11px; font-weight: 700; letter-spacing: 1px; vertical-alignment: center; }
+                Rectangle { horizontal-stretch: 1; }
+                Rectangle {
+                    width: 30px;
+                    height: 100%;
+                    Button {
+                        width: 28px;
+                        height: 28px;
+                        y: (parent.height - self.height) / 2;
+                        text: ">";
+                        accessible-label: "Hide location details";
+                        clicked => { root.collapse(); }
+                    }
+                }
             }
-            Rectangle { height: 1px; background: AppTheme.divider; }
-            Text { text: root.detail-breadcrumb; color: AppTheme.accent-text; font-size: 12px; wrap: word-wrap; }
-            for field in root.detail-fields: VerticalLayout {
-                spacing: 2px;
-                Text { text: field.label; color: AppTheme.text-subtle; font-size: 11px; font-weight: 600; }
-                Text { text: field.value; color: AppTheme.text-secondary; font-size: 13px; wrap: word-wrap; }
+        }
+        if !root.has-selection: VerticalLayout {
+            alignment: center;
+            padding: 28px;
+            spacing: 8px;
+            Text { text: "Select a location"; color: AppTheme.text-primary; font-size: 20px; font-weight: 700; horizontal-alignment: center; }
+            Text { text: "Location details, hierarchy, color, and river data appear here."; color: AppTheme.text-subtle; font-size: 12px; wrap: word-wrap; horizontal-alignment: center; }
+        }
+        if root.has-selection: ScrollView {
+            VerticalLayout {
+                padding: 18px;
+                spacing: 10px;
+                Rectangle {
+                    height: 108px;
+                    background: root.detail-color;
+                    border-radius: 8px;
+                    border-width: 1px;
+                    border-color: AppTheme.swatch-border;
+                }
+                Text { text: root.detail-name; color: AppTheme.text-primary; font-size: 20px; font-weight: 700; wrap: word-wrap; }
+                Text { text: root.detail-key; color: AppTheme.text-muted; font-size: 13px; wrap: word-wrap; }
+                HorizontalLayout {
+                    Text { text: root.detail-hex; color: AppTheme.text-secondary; font-size: 13px; }
+                    Text { text: root.detail-rgb; color: AppTheme.text-secondary; font-size: 13px; horizontal-alignment: right; }
+                }
+                Rectangle { height: 1px; background: AppTheme.divider; }
+                Text { text: root.detail-breadcrumb; color: AppTheme.accent-text; font-size: 12px; wrap: word-wrap; }
+                for field in root.detail-fields: VerticalLayout {
+                    spacing: 2px;
+                    Text { text: field.label; color: AppTheme.text-subtle; font-size: 11px; font-weight: 600; }
+                    Text { text: field.value; color: AppTheme.text-secondary; font-size: 13px; wrap: word-wrap; }
+                }
             }
         }
     }

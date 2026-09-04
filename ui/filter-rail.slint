@@ -153,7 +153,7 @@ export component FilterRail inherits Rectangle {
                     checked <=> root.show-impassable;
                     toggled => { root.toggle-impassable(self.checked); }
                 }
-                FilterGroup { label: "Kind"; options: root.kind-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
+                FilterGroup { label: "Type"; options: root.kind-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
                 SectionTitle { text: "GEOGRAPHY"; height: 30px; }
                 FilterGroup { label: "Continent"; options: root.continent-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }
                 FilterGroup { label: "Subcontinent"; options: root.subcontinent-options; reset-generation: root.reset-generation; filter-options(field, query) => { return root.filter-options(field, query); } option-toggled(field, key, checked) => { root.option-toggled(field, key, checked); } clear-options(field) => { root.clear-options(field); } }

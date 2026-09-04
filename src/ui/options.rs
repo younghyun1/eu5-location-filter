@@ -8,7 +8,7 @@ use slint::{Model, ModelRc, SharedString};
 use super::{AppWindow, CheckOption};
 use crate::filter::fold_search;
 use crate::model::MAX_RIVER_LEVEL;
-use crate::model::{Dataset, SymbolId};
+use crate::model::{Dataset, SymbolId, raw_material_display};
 
 pub(super) fn install(app: &AppWindow, dataset: &Dataset) {
     app.set_kind_options(static_model(&[
@@ -52,7 +52,10 @@ pub(super) fn install(app: &AppWindow, dataset: &Dataset) {
     app.set_climate_options(model(dataset, symbols(dataset, |r| r.climate), true));
     app.set_religion_options(model(dataset, symbols(dataset, |r| r.religion), true));
     app.set_culture_options(model(dataset, symbols(dataset, |r| r.culture), true));
-    app.set_raw_material_options(model(dataset, symbols(dataset, |r| r.raw_material), true));
+    app.set_raw_material_options(raw_material_model(
+        dataset,
+        symbols(dataset, |r| r.raw_material),
+    ));
     app.set_modifier_options(model(dataset, symbols(dataset, |r| r.modifier), true));
     app.set_coastal_options(static_model(&[("yes", "Yes"), ("no", "No")]));
     let presence = &[("present", "Present"), ("missing", "Missing")];
@@ -94,7 +97,7 @@ pub(super) fn filtered(
 
 pub(super) fn source(app: &AppWindow, field: &str) -> ModelRc<CheckOption> {
     match field {
-        "Kind" => app.get_kind_options(),
+        "Type" => app.get_kind_options(),
         "Continent" => app.get_continent_options(),
         "Subcontinent" => app.get_subcontinent_options(),
         "Region" => app.get_region_options(),
@@ -151,6 +154,20 @@ fn model(
         options.push(option("__missing__", "Missing"));
     }
     options.extend(values.into_iter().map(|(_, value)| value));
+    ModelRc::from(options.as_slice())
+}
+
+fn raw_material_model(dataset: &Dataset, symbols: HashSet<SymbolId>) -> ModelRc<CheckOption> {
+    let source = model(dataset, symbols, true);
+    let options: Vec<CheckOption> = (0..source.row_count())
+        .filter_map(|index| source.row_data(index))
+        .map(|mut value| {
+            if value.key != "__missing__" {
+                value.label = raw_material_display(&value.key, &value.label).into();
+            }
+            value
+        })
+        .collect();
     ModelRc::from(options.as_slice())
 }
 

@@ -1,0 +1,34 @@
+import { Button, CheckBox, ScrollView } from "std-widgets.slint";
+import { ColumnSpec } from "types.slint";
+import { AppTheme } from "theme.slint";
+
+export component ColumnSelector inherits Rectangle {
+    in property <[ColumnSpec]> columns;
+    callback toggle-column(string, bool);
+    callback close;
+    width: 250px;
+    height: min(520px, root.columns.length * 34px + 52px);
+    background: AppTheme.popup;
+    border-color: AppTheme.border-strong;
+    border-width: 1px;
+    border-radius: 4px;
+    VerticalLayout {
+        padding: 8px;
+        spacing: 6px;
+        HorizontalLayout {
+            Text { text: "Visible columns"; color: AppTheme.text-primary; font-size: 14px; font-weight: 700; vertical-alignment: center; }
+            Rectangle { horizontal-stretch: 1; }
+            Button { text: "Close"; width: 64px; height: 30px; clicked => { root.close(); } }
+        }
+        ScrollView {
+            VerticalLayout {
+                spacing: 2px;
+                for column in root.columns: CheckBox {
+                    text: column.label;
+                    checked: column.visible;
+                    toggled => { root.toggle-column(column.key, self.checked); }
+                }
+            }
+        }
+    }
+}

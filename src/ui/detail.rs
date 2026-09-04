@@ -4,7 +4,7 @@ use slint::{Color, ModelRc, SharedString};
 
 use super::result_model::{format_population, text};
 use super::{AppWindow, DetailField};
-use crate::model::{Dataset, LocationId, LocationRecord};
+use crate::model::{Dataset, LocationId, LocationRecord, raw_material_display};
 
 pub(super) fn show(app: &AppWindow, dataset: &Dataset, id: LocationId) {
     let Some(record) = dataset.location(id) else {
@@ -77,14 +77,21 @@ fn fields(dataset: &Dataset, record: &LocationRecord) -> Vec<DetailField> {
         || "-".to_owned(),
         |value| format!("{:+.2}%", f32::from(value.modifier_basis_points) / 100.0),
     );
+    let raw_material = record.raw_material.map_or_else(
+        || "-".to_owned(),
+        |symbol| {
+            let key = dataset.symbol(symbol).unwrap_or("-");
+            raw_material_display(key, dataset.label(symbol).unwrap_or(key))
+        },
+    );
     vec![
-        field("Kind", record.kind.label()),
+        field("Type", record.kind.label()),
         field("Topography", text(dataset, Some(record.topography))),
         field("Vegetation", text(dataset, record.vegetation)),
         field("Climate", text(dataset, record.climate)),
         field("Religion", text(dataset, record.religion)),
         field("Culture", text(dataset, record.culture)),
-        field("Raw material", text(dataset, record.raw_material)),
+        field("Raw material", &raw_material),
         field("Modifier", text(dataset, record.modifier)),
         field("Coastal", if record.coastal { "Yes" } else { "No" }),
         field("Connected sea", connected),

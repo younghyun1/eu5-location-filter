@@ -36,6 +36,7 @@ export global AppTheme {
     out property <color> swatch-border: #3d3731.mix(#c9bfae, root.mix);
     out property <color> overlay: #b8000000.mix(#b8f6f1e8, root.mix);
     out property <color> error-overlay: #ed000000.mix(#edf6f1e8, root.mix);
-    out property <color> about-overlay: #66000000.mix(#66f6f1e8, root.mix);
+    // Direct translucent colors avoid hue shifts from interpolating alpha channels.
+    out property <color> about-overlay: root.dark ? #59211d18 : #80000000;
     out property <color> dialog-shadow: #99000000.mix(#55211d18, root.mix);
 }
