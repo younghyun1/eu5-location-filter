@@ -20,40 +20,44 @@ export component AppHeader inherits Rectangle {
     background: AppTheme.raised;
     border-color: AppTheme.border;
     border-width: 1px;
+    in property <length> chart-left: 240px;
+    in property <length> chart-right: root.width - 357px;
     in-out property <string> search-text: "";
     in property <string> result-count;
     in property <string> build-text;
     callback search-changed(string);
     callback show-about;
+    property <length> search-left: max(240px, root.chart-left);
+    property <length> search-right: max(root.search-left + 250px, min(root.width - 357px, root.chart-right));
 
+    Text {
+        x: 20px;
+        width: max(0px, root.search-left - 32px);
+        height: 100%;
+        text: "EU5 LOCATION DB";
+        color: AppTheme.text-primary;
+        font-size: 19px;
+        font-weight: 700;
+        vertical-alignment: center;
+        overflow: elide;
+    }
+    search := LineEdit {
+        x: root.search-left;
+        width: root.search-right - root.search-left;
+        height: 36px;
+        y: (parent.height - self.height) / 2;
+        text <=> root.search-text;
+        placeholder-text: "Search name or ID";
+        accessible-label: "Global location search";
+        edited(value) => { root.search-changed(value); }
+    }
     HorizontalLayout {
-        padding-left: 20px;
-        padding-right: 16px;
-        spacing: 12px;
-        Text {
-            text: "EU5 LOCATION DB";
-            color: AppTheme.text-primary;
-            font-size: 19px;
-            font-weight: 700;
-            vertical-alignment: center;
-            preferred-width: 220px;
-            min-width: 175px;
-        }
-        Rectangle {
-            horizontal-stretch: 1;
-            min-width: 250px;
-            search := LineEdit {
-                width: 100%;
-                height: 36px;
-                y: (parent.height - self.height) / 2;
-                text <=> root.search-text;
-                placeholder-text: "Search name or ID";
-                accessible-label: "Global location search";
-                edited(value) => { root.search-changed(value); }
-            }
-        }
-        Text { text: root.result-count; color: AppTheme.text-secondary; vertical-alignment: center; width: 110px; }
-        Text { text: root.build-text; color: AppTheme.text-subtle; vertical-alignment: center; width: 190px; overflow: elide; }
+        x: root.search-right + 8px;
+        width: root.width - self.x - 16px;
+        height: 100%;
+        spacing: 6px;
+        Text { text: root.result-count; color: AppTheme.text-secondary; font-size: 11px; vertical-alignment: center; width: 90px; overflow: elide; }
+        Text { text: root.build-text; color: AppTheme.text-subtle; font-size: 11px; vertical-alignment: center; horizontal-stretch: 1; min-width: 90px; overflow: elide; }
         HeaderButton { text: "About"; clicked => { root.show-about(); } }
     }
 }

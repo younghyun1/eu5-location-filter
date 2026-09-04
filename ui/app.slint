@@ -123,6 +123,8 @@ export component AppWindow inherits Window {
     VerticalLayout {
         spacing: 0px;
         AppHeader {
+            chart-left: root.filter-pane-expanded ? root.filter-pane-width + 7px : 44px;
+            chart-right: root.width - (root.detail-pane-expanded ? root.detail-pane-width + 7px : 0px);
             search-text <=> root.search-text;
             result-count: root.result-count;
             build-text: root.build-text;

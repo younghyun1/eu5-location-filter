@@ -18,3 +18,4 @@
 - Use neutral modal scrims in both themes without translucent-color interpolation artifacts.
 - Make Raw material a default column with plain labels, and correct silver highlighting.
 - Add bounded pure Rust browser decompression and choose measured-fastest WebAssembly optimization with Rust O3, fat LTO, SIMD128, and Binaryen Oz.
+- Align the global search field with the result pane and make the chart boundary continuous through unused table space and the scrollbar.
