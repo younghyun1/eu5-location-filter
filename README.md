@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/younghyun1/eu5-location-filter/actions/workflows/ci.yml/badge.svg)](https://github.com/younghyun1/eu5-location-filter/actions/workflows/ci.yml)
 
-EU5 Location Filter is an unofficial desktop and browser application for the static map locations in Europa Universalis V 1.3.11. Both targets embed compressed location data and precomputed search and sort indexes for Steam build `24187685`, then decompress both into memory at startup without reading a game installation.
+EU5 Location Filter is an unofficial desktop and browser application for the static map locations in Europa Universalis V 1.4.8. Both targets embed compressed location data and precomputed search and sort indexes for Steam build `26547371`, then decompress both into memory at startup without reading a game installation.
 
 ## Install and run
 
@@ -25,7 +25,7 @@ Tagged releases are configured for native Windows, Linux, and macOS runners on x
 
 ## Static population capacity
 
-The committed dataset stores a population-capacity estimate derived only from immutable EU5 1.3.11 map data. It combines vegetation capacity and the location's map-coordinate distance from `equator_y`, then applies topography, climate, coastal, and five-tier river modifiers. Development, staffed buildings, location rank, laws, societal values, country modifiers, and other mutable campaign state are deliberately excluded. The total and the equator contribution are sortable columns, and the selected-location pane shows the full static breakdown.
+The committed dataset stores a population-capacity estimate derived only from immutable EU5 1.4.8 map data. It combines vegetation capacity and the location's map-coordinate distance from `equator_y`, then applies topography, climate, coastal, and five-tier river modifiers. Development, staffed buildings, location rank, laws, societal values, country modifiers, and other mutable campaign state are deliberately excluded. The total and the equator contribution are sortable columns, and the selected-location pane shows the full static breakdown.
 
 ## Filters
 

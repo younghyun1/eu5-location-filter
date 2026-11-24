@@ -27,10 +27,17 @@ pub(super) fn parse_hierarchy(
                 for (area, provinces) in assignments(areas, "area")? {
                     for (province, locations) in assignments(provinces, "province")? {
                         for entry in locations {
-                            let Entry::Atom(location) = entry else {
-                                return Err(AppError::InvalidData(format!(
-                                    "province {province} contains a nested assignment"
-                                )));
+                            let location = match entry {
+                                Entry::Atom(location) => location,
+                                // EU5 1.4 writes scalar attributes such as
+                                // `not_eligible_for_dynamic_country_name = yes` beside
+                                // the member list; they carry no membership.
+                                Entry::Assignment(_, Value::Atom(_)) => continue,
+                                Entry::Assignment(_, Value::Block(_)) => {
+                                    return Err(AppError::InvalidData(format!(
+                                        "province {province} contains a nested block"
+                                    )));
+                                }
                             };
                             let hierarchy = RawHierarchy {
                                 continent: continent.clone(),
@@ -53,19 +60,25 @@ pub(super) fn parse_hierarchy(
     Ok(output)
 }
 
+/// Returns the child blocks of one hierarchy level.
+///
+/// Scalar assignments are attributes of the enclosing level (EU5 1.4 adds
+/// `not_eligible_for_dynamic_country_name = yes` to areas and provinces) and
+/// are skipped; a bare value at a level that only holds named blocks is malformed.
 fn assignments(entries: Vec<Entry>, level: &str) -> Result<Vec<(String, Vec<Entry>)>, AppError> {
-    entries
-        .into_iter()
-        .map(|entry| match entry {
-            Entry::Assignment(key, Value::Block(values)) => Ok((key, values)),
-            Entry::Assignment(key, Value::Atom(_)) => Err(AppError::InvalidData(format!(
-                "{level} {key} must contain a block"
-            ))),
-            Entry::Atom(value) => Err(AppError::InvalidData(format!(
-                "unexpected bare value {value} at {level} level"
-            ))),
-        })
-        .collect()
+    let mut output = Vec::with_capacity(entries.len());
+    for entry in entries {
+        match entry {
+            Entry::Assignment(key, Value::Block(values)) => output.push((key, values)),
+            Entry::Assignment(_, Value::Atom(_)) => {}
+            Entry::Atom(value) => {
+                return Err(AppError::InvalidData(format!(
+                    "unexpected bare value {value} at {level} level"
+                )));
+            }
+        }
+    }
+    Ok(output)
 }
 
 #[cfg(test)]
@@ -78,6 +91,20 @@ mod tests {
         let parsed = parse_hierarchy("test", input);
         assert!(parsed.is_ok());
         assert_eq!(parsed.ok().map(|value| value.len()), Some(2));
+    }
+
+    #[test]
+    fn skips_scalar_attributes_at_area_and_province_levels() {
+        let input = b"c={s={r={a={flag=yes p={flag=yes one two} q={three}}}}}";
+        let parsed = parse_hierarchy("test", input);
+        assert!(parsed.is_ok());
+        let Ok(parsed) = parsed else { return };
+        assert_eq!(parsed.len(), 3);
+        assert_eq!(
+            parsed.get("one").map(|value| value.province.as_str()),
+            Some("p")
+        );
+        assert!(!parsed.contains_key("flag"));
     }
 
     #[test]

@@ -37,17 +37,17 @@ Categorical selections use compact sparse postings or dense bitmaps, with OR ins
 
 Every column has precomputed ascending and descending orders and inverse integer ranks. Full results copy their existing order. Sparse results sort only matching IDs by rank when `k * (floor(log2(k)) + 1) < n / 2`; dense results scan the existing order with constant-time bitmap membership. This conservative threshold was checked against direct order scanning for cardinalities from 1 through 28,573, including a 1,024-row rank sort. The complete query is not O(1) or O(log n): bitmap operations cost O(n/64), numeric materialization costs O(r), candidate verification depends on query length and candidate count, and emitting k IDs costs at least O(k).
 
-On 2026-09-04, Rust 1.100 nightly, Windows x86-64-v3, and EU5 build `24187685`, the unoptimized development test measured the following medians after 10 warm-ups and 101 alternating indexed/scan samples. Each query's IDs were also compared with the old scan across all 25 columns in both directions. These timings are local diagnostic measurements, not native release or browser results.
+On 2026-11-24, Rust 1.102 nightly, Linux x86-64-v3, and EU5 1.4.8 build `26547371`, the unoptimized development test measured the following medians after 10 warm-ups and 101 alternating indexed/scan samples. Each query's IDs were also compared with the old scan across all 25 columns in both directions. These timings are local diagnostic measurements, not native release or browser results.
 
 | Query | Rows | Previous scan | Indexed | Speedup |
 | --- | ---: | ---: | ---: | ---: |
-| All locations | 28,573 | 4.772 ms | 0.017 ms | 286x |
-| Default Land | 21,041 | 9.548 ms | 0.503 ms | 19x |
-| Land, coastal, food-producing | 2,671 | 13.538 ms | 0.400 ms | 34x |
-| Harbor 0.5 through 0.75 | 415 | 2.493 ms | 0.118 ms | 21x |
-| One-letter search `a` | 22,763 | 4.618 ms | 2.061 ms | 2.2x |
-| Substring `stock` | 6 | 4.827 ms | 0.040 ms | 122x |
-| First record's province | 7 | 9.144 ms | 0.032 ms | 282x |
-| Exact RGB | 1 | 2.036 ms | 0.017 ms | 120x |
+| All locations | 28,573 | 2.190 ms | 0.006 ms | 340x |
+| Default Land | 21,041 | 4.151 ms | 0.471 ms | 8.8x |
+| Land, coastal, food-producing | 2,695 | 6.060 ms | 0.363 ms | 17x |
+| Harbor 0.5 through 0.75 | 415 | 1.837 ms | 0.094 ms | 19x |
+| One-letter search `a` | 22,773 | 2.669 ms | 1.593 ms | 1.7x |
+| Substring `stock` | 6 | 3.083 ms | 0.018 ms | 171x |
+| First record's province | 7 | 3.483 ms | 0.013 ms | 276x |
+| Exact RGB | 1 | 1.358 ms | 0.010 ms | 136x |
 
-The query bundle grows from 778,958 to 2,220,152 compressed bytes; its bitcode payload is 7,634,344 bytes. The 715,883-byte location bundle is unchanged. Decompression and validation of both bundles plus engine restoration took 286 ms in this run. Query scratch space is two 447-word bitmaps for 28,573 records, plus the result ID vector. All stored indexes and lookup tables are bounded by the immutable dataset. All 73 tests passed locally, including the normally ignored timings, imported-blob checks, and deterministic index regeneration.
+The query bundle is 2,226,765 compressed bytes; its bitcode payload is 7,643,748 bytes. The location bundle is 718,624 bytes. Decompression and validation of both bundles plus engine restoration took 153 ms in this run. Query scratch space is two 447-word bitmaps for 28,573 records, plus the result ID vector. All stored indexes and lookup tables are bounded by the immutable dataset. All 74 tests passed locally, including the normally ignored timings, imported-blob checks, and deterministic index regeneration.

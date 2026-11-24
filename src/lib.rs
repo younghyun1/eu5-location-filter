@@ -11,6 +11,8 @@
 
 mod compression;
 
+#[cfg(feature = "desktop")]
+pub mod bundle_diff;
 pub mod embedded;
 pub mod error;
 pub mod filter;

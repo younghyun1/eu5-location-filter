@@ -6,7 +6,7 @@ use std::process::ExitCode;
 use clap::{Parser, Subcommand};
 use eu5_location_filter::filter::FilterEngine;
 use eu5_location_filter::import::import_game;
-use eu5_location_filter::{index_storage, steam, storage, ui};
+use eu5_location_filter::{bundle_diff, index_storage, steam, storage, ui};
 
 #[derive(Debug, Parser)]
 #[command(
@@ -33,6 +33,15 @@ enum Command {
         #[arg(long)]
         force: bool,
     },
+    /// Compare two location bundles field by field, keyed by location identifier.
+    Diff {
+        /// Older bundle.
+        #[arg(long)]
+        old: PathBuf,
+        /// Newer bundle.
+        #[arg(long)]
+        new: PathBuf,
+    },
     /// Import a vanilla EU5 installation without opening the GUI.
     Import {
         /// Replace an existing valid data file.
@@ -53,6 +62,7 @@ fn main() -> ExitCode {
         Some(Command::Reindex { force }) => {
             run_reindex(cli.data_file.as_deref(), cli.index_file.as_deref(), force)
         }
+        Some(Command::Diff { old, new }) => run_diff(&old, &new),
         Some(Command::Import { force }) => run_import(
             cli.data_file.as_deref(),
             cli.index_file.as_deref(),
@@ -68,6 +78,16 @@ fn main() -> ExitCode {
             ExitCode::from(1)
         }
     }
+}
+
+fn run_diff(
+    old: &std::path::Path,
+    new: &std::path::Path,
+) -> Result<(), eu5_location_filter::AppError> {
+    let old = storage::load_dataset(old)?;
+    let new = storage::load_dataset(new)?;
+    print!("{}", bundle_diff::diff(&old, &new).report());
+    Ok(())
 }
 
 fn run_reindex(

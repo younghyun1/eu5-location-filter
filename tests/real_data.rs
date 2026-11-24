@@ -9,7 +9,7 @@ use eu5_location_filter::model::{LocationKind, MAX_RIVER_LEVEL};
 use eu5_location_filter::storage;
 
 #[test]
-#[ignore = "requires a local build-24187685 data blob"]
+#[ignore = "requires a local build-26547371 data blob"]
 fn verifies_reference_install_import() -> Result<(), eu5_location_filter::AppError> {
     let dataset = load_local_blob()?;
     assert_eq!(dataset.stored.build_id, 24_187_685);

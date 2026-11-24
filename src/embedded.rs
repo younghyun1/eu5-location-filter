@@ -99,7 +99,7 @@ mod tests {
             SortField::Name,
             true,
         );
-        assert_eq!(food_results.len(), 12_035);
+        assert_eq!(food_results.len(), 12_341);
         assert!(food_results.iter().all(|id| {
             dataset
                 .location(*id)
@@ -120,6 +120,7 @@ mod tests {
                 "fish",
                 "fruit",
                 "fur",
+                "horses",
                 "legumes",
                 "livestock",
                 "maize",
