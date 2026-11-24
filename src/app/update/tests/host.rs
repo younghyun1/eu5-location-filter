@@ -58,7 +58,11 @@ fn reporting_starts_when_connected_and_ready() -> Result<(), AppError> {
     assert_eq!(canonical_view_state(&app), None);
     send(&mut app, first_message(None));
     let reported = app.host.last_reported.clone();
-    assert!(reported.as_deref().is_some_and(|state| state.starts_with("s1")));
+    assert!(
+        reported
+            .as_deref()
+            .is_some_and(|state| state.starts_with("s1"))
+    );
     assert_eq!(canonical_view_state(&app), reported);
     Ok(())
 }

@@ -172,7 +172,13 @@ fn font_pack_results_update_the_fixed_bookkeeping() -> Result<(), AppError> {
     );
     assert_eq!(app.overlay.notice, Some(Notice::FontPack));
     assert_eq!(app.packs.fonts_pending.get(pack.index()), Some(&false));
-    send(&mut app, LoadMessage::FontPackLoaded { pack, result: Ok(()) });
+    send(
+        &mut app,
+        LoadMessage::FontPackLoaded {
+            pack,
+            result: Ok(()),
+        },
+    );
     assert_eq!(app.packs.fonts_loaded.get(pack.index()), Some(&true));
     Ok(())
 }

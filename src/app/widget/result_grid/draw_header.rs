@@ -42,14 +42,22 @@ pub(super) fn labels<Message>(
         let (title_left, title_right, glyph_left) = if rtl {
             (inner_left + SORT_GLYPH_WIDTH, inner_right, inner_left)
         } else {
-            (inner_left, inner_right - SORT_GLYPH_WIDTH, inner_right - SORT_GLYPH_WIDTH)
+            (
+                inner_left,
+                inner_right - SORT_GLYPH_WIDTH,
+                inner_right - SORT_GLYPH_WIDTH,
+            )
         };
         renderer.with_layer(layer, |renderer| {
             if title_right > title_left {
                 let style = Style {
                     font: title_font,
                     size: TEXT_SMALL,
-                    color: if sorted { palette.ink } else { palette.ink_muted },
+                    color: if sorted {
+                        palette.ink
+                    } else {
+                        palette.ink_muted
+                    },
                 };
                 let area = Rectangle {
                     x: title_left,
@@ -57,7 +65,14 @@ pub(super) fn labels<Message>(
                     ..cell
                 };
                 let title = t(locale, slot.id.title());
-                paint::fill_line(renderer, title, Side::of(slot.id.align(), rtl), area, style, layer);
+                paint::fill_line(
+                    renderer,
+                    title,
+                    Side::of(slot.id.align(), rtl),
+                    area,
+                    style,
+                    layer,
+                );
             }
             if sorted {
                 let icon = if grid.sort.ascending {

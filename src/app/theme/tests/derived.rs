@@ -44,9 +44,18 @@ fn zebra_sits_between_surface_and_paper() {
 #[test]
 fn hover_and_pressed_use_their_mix_targets() {
     let palette = PALETTE_LIGHT;
-    assert_eq!(palette.hover(palette.surface), mix(palette.surface, palette.accent_soft, 0.5));
-    assert_eq!(palette.hover(palette.zebra()), mix(palette.zebra(), palette.accent_soft, 0.5));
-    assert_eq!(palette.pressed(), mix(palette.surface_2(), palette.line_strong, 0.5));
+    assert_eq!(
+        palette.hover(palette.surface),
+        mix(palette.surface, palette.accent_soft, 0.5)
+    );
+    assert_eq!(
+        palette.hover(palette.zebra()),
+        mix(palette.zebra(), palette.accent_soft, 0.5)
+    );
+    assert_eq!(
+        palette.pressed(),
+        mix(palette.surface_2(), palette.line_strong, 0.5)
+    );
 }
 
 #[test]
@@ -56,7 +65,10 @@ fn scrollbar_thumb_states_follow_the_token_table() {
         palette.scrollbar_thumb(ThumbState::Idle),
         palette.ink_faint.scale_alpha(SCROLLBAR_THUMB_ALPHA)
     );
-    assert_eq!(palette.scrollbar_thumb(ThumbState::Hovered), palette.ink_muted);
+    assert_eq!(
+        palette.scrollbar_thumb(ThumbState::Hovered),
+        palette.ink_muted
+    );
     assert_eq!(palette.scrollbar_thumb(ThumbState::Dragged), palette.accent);
 }
 
@@ -78,7 +90,10 @@ fn scrim_and_shadow_are_black_with_mode_dependent_alpha() {
     let (light, dark) = (PALETTE_LIGHT, PALETTE_DARK);
     assert!(close(light.scrim().a, SCRIM_ALPHA_LIGHT));
     assert!(close(dark.scrim().a, SCRIM_ALPHA_DARK));
-    assert!(close(light.scrim().r + light.scrim().g + light.scrim().b, 0.0));
+    assert!(close(
+        light.scrim().r + light.scrim().g + light.scrim().b,
+        0.0
+    ));
     assert!(close(light.shadow().color.a, SHADOW_ALPHA_LIGHT));
     assert!(close(dark.shadow().color.a, SHADOW_ALPHA_DARK));
     assert!(close(dark.shadow().blur_radius, SHADOW_BLUR));
@@ -115,7 +130,10 @@ fn body_text_has_strong_contrast_on_every_row_ground() {
             palette.hover(palette.zebra()),
         ];
         for ground in grounds {
-            assert!(contrast(palette.ink, ground) >= 7.0, "{palette:?} on {ground:?}");
+            assert!(
+                contrast(palette.ink, ground) >= 7.0,
+                "{palette:?} on {ground:?}"
+            );
         }
     }
 }
@@ -133,7 +151,10 @@ fn secondary_text_reads_on_surfaces_and_the_toolbar() {
 #[test]
 fn accent_text_reads_on_surface_for_every_preset() {
     for palette in all_palettes() {
-        assert!(contrast(palette.accent, palette.surface) >= 4.5, "{palette:?}");
+        assert!(
+            contrast(palette.accent, palette.surface) >= 4.5,
+            "{palette:?}"
+        );
     }
 }
 
@@ -141,7 +162,10 @@ fn accent_text_reads_on_surface_for_every_preset() {
 fn strong_accent_text_reads_on_the_soft_accent_ground() {
     // The count badge draws accent_strong text on accent_soft.
     for palette in all_palettes() {
-        assert!(contrast(palette.accent_strong, palette.accent_soft) >= 4.5, "{palette:?}");
+        assert!(
+            contrast(palette.accent_strong, palette.accent_soft) >= 4.5,
+            "{palette:?}"
+        );
     }
 }
 
@@ -150,16 +174,28 @@ fn accent_stays_legible_on_paper_and_soft_ground() {
     // The layout document promises 4.5:1 for accent on paper and accent_soft. The site's own
     // light amber measures 4.46 and 4.05, so the floor here is the weakest built-in value.
     for palette in all_palettes() {
-        assert!(contrast(palette.accent, palette.paper) >= 4.4, "{palette:?}");
-        assert!(contrast(palette.accent, palette.accent_soft) >= 4.0, "{palette:?}");
+        assert!(
+            contrast(palette.accent, palette.paper) >= 4.4,
+            "{palette:?}"
+        );
+        assert!(
+            contrast(palette.accent, palette.accent_soft) >= 4.0,
+            "{palette:?}"
+        );
     }
 }
 
 #[test]
 fn text_on_accent_grounds_is_legible() {
     for palette in all_palettes() {
-        assert!(contrast(palette.on_accent(), palette.accent_strong) >= 4.5, "{palette:?}");
-        assert!(contrast(palette.on_accent(), palette.accent) >= 4.4, "{palette:?}");
+        assert!(
+            contrast(palette.on_accent(), palette.accent_strong) >= 4.5,
+            "{palette:?}"
+        );
+        assert!(
+            contrast(palette.on_accent(), palette.accent) >= 4.4,
+            "{palette:?}"
+        );
     }
 }
 

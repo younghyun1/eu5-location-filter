@@ -46,7 +46,11 @@ pub(super) struct Metrics {
 
 impl Metrics {
     /// Metrics for a grid at some bounds with the offsets of `state` clamped to the content.
-    pub(super) fn new<Message>(grid: &ResultGrid<'_, Message>, bounds: Rectangle, state: &GridState) -> Self {
+    pub(super) fn new<Message>(
+        grid: &ResultGrid<'_, Message>,
+        bounds: Rectangle,
+        state: &GridState,
+    ) -> Self {
         let row_height = if grid.row_height.is_finite() && grid.row_height >= 1.0 {
             grid.row_height
         } else {
@@ -84,7 +88,12 @@ impl Metrics {
 
     /// Rows inside the body viewport.
     pub(super) fn visible_rows(&self) -> window::VisibleRange {
-        window::visible_rows(self.offset_y, self.frame.body.height, self.row_height, self.rows)
+        window::visible_rows(
+            self.offset_y,
+            self.frame.body.height,
+            self.row_height,
+            self.rows,
+        )
     }
 
     /// Screen y of the top of a row.
@@ -95,13 +104,25 @@ impl Metrics {
     /// Vertical thumb along the body height.
     pub(super) fn vertical_thumb(&self, offset_y: f32) -> Option<Thumb> {
         let body = self.frame.body;
-        window::thumb(offset_y, self.content_height(), body.height, body.height, SCROLLBAR_MIN_THUMB)
+        window::thumb(
+            offset_y,
+            self.content_height(),
+            body.height,
+            body.height,
+            SCROLLBAR_MIN_THUMB,
+        )
     }
 
     /// Horizontal thumb along the body width, measured from the inline start of the lane.
     pub(super) fn horizontal_thumb(&self, offset_x: f32) -> Option<Thumb> {
         let width = self.frame.body.width;
-        window::thumb(offset_x, self.strip.content_width(), width, width, SCROLLBAR_MIN_THUMB)
+        window::thumb(
+            offset_x,
+            self.strip.content_width(),
+            width,
+            width,
+            SCROLLBAR_MIN_THUMB,
+        )
     }
 
     /// Hit test of a screen point.

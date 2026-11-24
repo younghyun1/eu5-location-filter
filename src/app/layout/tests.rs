@@ -2,12 +2,12 @@
 
 use super::panes::HEADER_MIN_WIDTH;
 use super::{
-    DESKTOP_MIN_WIDTH, DETAIL_DEFAULT_WIDTH, DETAIL_MAX_WIDTH, DETAIL_MIN_WIDTH, DRAWER_DETAIL_WIDTH,
-    DRAWER_EDGE_GAP, DRAWER_RAIL_WIDTH, Direction, Drawer, GRID_MIN_WIDTH, HEADER_BRAND_MIN_WIDTH,
-    LayoutMode, NARROW_BREAKPOINT, PANE_KEY_STEP, PaneEdge, PaneLayout, PaneSlot, PaneState,
-    RAIL_COLLAPSED_WIDTH, RAIL_DEFAULT_WIDTH, RAIL_MAX_WIDTH, RAIL_MIN_WIDTH, SPLITTER_HIT_WIDTH,
-    clamp_detail, clamp_rail, drawer_width, key_step, mirror_x, mode_for_width, resolve,
-    splitter_width,
+    DESKTOP_MIN_WIDTH, DETAIL_DEFAULT_WIDTH, DETAIL_MAX_WIDTH, DETAIL_MIN_WIDTH,
+    DRAWER_DETAIL_WIDTH, DRAWER_EDGE_GAP, DRAWER_RAIL_WIDTH, Direction, Drawer, GRID_MIN_WIDTH,
+    HEADER_BRAND_MIN_WIDTH, LayoutMode, NARROW_BREAKPOINT, PANE_KEY_STEP, PaneEdge, PaneLayout,
+    PaneSlot, PaneState, RAIL_COLLAPSED_WIDTH, RAIL_DEFAULT_WIDTH, RAIL_MAX_WIDTH, RAIL_MIN_WIDTH,
+    SPLITTER_HIT_WIDTH, clamp_detail, clamp_rail, drawer_width, key_step, mirror_x, mode_for_width,
+    resolve, splitter_width,
 };
 use crate::app::widget::window::mirror;
 use iced::alignment::Horizontal;
@@ -78,19 +78,37 @@ fn clamps_hold_pane_limits() {
 fn drawer_widths_leave_the_edge_gap() {
     assert_eq!(drawer_width(Drawer::Filters, 1000.0), DRAWER_RAIL_WIDTH);
     assert_eq!(drawer_width(Drawer::Details, 1000.0), DRAWER_DETAIL_WIDTH);
-    assert_eq!(drawer_width(Drawer::Filters, 320.0), 320.0 - DRAWER_EDGE_GAP);
-    assert_eq!(drawer_width(Drawer::Details, 320.0), 320.0 - DRAWER_EDGE_GAP);
+    assert_eq!(
+        drawer_width(Drawer::Filters, 320.0),
+        320.0 - DRAWER_EDGE_GAP
+    );
+    assert_eq!(
+        drawer_width(Drawer::Details, 320.0),
+        320.0 - DRAWER_EDGE_GAP
+    );
     assert_eq!(drawer_width(Drawer::Details, 10.0), 0.0);
 }
 
 #[test]
 fn splitters_follow_the_pointer_on_screen_in_both_directions() {
     // Rail on the left (LTR): dragging right widens it; on the right (RTL) dragging right narrows.
-    assert_eq!(splitter_width(PaneEdge::Start, Direction::Ltr, 280.0, 100.0, 130.0), 310.0);
-    assert_eq!(splitter_width(PaneEdge::Start, Direction::Rtl, 280.0, 100.0, 130.0), 250.0);
+    assert_eq!(
+        splitter_width(PaneEdge::Start, Direction::Ltr, 280.0, 100.0, 130.0),
+        310.0
+    );
+    assert_eq!(
+        splitter_width(PaneEdge::Start, Direction::Rtl, 280.0, 100.0, 130.0),
+        250.0
+    );
     // Detail on the right (LTR): dragging right narrows it; on the left (RTL) it widens.
-    assert_eq!(splitter_width(PaneEdge::End, Direction::Ltr, 340.0, 100.0, 130.0), 310.0);
-    assert_eq!(splitter_width(PaneEdge::End, Direction::Rtl, 340.0, 100.0, 130.0), 370.0);
+    assert_eq!(
+        splitter_width(PaneEdge::End, Direction::Ltr, 340.0, 100.0, 130.0),
+        310.0
+    );
+    assert_eq!(
+        splitter_width(PaneEdge::End, Direction::Rtl, 340.0, 100.0, 130.0),
+        370.0
+    );
     for direction in BOTH {
         for edge in [PaneEdge::Start, PaneEdge::End] {
             assert_eq!(splitter_width(edge, direction, 300.0, 50.0, 50.0), 300.0);
@@ -100,10 +118,22 @@ fn splitters_follow_the_pointer_on_screen_in_both_directions() {
             assert_eq!(right.abs(), PANE_KEY_STEP);
         }
     }
-    assert_eq!(key_step(PaneEdge::Start, Direction::Ltr, PANE_KEY_STEP), PANE_KEY_STEP);
-    assert_eq!(key_step(PaneEdge::Start, Direction::Rtl, PANE_KEY_STEP), -PANE_KEY_STEP);
-    assert_eq!(key_step(PaneEdge::End, Direction::Ltr, PANE_KEY_STEP), -PANE_KEY_STEP);
-    assert_eq!(key_step(PaneEdge::End, Direction::Rtl, PANE_KEY_STEP), PANE_KEY_STEP);
+    assert_eq!(
+        key_step(PaneEdge::Start, Direction::Ltr, PANE_KEY_STEP),
+        PANE_KEY_STEP
+    );
+    assert_eq!(
+        key_step(PaneEdge::Start, Direction::Rtl, PANE_KEY_STEP),
+        -PANE_KEY_STEP
+    );
+    assert_eq!(
+        key_step(PaneEdge::End, Direction::Ltr, PANE_KEY_STEP),
+        -PANE_KEY_STEP
+    );
+    assert_eq!(
+        key_step(PaneEdge::End, Direction::Rtl, PANE_KEY_STEP),
+        PANE_KEY_STEP
+    );
 }
 
 #[test]
@@ -220,7 +250,10 @@ fn brand_yields_its_alignment_before_the_search_minimum() {
     };
     let aligned = 260.0;
     let needed = HEADER_MIN_WIDTH + aligned - HEADER_BRAND_MIN_WIDTH;
-    assert_eq!(resolve(needed, &panes, LayoutMode::Wide).brand_width, aligned);
+    assert_eq!(
+        resolve(needed, &panes, LayoutMode::Wide).brand_width,
+        aligned
+    );
     let below = resolve(needed - 1.0, &panes, LayoutMode::Wide).brand_width;
     assert_eq!(below, HEADER_BRAND_MIN_WIDTH);
     // A narrow docked rail never makes the brand smaller than its minimum.
@@ -229,7 +262,10 @@ fn brand_yields_its_alignment_before_the_search_minimum() {
         ..panes
     };
     let layout = resolve(1440.0, &thin, LayoutMode::Wide);
-    assert_eq!(layout.brand_width, HEADER_BRAND_MIN_WIDTH.max(RAIL_MIN_WIDTH - 20.0));
+    assert_eq!(
+        layout.brand_width,
+        HEADER_BRAND_MIN_WIDTH.max(RAIL_MIN_WIDTH - 20.0)
+    );
 }
 
 #[test]
@@ -239,7 +275,10 @@ fn narrow_layout_shows_only_the_open_drawer() {
     assert_eq!(closed.detail, PaneSlot::Hidden);
     assert_eq!(closed.grid_width, 400.0);
     assert!(!closed.detail_forced_hidden);
-    for (drawer, width) in [(Drawer::Filters, DRAWER_RAIL_WIDTH), (Drawer::Details, 352.0)] {
+    for (drawer, width) in [
+        (Drawer::Filters, DRAWER_RAIL_WIDTH),
+        (Drawer::Details, 352.0),
+    ] {
         let panes = PaneState {
             drawer: Some(drawer),
             rail_collapsed: true,

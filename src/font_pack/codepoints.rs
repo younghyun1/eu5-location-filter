@@ -108,12 +108,22 @@ fn printable(text: &BTreeSet<u32>) -> BTreeSet<u32> {
 pub(super) fn wanted_for(plan: Plan, text: &BTreeSet<u32>) -> Wanted {
     match plan {
         Plan::Embedded { with_text } => {
-            let mut required = plex_core();
+            // Location names use rare transliteration letters that IBM Plex lacks, so catalog and
+            // pack text is kept when present; the Latin fallback face carries the rest.
+            let required = plex_core();
+            let mut optional = plex_extra();
             if with_text {
-                required.extend(printable(text));
+                optional.extend(printable(text));
             }
-            let optional = plex_extra().difference(&required).copied().collect();
+            let optional = optional.difference(&required).copied().collect();
             Wanted { required, optional }
+        }
+        Plan::LatinFallback => {
+            // The caller has already removed what the primary face covers.
+            Wanted {
+                required: printable(text),
+                optional: BTreeSet::new(),
+            }
         }
         Plan::Subset => {
             let mut required = ascii_baseline();
@@ -151,13 +161,23 @@ mod tests {
 
     #[test]
     fn catalog_text_reads_values_only() {
-        let text = "# comment 漢\n\napp.title = 한글\nrgb.placeholder = #RRGGBB=x\nno equals 字\n  \t\n";
+        let text =
+            "# comment 漢\n\napp.title = 한글\nrgb.placeholder = #RRGGBB=x\nno equals 字\n  \t\n";
         let found = collect(text);
         assert!(found.contains(&0xD55C), "Hangul from a value");
-        assert!(found.contains(&u32::from('#')), "a hash inside a value is text");
-        assert!(found.contains(&u32::from('=')), "later equals signs belong to the value");
+        assert!(
+            found.contains(&u32::from('#')),
+            "a hash inside a value is text"
+        );
+        assert!(
+            found.contains(&u32::from('=')),
+            "later equals signs belong to the value"
+        );
         assert!(!found.contains(&0x6F22), "comments are skipped");
-        assert!(!found.contains(&0x5B57), "lines without an equals sign are skipped");
+        assert!(
+            !found.contains(&0x5B57),
+            "lines without an equals sign are skipped"
+        );
         assert!(!found.contains(&u32::from('k')), "keys are skipped");
     }
 

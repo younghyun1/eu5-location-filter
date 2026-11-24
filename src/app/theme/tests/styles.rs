@@ -5,11 +5,13 @@ use iced::{Background, Color};
 
 use super::common::close;
 use crate::app::layout::FOCUS_RING_WIDTH;
-use crate::app::theme::{
-    self, ButtonKind, PALETTE_DARK, PALETTE_LIGHT, Palette, ThumbState, Veil,
-};
+use crate::app::theme::{self, ButtonKind, PALETTE_DARK, PALETTE_LIGHT, Palette, ThumbState, Veil};
 
-const KINDS: [ButtonKind; 3] = [ButtonKind::Primary, ButtonKind::Secondary, ButtonKind::Ghost];
+const KINDS: [ButtonKind; 3] = [
+    ButtonKind::Primary,
+    ButtonKind::Secondary,
+    ButtonKind::Ghost,
+];
 const BUTTON_STATUSES: [button::Status; 4] = [
     button::Status::Active,
     button::Status::Hovered,
@@ -123,7 +125,11 @@ fn invalid_text_field_uses_danger_in_every_enabled_status() {
     ] {
         assert_eq!(input(palette, true, status).border.color, palette.danger);
     }
-    let focused = input(palette, true, text_input::Status::Focused { is_hovered: false });
+    let focused = input(
+        palette,
+        true,
+        text_input::Status::Focused { is_hovered: false },
+    );
     assert!(close(focused.border.width, FOCUS_RING_WIDTH));
     let rest = input(palette, true, text_input::Status::Active);
     assert!(rest.border.width < FOCUS_RING_WIDTH);
@@ -145,22 +151,36 @@ fn checkbox_states_follow_the_control_table() {
     assert_eq!(checked.background, Background::Color(palette.accent));
     assert_eq!(checked.icon_color, palette.on_accent());
     let checked_hover = style(checkbox::Status::Hovered { is_checked: true });
-    assert_eq!(checked_hover.background, Background::Color(palette.accent_strong));
+    assert_eq!(
+        checked_hover.background,
+        Background::Color(palette.accent_strong)
+    );
     let checked_disabled = style(checkbox::Status::Disabled { is_checked: true });
-    assert_eq!(checked_disabled.background, Background::Color(palette.line_strong));
+    assert_eq!(
+        checked_disabled.background,
+        Background::Color(palette.line_strong)
+    );
 }
 
 #[test]
 fn scrollbar_thumbs_follow_pointer_state() {
     let palette = PALETTE_DARK;
-    let thumb = |style: scrollable::Style| (style.vertical_rail.scroller.background, style.horizontal_rail.scroller.background);
+    let thumb = |style: scrollable::Style| {
+        (
+            style.vertical_rail.scroller.background,
+            style.horizontal_rail.scroller.background,
+        )
+    };
     let color = |state| Background::Color(palette.scrollbar_thumb(state));
 
     let active = scrollable::Status::Active {
         is_horizontal_scrollbar_disabled: false,
         is_vertical_scrollbar_disabled: false,
     };
-    assert_eq!(thumb(theme::scrollable(palette, active)), (color(ThumbState::Idle), color(ThumbState::Idle)));
+    assert_eq!(
+        thumb(theme::scrollable(palette, active)),
+        (color(ThumbState::Idle), color(ThumbState::Idle))
+    );
 
     let hovered = scrollable::Status::Hovered {
         is_horizontal_scrollbar_hovered: false,
@@ -168,7 +188,10 @@ fn scrollbar_thumbs_follow_pointer_state() {
         is_horizontal_scrollbar_disabled: false,
         is_vertical_scrollbar_disabled: false,
     };
-    assert_eq!(thumb(theme::scrollable(palette, hovered)), (color(ThumbState::Hovered), color(ThumbState::Idle)));
+    assert_eq!(
+        thumb(theme::scrollable(palette, hovered)),
+        (color(ThumbState::Hovered), color(ThumbState::Idle))
+    );
 
     let dragged = scrollable::Status::Dragged {
         is_horizontal_scrollbar_dragged: true,
@@ -176,7 +199,10 @@ fn scrollbar_thumbs_follow_pointer_state() {
         is_horizontal_scrollbar_disabled: false,
         is_vertical_scrollbar_disabled: false,
     };
-    assert_eq!(thumb(theme::scrollable(palette, dragged)), (color(ThumbState::Idle), color(ThumbState::Dragged)));
+    assert_eq!(
+        thumb(theme::scrollable(palette, dragged)),
+        (color(ThumbState::Idle), color(ThumbState::Dragged))
+    );
 }
 
 #[test]
@@ -187,13 +213,20 @@ fn rule_progress_and_text_styles_use_their_tokens() {
     let bar = theme::progress_bar(palette);
     assert_eq!(bar.background, Background::Color(palette.line));
     assert_eq!(bar.bar, Background::Color(palette.accent));
-    assert_eq!(theme::text_color(palette.danger).color, Some(palette.danger));
+    assert_eq!(
+        theme::text_color(palette.danger).color,
+        Some(palette.danger)
+    );
 }
 
 #[test]
 fn only_floating_surfaces_cast_shadows() {
     let palette = PALETTE_DARK;
-    for style in [theme::card(palette), theme::menu(palette), theme::tooltip(palette)] {
+    for style in [
+        theme::card(palette),
+        theme::menu(palette),
+        theme::tooltip(palette),
+    ] {
         assert_eq!(style.shadow, palette.shadow());
     }
     for style in [
@@ -220,9 +253,18 @@ fn surfaces_use_the_documented_grounds() {
     assert_eq!(ground(theme::surface(palette)), Some(palette.surface));
     assert_eq!(ground(theme::toolbar(palette)), Some(palette.surface_2()));
     assert_eq!(ground(theme::badge(palette)), Some(palette.accent_soft));
-    assert_eq!(ground(theme::detail_block(palette)), Some(palette.surface_2()));
-    assert_eq!(ground(theme::veil(palette, Veil::Loading)), Some(palette.loading_veil()));
-    assert_eq!(ground(theme::veil(palette, Veil::Error)), Some(palette.error_veil()));
+    assert_eq!(
+        ground(theme::detail_block(palette)),
+        Some(palette.surface_2())
+    );
+    assert_eq!(
+        ground(theme::veil(palette, Veil::Loading)),
+        Some(palette.loading_veil())
+    );
+    assert_eq!(
+        ground(theme::veil(palette, Veil::Error)),
+        Some(palette.error_veil())
+    );
     let swatch = theme::swatch(palette, palette.ok);
     assert_eq!(ground(swatch), Some(palette.ok));
     assert_eq!(swatch.border.color, palette.line_strong);

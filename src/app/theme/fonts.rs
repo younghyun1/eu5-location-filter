@@ -50,3 +50,21 @@ pub(crate) fn sans_for(locale: Locale, weight: Weight) -> Font {
         ..Font::DEFAULT
     }
 }
+
+/// Font for one string drawn by a custom widget with `Shaping::Auto`.
+///
+/// `Auto` shapes pure ASCII text without font fallback, and the Arabic and Indic script packs
+/// carry no Latin letters, so an English label or an identifier drawn in such a face would show
+/// missing glyphs. ASCII text therefore always uses the embedded Plex Sans family, keeping the
+/// requested weight; any other text keeps `font` and is shaped with fallback.
+#[must_use]
+pub(crate) fn font_for_text(font: Font, content: &str) -> Font {
+    if content.is_ascii() && font.family != Family::Name(FONT_MONO_FAMILY) {
+        Font {
+            family: Family::Name(FONT_SANS_FAMILY),
+            ..font
+        }
+    } else {
+        font
+    }
+}

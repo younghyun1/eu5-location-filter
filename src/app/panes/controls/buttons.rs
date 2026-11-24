@@ -7,9 +7,7 @@ use iced::{Element, Length, Padding, Size};
 
 use super::text::{sans_font, with_tooltip};
 use crate::app::context::ViewContext;
-use crate::app::layout::{
-    BUTTON_HEIGHT, BUTTON_PADDING_INLINE, ICON_BUTTON_SIZE, TOUCH_TARGET,
-};
+use crate::app::layout::{BUTTON_HEIGHT, BUTTON_PADDING_INLINE, ICON_BUTTON_SIZE, TOUCH_TARGET};
 use crate::app::message::Message;
 use crate::app::theme::{self, ButtonKind, Icon, TEXT_BODY};
 use crate::app::widget::{FocusRing, focus_ring};

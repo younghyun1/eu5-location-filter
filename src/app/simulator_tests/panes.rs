@@ -31,22 +31,48 @@ fn the_rail_collapses_to_a_strip_and_expands_again() -> Result<(), AppError> {
         let _button = ui.click(ids::RAIL_COLLAPSE)?;
         Ok(())
     })?;
-    assert!(published(&messages, |pane| matches!(pane, PaneMessage::SetRailCollapsed(true))), "{messages:?}");
+    assert!(
+        published(&messages, |pane| matches!(
+            pane,
+            PaneMessage::SetRailCollapsed(true)
+        )),
+        "{messages:?}"
+    );
     assert!(harness.app.panes.rail_collapsed);
 
     let mut ui = harness.ui();
-    assert!(!has_id(&mut ui, ids::RAIL_CLEAR_ALL), "the strip has no Clear all");
-    assert!(!has_id(&mut ui, ids::RAIL_SPLITTER), "the strip has no splitter");
-    assert!(has_id(&mut ui, ids::RAIL_COLLAPSE), "the expand button keeps the collapse id");
+    assert!(
+        !has_id(&mut ui, ids::RAIL_CLEAR_ALL),
+        "the strip has no Clear all"
+    );
+    assert!(
+        !has_id(&mut ui, ids::RAIL_SPLITTER),
+        "the strip has no splitter"
+    );
+    assert!(
+        has_id(&mut ui, ids::RAIL_COLLAPSE),
+        "the expand button keeps the collapse id"
+    );
     let wider = bounds_of(&mut ui, ids::GRID).map_err(ui_error)?;
-    assert!(wider.width > docked_grid.width, "{} > {}", wider.width, docked_grid.width);
+    assert!(
+        wider.width > docked_grid.width,
+        "{} > {}",
+        wider.width,
+        docked_grid.width
+    );
     drop(ui);
 
     let messages = harness.drive(|ui| {
         let _button = ui.click(ids::RAIL_COLLAPSE)?;
         Ok(())
     })?;
-    assert!(published(&messages, |pane| matches!(pane, PaneMessage::SetRailCollapsed(false))), "{messages:?}");
+    assert!(
+        published(&messages, |pane| matches!(
+            pane,
+            PaneMessage::SetRailCollapsed(false)
+        )),
+        "{messages:?}"
+    );
     assert!(has_id(&mut harness.ui(), ids::RAIL_CLEAR_ALL));
     Ok(())
 }
@@ -63,7 +89,13 @@ fn the_detail_pane_hides_and_the_toolbar_offers_it_back() -> Result<(), AppError
         let _button = ui.click(ids::DETAIL_HIDE)?;
         Ok(())
     })?;
-    assert!(published(&messages, |pane| matches!(pane, PaneMessage::SetDetailHidden(true))), "{messages:?}");
+    assert!(
+        published(&messages, |pane| matches!(
+            pane,
+            PaneMessage::SetDetailHidden(true)
+        )),
+        "{messages:?}"
+    );
 
     let mut ui = harness.ui();
     assert!(!has_id(&mut ui, ids::DETAIL_HIDE));
@@ -75,7 +107,13 @@ fn the_detail_pane_hides_and_the_toolbar_offers_it_back() -> Result<(), AppError
         let _button = ui.click(ids::SHOW_DETAILS_BUTTON)?;
         Ok(())
     })?;
-    assert!(published(&messages, |pane| matches!(pane, PaneMessage::SetDetailHidden(false))), "{messages:?}");
+    assert!(
+        published(&messages, |pane| matches!(
+            pane,
+            PaneMessage::SetDetailHidden(false)
+        )),
+        "{messages:?}"
+    );
     assert!(!harness.app.panes.detail_hidden);
     assert!(has_id(&mut harness.ui(), ids::DETAIL_HIDE));
     Ok(())
@@ -130,13 +168,25 @@ fn a_right_to_left_locale_mirrors_the_panes_and_the_header() -> Result<(), AppEr
     assert!(rtl.app.direction.is_rtl());
 
     let [rail, grid, detail] = pane_centres(&ltr)?;
-    assert!(rail < grid && grid < detail, "left to right: {rail} {grid} {detail}");
+    assert!(
+        rail < grid && grid < detail,
+        "left to right: {rail} {grid} {detail}"
+    );
     let [rail, grid, detail] = pane_centres(&rtl)?;
-    assert!(detail < grid && grid < rail, "right to left: {detail} {grid} {rail}");
+    assert!(
+        detail < grid && grid < rail,
+        "right to left: {detail} {grid} {rail}"
+    );
 
     let [search, about] = header_centres(&ltr)?;
-    assert!(search < about, "the About button ends the header: {search} {about}");
+    assert!(
+        search < about,
+        "the About button ends the header: {search} {about}"
+    );
     let [search, about] = header_centres(&rtl)?;
-    assert!(about < search, "the About button ends the header: {about} {search}");
+    assert!(
+        about < search,
+        "the About button ends the header: {about} {search}"
+    );
     Ok(())
 }

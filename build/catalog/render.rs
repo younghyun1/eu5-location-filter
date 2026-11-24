@@ -50,7 +50,9 @@ fn render_enum(out: &mut String, english: &Catalog) {
     out.push_str(&format!(
         "    /// Number of keys.\n    pub const COUNT: usize = {count};\n\n"
     ));
-    out.push_str("    /// Every key in catalog order.\n    pub const ALL: [Text; Text::COUNT] = [\n");
+    out.push_str(
+        "    /// Every key in catalog order.\n    pub const ALL: [Text; Text::COUNT] = [\n",
+    );
     for item in &english.items {
         out.push_str(&format!("        Text::{},\n", variant_name(&item.key)));
     }
@@ -86,12 +88,11 @@ fn render_table(out: &mut String, english: &Catalog, catalog: &Catalog) -> Resul
         match &item.value {
             Value::Plain(form) => out.push_str(&format!("    Entry::Plain({:?}),\n", form.text)),
             Value::Plural(forms) => {
-                let pick = |category: Category| {
-                    match forms.iter().find(|(known, _)| *known == category) {
+                let pick =
+                    |category: Category| match forms.iter().find(|(known, _)| *known == category) {
                         Some((_, form)) => format!("Some({:?})", form.text),
                         None => "None".to_owned(),
-                    }
-                };
+                    };
                 let Some((_, other)) = forms.iter().find(|(known, _)| *known == Category::Other)
                 else {
                     return Err(format!(

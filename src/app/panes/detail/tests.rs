@@ -51,20 +51,21 @@ fn sample() -> LocationDetail {
 
 #[test]
 fn swatch_colour_unpacks_the_channels() {
-    assert_eq!(swatch_color(MapColor(0xFF_00_80)), Color::from_rgb8(255, 0, 128));
+    assert_eq!(
+        swatch_color(MapColor(0xFF_00_80)),
+        Color::from_rgb8(255, 0, 128)
+    );
     assert_eq!(swatch_color(MapColor(0)), Color::from_rgb8(0, 0, 0));
     // Bits above the 24 packed ones are ignored.
-    assert_eq!(swatch_color(MapColor(0xAB_01_02_03)), Color::from_rgb8(1, 2, 3));
+    assert_eq!(
+        swatch_color(MapColor(0xAB_01_02_03)),
+        Color::from_rgb8(1, 2, 3)
+    );
 }
 
 #[test]
 fn empty_levels_are_skipped() {
-    let levels = vec![
-        "A".to_owned(),
-        String::new(),
-        "C".to_owned(),
-        String::new(),
-    ];
+    let levels = vec!["A".to_owned(), String::new(), "C".to_owned(), String::new()];
     assert_eq!(breadcrumb_levels(&levels), ["A", "C"]);
     assert!(breadcrumb_levels(&[]).is_empty());
 }

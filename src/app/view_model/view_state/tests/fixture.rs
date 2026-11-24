@@ -52,7 +52,8 @@ pub(super) fn dataset() -> Dataset {
     .into_iter()
     .map(str::to_owned)
     .collect();
-    dictionary.extend((0..LONG_KEY_COUNT).map(|index| format!("long_key_{index:02}_{}", "x".repeat(47))));
+    dictionary
+        .extend((0..LONG_KEY_COUNT).map(|index| format!("long_key_{index:02}_{}", "x".repeat(47))));
     let hierarchy = Hierarchy {
         continent: EUROPE,
         subcontinent: UPPLAND,
@@ -119,8 +120,14 @@ pub(super) fn dataset() -> Dataset {
         ..stockholm.clone()
     };
     let locations = vec![stockholm, baltic, evora];
-    let by_key = locations.iter().map(|record| (record.key, record.id)).collect();
-    let by_color = locations.iter().map(|record| (record.color, record.id)).collect();
+    let by_key = locations
+        .iter()
+        .map(|record| (record.key, record.id))
+        .collect();
+    let by_color = locations
+        .iter()
+        .map(|record| (record.color, record.id))
+        .collect();
     Dataset {
         stored: StoredDataset {
             format_version: FORMAT_VERSION,

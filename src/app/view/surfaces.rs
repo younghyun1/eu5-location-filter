@@ -79,7 +79,11 @@ pub(super) fn with_surfaces<'a>(
         ));
         layers.push(overlays::modal(
             context,
-            opaque(about::view(context, build_id, app.overlay.licenses_expanded)),
+            opaque(about::view(
+                context,
+                build_id,
+                app.overlay.licenses_expanded,
+            )),
         ));
     }
     match &app.phase {

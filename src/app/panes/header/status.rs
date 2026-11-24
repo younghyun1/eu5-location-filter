@@ -1,11 +1,13 @@
 //! Status values of the header and the text built from them.
 
+use iced::alignment::Horizontal;
 use iced::widget::text::{Alignment, Wrapping};
 use iced::widget::{Column, text};
 use iced::{Color, Element, Length};
 
 use crate::app::context::ViewContext;
 use crate::app::i18n::{Text, format};
+use crate::app::layout::anchored_text;
 use crate::app::layout::inline_row;
 use crate::app::message::Message;
 use crate::app::panes::controls::{counted, mono_font};
@@ -53,23 +55,23 @@ fn meta_line<'a>(
     ctx: ViewContext,
     value: String,
     color: Color,
-    align: Alignment,
+    side: Horizontal,
 ) -> Element<'a, Message> {
-    text(value)
-        .size(TEXT_META)
-        .font(mono_font(ctx, false))
-        .color(color)
-        .width(Length::Fill)
-        .align_x(align)
-        .wrapping(Wrapping::None)
-        .into()
+    anchored_text(
+        text(value)
+            .size(TEXT_META)
+            .font(mono_font(ctx, false))
+            .color(color)
+            .wrapping(Wrapping::None),
+        side,
+    )
 }
 
 /// Two-line status block of the wide header: count in `ink`, build in `ink_faint`.
 #[must_use]
 pub(super) fn block<'a>(ctx: ViewContext, status: HeaderStatus) -> Element<'a, Message> {
     let palette = ctx.palette;
-    let align = ctx.direction.text_start();
+    let align = ctx.direction.start();
     Column::new()
         .push(meta_line(ctx, count_text(ctx, status), palette.ink, align))
         .push(meta_line(
@@ -90,13 +92,13 @@ pub(super) fn line<'a>(ctx: ViewContext, status: HeaderStatus) -> Element<'a, Me
         ctx,
         count_text(ctx, status),
         palette.ink,
-        ctx.direction.text_start(),
+        ctx.direction.start(),
     );
     let build = meta_line(
         ctx,
         build_text(ctx, status),
         palette.ink_faint,
-        ctx.direction.text_end(),
+        ctx.direction.end(),
     );
     inline_row(ctx.direction, vec![count, build])
         .width(Length::Fill)

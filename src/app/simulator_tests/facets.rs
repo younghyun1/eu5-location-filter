@@ -23,7 +23,9 @@ fn option_label(harness: &Harness, facet: FacetId, needle: &str) -> Result<Strin
         .find(|label| label.contains(needle));
     match found {
         Some(label) => Ok(label.to_owned()),
-        None => Err(AppError::InvalidData(format!("no option containing {needle:?}"))),
+        None => Err(AppError::InvalidData(format!(
+            "no option containing {needle:?}"
+        ))),
     }
 }
 
@@ -92,8 +94,17 @@ fn toggling_a_selected_option_clears_it() -> Result<(), AppError> {
 fn unfolding_a_group_and_choosing_an_option_filters_by_it() -> Result<(), AppError> {
     let mut harness = Harness::new(WIDE)?;
     let continent = FacetId::Continent;
-    assert!(harness.app.facets.get(continent.index()).is_some_and(|group| group.folded));
-    assert!(!has_id(&mut harness.ui(), ids::facet_list(continent)), "a folded group has no list");
+    assert!(
+        harness
+            .app
+            .facets
+            .get(continent.index())
+            .is_some_and(|group| group.folded)
+    );
+    assert!(
+        !has_id(&mut harness.ui(), ids::facet_list(continent)),
+        "a folded group has no list"
+    );
 
     let messages = harness.drive(|ui| {
         let _fold = ui.click(ids::facet_fold(continent))?;
@@ -102,11 +113,20 @@ fn unfolding_a_group_and_choosing_an_option_filters_by_it() -> Result<(), AppErr
     assert!(
         messages.iter().any(|message| matches!(
             message,
-            Message::Filter(FilterMessage::Fold { facet: FacetId::Continent, folded: false })
+            Message::Filter(FilterMessage::Fold {
+                facet: FacetId::Continent,
+                folded: false
+            })
         )),
         "{messages:?}"
     );
-    assert!(harness.app.facets.get(continent.index()).is_some_and(|group| !group.folded));
+    assert!(
+        harness
+            .app
+            .facets
+            .get(continent.index())
+            .is_some_and(|group| !group.folded)
+    );
 
     let europe = option_label(&harness, continent, "europe")?;
     harness.drive(|ui| {
@@ -142,7 +162,13 @@ fn clear_all_empties_every_facet_selection() -> Result<(), AppError> {
     assert_eq!(harness.results()?.len(), LAND_COUNT);
     let kinds = &harness.app.filters.kinds;
     assert!(kinds.len() == 1 && kinds.contains(&LocationKind::Land));
-    assert!(harness.app.facets.get(FacetId::Kind.index()).is_some_and(|group| group.query.is_empty()));
+    assert!(
+        harness
+            .app
+            .facets
+            .get(FacetId::Kind.index())
+            .is_some_and(|group| group.query.is_empty())
+    );
     Ok(())
 }
 
@@ -157,11 +183,33 @@ fn the_option_search_hides_options_without_changing_the_filter() -> Result<(), A
         Ok(())
     })?;
 
-    let query = harness.app.facets.get(kind.index()).map(|group| group.query.as_str());
+    let query = harness
+        .app
+        .facets
+        .get(kind.index())
+        .map(|group| group.query.as_str());
     assert_eq!(query, Some("sea"));
-    assert_eq!(harness.results()?.len(), LAND_COUNT, "the filter itself is unchanged");
+    assert_eq!(
+        harness.results()?.len(),
+        LAND_COUNT,
+        "the filter itself is unchanged"
+    );
     let mut ui = harness.ui();
-    assert!(text_in(&mut ui, ids::facet_list(kind), t(Locale::EnUs, Text::OptionKindSea)).is_ok());
-    assert!(text_in(&mut ui, ids::facet_list(kind), t(Locale::EnUs, Text::OptionKindLand)).is_err());
+    assert!(
+        text_in(
+            &mut ui,
+            ids::facet_list(kind),
+            t(Locale::EnUs, Text::OptionKindSea)
+        )
+        .is_ok()
+    );
+    assert!(
+        text_in(
+            &mut ui,
+            ids::facet_list(kind),
+            t(Locale::EnUs, Text::OptionKindLand)
+        )
+        .is_err()
+    );
     Ok(())
 }

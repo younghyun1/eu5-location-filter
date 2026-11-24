@@ -34,7 +34,10 @@ fn digest_separates_entry_boundaries() {
 #[test]
 fn rejects_oversized_input_before_decompression() {
     let oversized = vec![0_u8; usize::try_from(MAX_PACK_COMPRESSED_SIZE + 1).unwrap_or(0)];
-    assert!(matches!(decode_pack(&oversized), Err(AppError::InvalidData(_))));
+    assert!(matches!(
+        decode_pack(&oversized),
+        Err(AppError::InvalidData(_))
+    ));
 }
 
 #[test]
@@ -42,7 +45,10 @@ fn rejects_oversized_expansion() {
     let size = usize::try_from(MAX_PACK_DECOMPRESSED_SIZE + 1).unwrap_or(0);
     let compressed = zstd::bulk::compress(&vec![0_u8; size], 1).unwrap_or_default();
     assert!(!compressed.is_empty());
-    assert!(matches!(decode_pack(&compressed), Err(AppError::InvalidData(_))));
+    assert!(matches!(
+        decode_pack(&compressed),
+        Err(AppError::InvalidData(_))
+    ));
 }
 
 #[test]
@@ -52,7 +58,10 @@ fn rejects_malformed_envelopes_by_family() {
         Err(AppError::Compression(_))
     ));
     let wrong_magic = frame(b"EU5IDX\0\x01", 3, &[1, 2, 3]);
-    assert!(matches!(decode_pack(&wrong_magic), Err(AppError::InvalidData(_))));
+    assert!(matches!(
+        decode_pack(&wrong_magic),
+        Err(AppError::InvalidData(_))
+    ));
     let mut short = PACK_MAGIC.to_vec();
     short.extend_from_slice(&[3, 0]);
     let truncated_header = zstd::bulk::compress(&short, 1).unwrap_or_default();
@@ -61,7 +70,10 @@ fn rejects_malformed_envelopes_by_family() {
         Err(AppError::InvalidData(_))
     ));
     let wrong_length = frame(PACK_MAGIC, 4, &[1, 2, 3]);
-    assert!(matches!(decode_pack(&wrong_length), Err(AppError::InvalidData(_))));
+    assert!(matches!(
+        decode_pack(&wrong_length),
+        Err(AppError::InvalidData(_))
+    ));
     let garbage = frame(PACK_MAGIC, 3, &[1, 2, 3]);
     assert!(matches!(decode_pack(&garbage), Err(AppError::Encoding(_))));
 }
@@ -84,7 +96,9 @@ mod desktop {
         assert_eq!(decode_pack(&first)?, pack);
         // The browser decoder rejects frames whose window exceeds the decompressed limit, so
         // the frame header must carry the content size.
-        let content = zstd::zstd_safe::get_frame_content_size(&first).ok().flatten();
+        let content = zstd::zstd_safe::get_frame_content_size(&first)
+            .ok()
+            .flatten();
         assert!(content.is_some_and(|size| size <= MAX_PACK_DECOMPRESSED_SIZE));
         Ok(())
     }
@@ -100,10 +114,8 @@ mod desktop {
 
     #[test]
     fn writes_require_force_and_remove_other_builds() -> Result<(), AppError> {
-        let directory = std::env::temp_dir().join(format!(
-            "eu5-location-filter-lang-{}",
-            std::process::id()
-        ));
+        let directory =
+            std::env::temp_dir().join(format!("eu5-location-filter-lang-{}", std::process::id()));
         let _ = fs::remove_dir_all(&directory);
         fs::create_dir_all(&directory)
             .map_err(|source| AppError::io("create", &directory, source))?;

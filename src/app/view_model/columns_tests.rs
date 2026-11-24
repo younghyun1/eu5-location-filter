@@ -60,7 +60,10 @@ fn keys_are_unique_and_round_trip() {
 fn widths_are_inside_the_resize_limits() {
     for column in ColumnId::ALL {
         let width = column.default_width();
-        assert!((COLUMN_MIN_WIDTH..=COLUMN_MAX_WIDTH).contains(&width), "{column:?}");
+        assert!(
+            (COLUMN_MIN_WIDTH..=COLUMN_MAX_WIDTH).contains(&width),
+            "{column:?}"
+        );
     }
 }
 
@@ -103,7 +106,13 @@ fn the_last_visible_column_cannot_be_hidden() {
     // Showing another column makes the first one hideable again.
     assert!(columns.set_visible(ColumnId::Kind, true));
     assert!(columns.set_visible(ColumnId::Name, false));
-    assert_eq!(columns.visible().map(|column| column.id).collect::<Vec<_>>(), [ColumnId::Kind]);
+    assert_eq!(
+        columns
+            .visible()
+            .map(|column| column.id)
+            .collect::<Vec<_>>(),
+        [ColumnId::Kind]
+    );
 }
 
 #[test]
@@ -188,7 +197,9 @@ fn sort_fields_cover_every_field_and_alias_rgb_to_color() {
     assert_eq!(ColumnId::Color.sort_field(), SortField::Color);
     for field in SortField::ALL {
         assert!(
-            ColumnId::ALL.iter().any(|column| column.sort_field() == field),
+            ColumnId::ALL
+                .iter()
+                .any(|column| column.sort_field() == field),
             "{field:?}"
         );
     }

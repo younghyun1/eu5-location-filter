@@ -66,7 +66,10 @@ fn a_search_without_matches_empties_the_grid_and_the_selection() -> Result<(), A
     assert!(harness.app.detail.is_none());
     let mut ui = harness.ui();
     assert!(ui.find(harness.count_text(0)).is_ok());
-    assert!(has_id(&mut ui, ids::GRID), "the grid stays on screen when empty");
+    assert!(
+        has_id(&mut ui, ids::GRID),
+        "the grid stays on screen when empty"
+    );
     Ok(())
 }
 

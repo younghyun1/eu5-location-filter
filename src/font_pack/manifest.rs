@@ -34,23 +34,43 @@ fn string(text: &str) -> String {
 pub(super) fn render(report: &FontPackReport) -> String {
     let mut out = String::from("{\n  \"format\": 1,\n  \"outputs\": [");
     for (index, output) in report.outputs.iter().enumerate() {
-        out.push_str(if index == 0 { "\n    {\n" } else { ",\n    {\n" });
+        out.push_str(if index == 0 {
+            "\n    {\n"
+        } else {
+            ",\n    {\n"
+        });
         let version = output
             .source_version
             .as_deref()
             .map_or_else(|| "null".to_owned(), string);
         let notes: Vec<String> = output.notes.iter().map(|note| string(note)).collect();
         out.push_str(&format!("      \"name\": {},\n", string(&output.name)));
-        out.push_str(&format!("      \"source\": {},\n", string(&output.source_file)));
-        out.push_str(&format!("      \"source_sha256\": {},\n", string(&output.source_sha256)));
+        out.push_str(&format!(
+            "      \"source\": {},\n",
+            string(&output.source_file)
+        ));
+        out.push_str(&format!(
+            "      \"source_sha256\": {},\n",
+            string(&output.source_sha256)
+        ));
         out.push_str(&format!("      \"source_version\": {version},\n"));
         out.push_str(&format!("      \"codepoints\": {},\n", output.codepoints));
         out.push_str(&format!("      \"size_bytes\": {},\n", output.size_bytes));
-        out.push_str(&format!("      \"sha256\": {},\n", string(&output.output_sha256)));
-        out.push_str(&format!("      \"copied_whole\": {},\n", output.copied_whole));
+        out.push_str(&format!(
+            "      \"sha256\": {},\n",
+            string(&output.output_sha256)
+        ));
+        out.push_str(&format!(
+            "      \"copied_whole\": {},\n",
+            output.copied_whole
+        ));
         out.push_str(&format!("      \"notes\": [{}]\n    }}", notes.join(", ")));
     }
-    out.push_str(if report.outputs.is_empty() { "]\n}\n" } else { "\n  ]\n}\n" });
+    out.push_str(if report.outputs.is_empty() {
+        "]\n}\n"
+    } else {
+        "\n  ]\n}\n"
+    });
     out
 }
 

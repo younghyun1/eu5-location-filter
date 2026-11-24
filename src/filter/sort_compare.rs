@@ -77,10 +77,9 @@ fn compare_records(
     let labels = keys.labels.as_slice();
     match field {
         SortField::Color => left.color.cmp(&right.color),
-        SortField::Name => optional_values(
-            key(&keys.names, left.id.0),
-            key(&keys.names, right.id.0),
-        ),
+        SortField::Name => {
+            optional_values(key(&keys.names, left.id.0), key(&keys.names, right.id.0))
+        }
         SortField::Identifier => symbols(&keys.identifiers, Some(left.key), Some(right.key)),
         SortField::Kind => left.kind.cmp(&right.kind),
         SortField::Topography => symbols(labels, Some(left.topography), Some(right.topography)),
@@ -101,7 +100,11 @@ fn compare_records(
             Some(left.hierarchy.region),
             Some(right.hierarchy.region),
         ),
-        SortField::Area => symbols(labels, Some(left.hierarchy.area), Some(right.hierarchy.area)),
+        SortField::Area => symbols(
+            labels,
+            Some(left.hierarchy.area),
+            Some(right.hierarchy.area),
+        ),
         SortField::Province => symbols(
             labels,
             Some(left.hierarchy.province),

@@ -10,8 +10,7 @@ use crate::app::i18n::Locale;
 use crate::app::ids;
 use crate::app::layout::{DETAIL_MIN_WIDTH, Direction, Drawer, LayoutMode, RAIL_MAX_WIDTH};
 use crate::app::message::{
-    GridMessage, KeyCommand, Message, OverlayMessage, PaneMessage, SelectionSource,
-    SettingsMessage,
+    GridMessage, KeyCommand, Message, OverlayMessage, PaneMessage, SelectionSource, SettingsMessage,
 };
 use crate::app::state::{App, FocusRegion, Surface};
 use crate::app::theme::{AccentPreset, Mode, PALETTE_LIGHT, Palette};
@@ -45,11 +44,17 @@ fn splitter_widths_are_clamped_and_non_finite_widths_dropped() -> Result<(), App
 #[test]
 fn drawers_open_only_in_the_narrow_layout_and_close_when_leaving_it() -> Result<(), AppError> {
     let mut app = app(Platform::Browser)?;
-    send(&mut app, Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Filters)));
+    send(
+        &mut app,
+        Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Filters)),
+    );
     assert_eq!(app.panes.drawer, None);
     narrow(&mut app);
     assert_eq!(app.layout_mode, LayoutMode::Narrow);
-    send(&mut app, Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Filters)));
+    send(
+        &mut app,
+        Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Filters)),
+    );
     assert_eq!(app.open_drawer(), Some(Drawer::Filters));
     assert_eq!(app.focus.return_to, Some(ids::FILTERS_BUTTON));
     send(&mut app, Message::WindowResized(Size::new(1200.0, 800.0)));
@@ -62,7 +67,10 @@ fn drawers_open_only_in_the_narrow_layout_and_close_when_leaving_it() -> Result<
 fn a_closing_drawer_stays_drawn_until_its_slide_ends() -> Result<(), AppError> {
     let mut app = app(Platform::Browser)?;
     narrow(&mut app);
-    send(&mut app, Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Details)));
+    send(
+        &mut app,
+        Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Details)),
+    );
     // Let the opening slide finish so closing starts from a settled drawer.
     let opened = app.appearance.now + Duration::from_secs(1);
     send(&mut app, Message::Frame(opened));
@@ -82,7 +90,10 @@ fn without_motion_a_drawer_closes_at_once() -> Result<(), AppError> {
     send(&mut app, Message::Settings(SettingsMessage::Motion(false)));
     assert!(app.appearance.reduced_motion);
     narrow(&mut app);
-    send(&mut app, Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Filters)));
+    send(
+        &mut app,
+        Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Filters)),
+    );
     send(&mut app, Message::Overlay(OverlayMessage::CloseDrawer));
     assert_eq!(app.panes.drawer, None);
     Ok(())
@@ -103,14 +114,23 @@ fn a_tap_opens_the_detail_drawer_and_a_key_does_not() -> Result<(), AppError> {
 #[test]
 fn surfaces_toggle_and_desktop_menus_stay_closed_in_the_browser() -> Result<(), AppError> {
     let mut app = app(Platform::Desktop)?;
-    send(&mut app, Message::Overlay(OverlayMessage::Toggle(Surface::ColumnMenu)));
+    send(
+        &mut app,
+        Message::Overlay(OverlayMessage::Toggle(Surface::ColumnMenu)),
+    );
     assert_eq!(app.overlay.surface, Some(Surface::ColumnMenu));
     assert_eq!(app.focus.return_to, Some(ids::COLUMNS_BUTTON));
-    send(&mut app, Message::Overlay(OverlayMessage::Toggle(Surface::ColumnMenu)));
+    send(
+        &mut app,
+        Message::Overlay(OverlayMessage::Toggle(Surface::ColumnMenu)),
+    );
     assert_eq!(app.overlay.surface, None);
     assert_eq!(app.focus.return_to, None);
     let mut browser = super::fixture::app(Platform::Browser)?;
-    send(&mut browser, Message::Overlay(OverlayMessage::Open(Surface::LanguageMenu)));
+    send(
+        &mut browser,
+        Message::Overlay(OverlayMessage::Open(Surface::LanguageMenu)),
+    );
     assert_eq!(browser.overlay.surface, None);
     Ok(())
 }
@@ -119,8 +139,14 @@ fn surfaces_toggle_and_desktop_menus_stay_closed_in_the_browser() -> Result<(), 
 fn escape_closes_the_topmost_surface_first() -> Result<(), AppError> {
     let mut app = app(Platform::Browser)?;
     narrow(&mut app);
-    send(&mut app, Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Filters)));
-    send(&mut app, Message::Overlay(OverlayMessage::Open(Surface::About)));
+    send(
+        &mut app,
+        Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Filters)),
+    );
+    send(
+        &mut app,
+        Message::Overlay(OverlayMessage::Open(Surface::About)),
+    );
     send(&mut app, Message::Key(KeyCommand::Escape));
     assert_eq!(app.overlay.surface, None);
     assert_eq!(app.panes.drawer, Some(Drawer::Filters));
@@ -130,11 +156,20 @@ fn escape_closes_the_topmost_surface_first() -> Result<(), AppError> {
 #[test]
 fn settings_change_direction_and_palette_targets() -> Result<(), AppError> {
     let mut app = app(Platform::Desktop)?;
-    send(&mut app, Message::Settings(SettingsMessage::Locale(Locale::Ar)));
+    send(
+        &mut app,
+        Message::Settings(SettingsMessage::Locale(Locale::Ar)),
+    );
     assert_eq!(app.direction, Direction::Rtl);
-    send(&mut app, Message::Settings(SettingsMessage::Mode(Mode::Light)));
+    send(
+        &mut app,
+        Message::Settings(SettingsMessage::Mode(Mode::Light)),
+    );
     assert_eq!(app.appearance.fade.target(), PALETTE_LIGHT);
-    send(&mut app, Message::Settings(SettingsMessage::Accent(AccentPreset::Lagoon)));
+    send(
+        &mut app,
+        Message::Settings(SettingsMessage::Accent(AccentPreset::Lagoon)),
+    );
     let expected = Palette::builtin(Mode::Light).with_accent(AccentPreset::Lagoon);
     assert_eq!(app.appearance.fade.target(), expected);
     let later = app.appearance.now + Duration::from_secs(1);
@@ -146,7 +181,10 @@ fn settings_change_direction_and_palette_targets() -> Result<(), AppError> {
 #[test]
 fn region_targets_follow_the_layout() -> Result<(), AppError> {
     let mut app = app(Platform::Desktop)?;
-    assert_eq!(region_target(&app, FocusRegion::Header), Some(Target::Search));
+    assert_eq!(
+        region_target(&app, FocusRegion::Header),
+        Some(Target::Search)
+    );
     assert_eq!(
         region_target(&app, FocusRegion::Rail),
         Some(Target::Widget(ids::RAIL_COLLAPSE))
@@ -168,7 +206,10 @@ fn region_targets_follow_the_layout() -> Result<(), AppError> {
 #[test]
 fn regions_do_not_cycle_while_a_surface_is_open() -> Result<(), AppError> {
     let mut app = app(Platform::Desktop)?;
-    send(&mut app, Message::Overlay(OverlayMessage::Open(Surface::About)));
+    send(
+        &mut app,
+        Message::Overlay(OverlayMessage::Open(Surface::About)),
+    );
     send(&mut app, Message::Key(KeyCommand::NextRegion));
     assert_eq!(app.focus.region, FocusRegion::Header);
     send(&mut app, Message::Key(KeyCommand::FocusSearch));

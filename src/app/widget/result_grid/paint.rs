@@ -54,7 +54,13 @@ pub(super) struct Style {
 /// Fills a rectangle when there is one.
 pub(super) fn fill_rect(renderer: &mut iced::Renderer, bounds: Option<Rectangle>, color: Color) {
     if let Some(bounds) = bounds {
-        renderer.fill_quad(Quad { bounds, ..Quad::default() }, color);
+        renderer.fill_quad(
+            Quad {
+                bounds,
+                ..Quad::default()
+            },
+            color,
+        );
     }
 }
 
@@ -92,13 +98,20 @@ pub(super) fn may_be_rtl(content: &str) -> bool {
 }
 
 /// Text value with this module's fixed shaping, wrapping and line height.
-fn text<C>(content: C, bounds: Size, style: Style, align_x: Alignment, align_y: Vertical) -> Text<C, Font> {
+fn text<C: AsRef<str>>(
+    content: C,
+    bounds: Size,
+    style: Style,
+    align_x: Alignment,
+    align_y: Vertical,
+) -> Text<C, Font> {
+    let font = crate::app::theme::font_for_text(style.font, content.as_ref());
     Text {
         content,
         bounds,
         size: Pixels(style.size),
         line_height: LineHeight::Relative(LINE_HEIGHT),
-        font: style.font,
+        font,
         align_x,
         align_y,
         shaping: Shaping::Auto,
@@ -108,20 +121,37 @@ fn text<C>(content: C, bounds: Size, style: Style, align_x: Alignment, align_y: 
 
 /// Width of a label laid out within `max_width`.
 fn measured_width(content: &str, style: Style, max_width: f32) -> f32 {
-    let mut probe = text(content, Size::new(max_width, f32::INFINITY), style, Alignment::Default, Vertical::Top);
+    let mut probe = text(
+        content,
+        Size::new(max_width, f32::INFINITY),
+        style,
+        Alignment::Default,
+        Vertical::Top,
+    );
     if max_width.is_finite() {
         probe.wrapping = Wrapping::Word;
     }
-    <Measure as iced::advanced::text::Paragraph>::with_text(probe).min_bounds().width
+    <Measure as iced::advanced::text::Paragraph>::with_text(probe)
+        .min_bounds()
+        .width
 }
 
 /// Anchor x and alignment that put a label against `side` of `left..right`.
-pub(super) fn anchor(content: &str, side: Side, left: f32, right: f32, style: Style) -> (f32, Alignment) {
+pub(super) fn anchor(
+    content: &str,
+    side: Side,
+    left: f32,
+    right: f32,
+    style: Style,
+) -> (f32, Alignment) {
     match side {
         Side::Left => (left, Alignment::Default),
         Side::Right if !may_be_rtl(content) => (right, Alignment::Right),
         Side::Center if !may_be_rtl(content) => ((left + right) / 2.0, Alignment::Center),
-        Side::Right => (right - measured_width(content, style, f32::INFINITY), Alignment::Default),
+        Side::Right => (
+            right - measured_width(content, style, f32::INFINITY),
+            Alignment::Default,
+        ),
         Side::Center => {
             let width = measured_width(content, style, f32::INFINITY);
             ((left + right - width) / 2.0, Alignment::Default)
@@ -141,7 +171,13 @@ pub(super) fn fill_line(
 ) {
     let (x, align_x) = anchor(content, side, area.x, area.x + area.width, style);
     renderer.fill_text(
-        text(content.to_owned(), Size::new(f32::INFINITY, area.height), style, align_x, Vertical::Center),
+        text(
+            content.to_owned(),
+            Size::new(f32::INFINITY, area.height),
+            style,
+            align_x,
+            Vertical::Center,
+        ),
         Point::new(x, area.center_y()),
         style.color,
         clip,
@@ -159,11 +195,20 @@ pub(super) fn fill_block(
     clip: Rectangle,
 ) {
     let (x, align_x) = if may_be_rtl(content) {
-        (center_x - measured_width(content, style, width) / 2.0, Alignment::Default)
+        (
+            center_x - measured_width(content, style, width) / 2.0,
+            Alignment::Default,
+        )
     } else {
         (center_x, Alignment::Center)
     };
-    let mut block = text(content.to_owned(), Size::new(width, clip.height), style, align_x, Vertical::Top);
+    let mut block = text(
+        content.to_owned(),
+        Size::new(width, clip.height),
+        style,
+        align_x,
+        Vertical::Top,
+    );
     block.wrapping = Wrapping::Word;
     renderer.fill_text(block, Point::new(x, top), style.color, clip);
 }

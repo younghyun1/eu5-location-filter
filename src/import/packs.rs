@@ -69,7 +69,10 @@ pub fn write_language_packs(
 ///
 /// Replacing the file is the purpose of a reindex, so packs are always overwritten. Returns
 /// the rewritten paths in schema order.
-pub fn reindex_language_packs(dataset: &Dataset, lang_dir: &Path) -> Result<Vec<PathBuf>, AppError> {
+pub fn reindex_language_packs(
+    dataset: &Dataset,
+    lang_dir: &Path,
+) -> Result<Vec<PathBuf>, AppError> {
     let mut written = Vec::new();
     for language in GameLanguage::PACKED {
         let Some(path) = pack_path(lang_dir, language, dataset.stored.build_id) else {
@@ -152,7 +155,10 @@ mod tests {
         assert_eq!(written, vec![path.clone()]);
         assert_eq!(load_pack(&path)?, expected);
         let paired = load_paired_pack(&dataset, &directory, GameLanguage::Korean)?;
-        assert_eq!(paired.map(|pack| pack.language()), Some(GameLanguage::Korean));
+        assert_eq!(
+            paired.map(|pack| pack.language()),
+            Some(GameLanguage::Korean)
+        );
         let absent = load_paired_pack(&dataset, &directory, GameLanguage::French)?;
         assert!(absent.is_none());
         let _ = fs::remove_dir_all(directory);

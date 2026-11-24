@@ -35,7 +35,12 @@ fn close(a: f32, b: f32) -> bool {
     (a - b).abs() < 1e-3
 }
 
-const BOUNDS: Rectangle = Rectangle { x: 10.0, y: 20.0, width: 200.0, height: 196.0 };
+const BOUNDS: Rectangle = Rectangle {
+    x: 10.0,
+    y: 20.0,
+    width: 200.0,
+    height: 196.0,
+};
 
 #[test]
 fn height_is_shown_rows_times_row_height() {
@@ -52,8 +57,14 @@ fn empty_list_keeps_one_row_only_for_empty_text() {
 
 #[test]
 fn invalid_row_height_falls_back_to_wide_metrics() {
-    assert!(close(list_height(2, 7, 0.0, false), 2.0 * CHECKLIST_ROW_HEIGHT));
-    assert!(close(list_height(2, 7, f32::NAN, false), 2.0 * CHECKLIST_ROW_HEIGHT));
+    assert!(close(
+        list_height(2, 7, 0.0, false),
+        2.0 * CHECKLIST_ROW_HEIGHT
+    ));
+    assert!(close(
+        list_height(2, 7, f32::NAN, false),
+        2.0 * CHECKLIST_ROW_HEIGHT
+    ));
 }
 
 #[test]
@@ -88,11 +99,17 @@ fn checkbox_and_label_mirror() {
     assert!(close(check.center_y(), row.center_y()));
     let lane = ltr.label_lane();
     assert!(close(lane.x, BOUNDS.x + start));
-    assert!(close(lane.width, BOUNDS.width - start - CHECKLIST_PADDING_INLINE));
+    assert!(close(
+        lane.width,
+        BOUNDS.width - start - CHECKLIST_PADDING_INLINE
+    ));
 
     let rtl = Geometry::new(BOUNDS, 28.0, 3, true);
     let check = rtl.checkbox_rect(rtl.row_rect(1, 0.0));
-    assert!(close(check.x + check.width, BOUNDS.x + BOUNDS.width - CHECKLIST_PADDING_INLINE));
+    assert!(close(
+        check.x + check.width,
+        BOUNDS.x + BOUNDS.width - CHECKLIST_PADDING_INLINE
+    ));
     let lane = rtl.label_lane();
     assert!(close(lane.x, BOUNDS.x + CHECKLIST_PADDING_INLINE));
     assert!(close(lane.x + lane.width, BOUNDS.x + BOUNDS.width - start));
@@ -128,7 +145,12 @@ fn hit_tests_skip_the_lane() {
 #[test]
 fn clip_outside_the_bounds_shows_no_rows() {
     let geometry = Geometry::new(BOUNDS, 28.0, 100, false);
-    let above = Rectangle { x: 0.0, y: 0.0, width: 400.0, height: 10.0 };
+    let above = Rectangle {
+        x: 0.0,
+        y: 0.0,
+        width: 400.0,
+        height: 10.0,
+    };
     assert!(geometry.visible(0.0, above).is_empty());
 }
 
@@ -210,7 +232,11 @@ mod simulator {
         let messages: Vec<TestMessage> = ui.into_messages().collect();
         assert_eq!(
             messages,
-            vec![TestMessage::Toggle(0, true), TestMessage::Toggle(2, true), TestMessage::Toggle(0, true)]
+            vec![
+                TestMessage::Toggle(0, true),
+                TestMessage::Toggle(2, true),
+                TestMessage::Toggle(0, true)
+            ]
         );
         Ok(())
     }

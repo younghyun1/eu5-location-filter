@@ -84,7 +84,10 @@ pub fn diff_text(language: GameLanguage, old: Labels<'_>, new: Labels<'_>) -> Te
             continue;
         };
         if before != after {
-            labels.entry(*field).or_default().record(identifier, before, after);
+            labels
+                .entry(*field)
+                .or_default()
+                .record(identifier, before, after);
         }
     }
     TextDiff {

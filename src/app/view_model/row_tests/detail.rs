@@ -51,7 +51,12 @@ fn stockholm_header_and_breadcrumb() {
             Text::DetailGroupCapacity,
         ]
     );
-    assert!(detail.groups.iter().all(|group| (group.note.is_some()) == (group.title == Text::DetailGroupCapacity)));
+    assert!(
+        detail
+            .groups
+            .iter()
+            .all(|group| (group.note.is_some()) == (group.title == Text::DetailGroupCapacity))
+    );
 }
 
 #[test]
@@ -63,7 +68,11 @@ fn stockholm_fields_in_contract_order() {
     };
     let ink = CellTone::Ink;
     let expect = |index: usize, expected: Vec<(Text, &str, CellTone, bool)>| {
-        assert_eq!(group(&detail, index).map(rows), Some(expected), "group {index}");
+        assert_eq!(
+            group(&detail, index).map(rows),
+            Some(expected),
+            "group {index}"
+        );
     };
     expect(
         0,
@@ -115,7 +124,10 @@ fn stockholm_fields_in_contract_order() {
             (Text::DetailFieldCapacityModifier, "-0.25%", ink, true),
         ],
     );
-    assert_eq!(group(&detail, 5).and_then(|g| g.note), Some(Text::DetailCapacityNote));
+    assert_eq!(
+        group(&detail, 5).and_then(|g| g.note),
+        Some(Text::DetailCapacityNote)
+    );
 }
 
 #[test]
@@ -127,11 +139,24 @@ fn missing_values_show_the_placeholder() {
     };
     assert_eq!(detail.name, "Baltic Sea");
     assert_eq!(detail.hex, "#0000FF");
-    let values = |index: usize| group(&detail, index).map(|g| rows(g).iter().map(|row| row.1.to_owned()).collect::<Vec<_>>());
-    assert_eq!(values(0), Some(vec!["Sea".into(), "ocean".into(), "-".into(), "-".into()]));
+    let values = |index: usize| {
+        group(&detail, index).map(|g| {
+            rows(g)
+                .iter()
+                .map(|row| row.1.to_owned())
+                .collect::<Vec<_>>()
+        })
+    };
+    assert_eq!(
+        values(0),
+        Some(vec!["Sea".into(), "ocean".into(), "-".into(), "-".into()])
+    );
     assert_eq!(values(1), Some(vec!["-".to_owned(), "-".to_owned()]));
     assert_eq!(values(2), Some(vec!["-".to_owned(), "-".to_owned()]));
-    assert_eq!(values(3), Some(vec!["No".into(), "-".into(), "-".into(), "-".into()]));
+    assert_eq!(
+        values(3),
+        Some(vec!["No".into(), "-".into(), "-".into(), "-".into()])
+    );
     // Without a river only the river row appears.
     assert_eq!(values(4), Some(vec!["Missing".to_owned()]));
     assert_eq!(values(5), Some(vec!["-".to_owned(); 4]));
@@ -166,12 +191,16 @@ fn river_tiers_and_capacity_modifiers_format_exactly() {
         assert_eq!(modifier, Some(expected), "{value}");
     }
     let river = |location: u32| {
-        detail_of(&data, location)
-            .and_then(|detail| detail.groups.get(4).map(rows_owned))
+        detail_of(&data, location).and_then(|detail| detail.groups.get(4).map(rows_owned))
     };
     assert_eq!(
         river(2),
-        Some(vec!["Major river, level 5".to_owned(), "+50%".into(), "No".into(), "Yes".into()])
+        Some(vec![
+            "Major river, level 5".to_owned(),
+            "+50%".into(),
+            "No".into(),
+            "Yes".into()
+        ])
     );
     assert_eq!(
         river(3).map(|values| values.into_iter().take(2).collect::<Vec<_>>()),
@@ -180,15 +209,23 @@ fn river_tiers_and_capacity_modifiers_format_exactly() {
 }
 
 fn rows_owned(group: &DetailGroup) -> Vec<String> {
-    group.fields.iter().map(|field| field.value.clone()).collect()
+    group
+        .fields
+        .iter()
+        .map(|field| field.value.clone())
+        .collect()
 }
 
 #[test]
 fn precious_and_plain_materials_carry_their_tone() {
     let data = dataset();
     let tone = |location: u32| {
-        detail_of(&data, location)
-            .and_then(|detail| detail.groups.get(2).and_then(|g| g.fields.first().map(|f| f.tone)))
+        detail_of(&data, location).and_then(|detail| {
+            detail
+                .groups
+                .get(2)
+                .and_then(|g| g.fields.first().map(|f| f.tone))
+        })
     };
     assert_eq!(tone(0), Some(CellTone::Food));
     assert_eq!(tone(2), Some(CellTone::Precious));

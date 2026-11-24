@@ -80,8 +80,8 @@ impl FontPack {
         match self {
             Self::PlexSansKr => "IBM Plex Sans KR",
             Self::PlexSansJp => "IBM Plex Sans JP",
-            Self::SansSc => "Noto Sans SC",
-            Self::SansTc => "Noto Sans TC",
+            Self::SansSc => "IBM Plex Sans SC",
+            Self::SansTc => "IBM Plex Sans TC",
             Self::NotoSansArabic => "Noto Sans Arabic",
             Self::NotoSansDevanagari => "Noto Sans Devanagari",
             Self::NotoSansBengali => "Noto Sans Bengali",

@@ -122,8 +122,16 @@ impl<Message, M: ChecklistModel> Widget<Message, iced::Theme, iced::Renderer>
         let Some(point) = cursor.position_over(bounds) else {
             return mouse::Interaction::None;
         };
-        let geometry = Geometry::new(bounds, self.row_height, self.model.row_count(), self.direction.is_rtl());
-        if geometry.row_at(point, geometry.clamp(state.offset)).is_some() {
+        let geometry = Geometry::new(
+            bounds,
+            self.row_height,
+            self.model.row_count(),
+            self.direction.is_rtl(),
+        );
+        if geometry
+            .row_at(point, geometry.clamp(state.offset))
+            .is_some()
+        {
             mouse::Interaction::Pointer
         } else {
             mouse::Interaction::None

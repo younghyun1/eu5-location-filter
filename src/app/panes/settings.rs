@@ -3,12 +3,13 @@
 use iced::alignment::Vertical;
 use iced::font::Weight;
 use iced::widget::text::Wrapping;
-use iced::widget::{Column, button, space, text};
+use iced::widget::{Column, button, container, space, text};
 use iced::{Background, Border, Element, Font, Length, Padding, Theme};
 
 use crate::GameLanguage;
 use crate::app::context::ViewContext;
 use crate::app::i18n::{Locale, Text};
+use crate::app::layout::anchored_text;
 use crate::app::layout::{
     BORDER_WIDTH, BUTTON_HEIGHT, BUTTON_PADDING_INLINE, FOCUS_RING_WIDTH, ICON_BUTTON_SIZE,
     MENU_PADDING, RADIUS, TOUCH_TARGET, inline_row,
@@ -51,14 +52,14 @@ fn choice<'a>(
     } else {
         ButtonKind::Ghost
     };
-    let content = text(label)
-        .size(TEXT_BODY)
-        .font(font)
-        .width(Length::Fill)
-        .height(Length::Fill)
-        .align_x(ctx.direction.text_start())
-        .align_y(Vertical::Center)
-        .wrapping(Wrapping::None);
+    let content = container(anchored_text::<Message>(
+        text(label)
+            .size(TEXT_BODY)
+            .font(font)
+            .wrapping(Wrapping::None),
+        ctx.direction.start(),
+    ))
+    .center_y(Length::Fill);
     let body = button(content)
         .width(Length::Fill)
         .height(Length::Fixed(choice_height(ctx)))
@@ -117,14 +118,13 @@ fn accent_swatch<'a>(
 }
 
 /// A labelled group: a small heading above its content.
-fn section<'a>(ctx: ViewContext, label: Text, content: Element<'a, Message>) -> Element<'a, Message> {
+fn section<'a>(
+    ctx: ViewContext,
+    label: Text,
+    content: Element<'a, Message>,
+) -> Element<'a, Message> {
     Column::new()
-        .push(prose(
-            ctx,
-            ctx.t(label),
-            TEXT_SMALL,
-            ctx.palette.ink_muted,
-        ))
+        .push(prose(ctx, ctx.t(label), TEXT_SMALL, ctx.palette.ink_muted))
         .push(content)
         .spacing(MENU_PADDING / 2.0)
         .width(Length::Fill)
@@ -233,7 +233,7 @@ pub(crate) fn appearance_menu<'a>(
 
 #[cfg(test)]
 mod tests {
-    use super::{appearance_menu, language_menu, lacks_game_text};
+    use super::{appearance_menu, lacks_game_text, language_menu};
     use crate::app::i18n::Locale;
     use crate::app::panes::overlays::kit::test_support::contexts;
     use crate::app::state::Appearance;

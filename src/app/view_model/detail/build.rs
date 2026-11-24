@@ -56,4 +56,3 @@ pub(crate) fn build(labels: Labels<'_>, locale: Locale, id: LocationId) -> Optio
         ],
     })
 }
-

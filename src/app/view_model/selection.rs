@@ -20,8 +20,12 @@ pub(crate) fn is_selected(filters: &FilterSet, facet: FacetId, value: OptionValu
         (_, OptionValue::Symbol(symbol)) => {
             optional_set(filters, facet).is_some_and(|set| set.contains(&symbol))
         }
-        (_, OptionValue::Flag(flag)) => flag_set(filters, facet).is_some_and(|set| set.contains(&flag)),
-        (_, OptionValue::Tier(tier)) => tier_set(filters, facet).is_some_and(|set| set.contains(&tier)),
+        (_, OptionValue::Flag(flag)) => {
+            flag_set(filters, facet).is_some_and(|set| set.contains(&flag))
+        }
+        (_, OptionValue::Tier(tier)) => {
+            tier_set(filters, facet).is_some_and(|set| set.contains(&tier))
+        }
         (_, OptionValue::Kind(_)) => false,
     }
 }
@@ -39,8 +43,9 @@ pub(crate) fn set_selected(
         (FacetId::Topography, OptionValue::Symbol(Some(symbol))) => {
             update(&mut filters.topographies, symbol, selected)
         }
-        (_, OptionValue::Symbol(symbol)) => optional_set_mut(filters, facet)
-            .is_some_and(|set| update(set, symbol, selected)),
+        (_, OptionValue::Symbol(symbol)) => {
+            optional_set_mut(filters, facet).is_some_and(|set| update(set, symbol, selected))
+        }
         (_, OptionValue::Flag(flag)) => {
             flag_set_mut(filters, facet).is_some_and(|set| update(set, flag, selected))
         }

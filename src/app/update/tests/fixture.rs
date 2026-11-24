@@ -109,5 +109,10 @@ pub(super) fn loaded() -> Result<LoadedData, AppError> {
 
 /// Ready application in the wide layout with English text.
 pub(super) fn app(platform: Platform) -> Result<App, AppError> {
-    Ok(App::with_data(platform, Locale::EnUs, PALETTE_DARK, loaded()?))
+    Ok(App::with_data(
+        platform,
+        Locale::EnUs,
+        PALETTE_DARK,
+        loaded()?,
+    ))
 }

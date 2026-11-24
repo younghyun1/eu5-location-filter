@@ -31,7 +31,10 @@ fn curve_is_monotonic_and_stays_in_the_unit_range() {
     for step in 0..=200_u16 {
         let value = chrome_curve(f32::from(step) / 200.0);
         assert!((0.0..=1.0).contains(&value), "step {step}: {value}");
-        assert!(value + 1e-5 >= previous, "step {step}: {value} < {previous}");
+        assert!(
+            value + 1e-5 >= previous,
+            "step {step}: {value} < {previous}"
+        );
         previous = value;
     }
 }
@@ -49,8 +52,14 @@ fn curve_decelerates_like_the_site_easing() {
 fn durations_are_zero_with_reduced_motion() {
     assert_eq!(palette_duration(true), Duration::ZERO);
     assert_eq!(drawer_duration(true), Duration::ZERO);
-    assert_eq!(palette_duration(false), Duration::from_millis(PALETTE_MIX_MS));
-    assert_eq!(drawer_duration(false), Duration::from_millis(DRAWER_SLIDE_MS));
+    assert_eq!(
+        palette_duration(false),
+        Duration::from_millis(PALETTE_MIX_MS)
+    );
+    assert_eq!(
+        drawer_duration(false),
+        Duration::from_millis(DRAWER_SLIDE_MS)
+    );
 }
 
 #[test]

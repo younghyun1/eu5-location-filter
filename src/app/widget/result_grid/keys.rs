@@ -57,8 +57,12 @@ pub(super) fn handle<Message>(
         Key::Named(Named::PageDown) => select(grid, state, metrics, Step::PageDown, shell),
         Key::Named(Named::Home) => select(grid, state, metrics, Step::First, shell),
         Key::Named(Named::End) => select(grid, state, metrics, Step::Last, shell),
-        Key::Named(Named::ArrowLeft) if modifiers.shift() => resize(grid, state, metrics, -1.0, shell),
-        Key::Named(Named::ArrowRight) if modifiers.shift() => resize(grid, state, metrics, 1.0, shell),
+        Key::Named(Named::ArrowLeft) if modifiers.shift() => {
+            resize(grid, state, metrics, -1.0, shell)
+        }
+        Key::Named(Named::ArrowRight) if modifiers.shift() => {
+            resize(grid, state, metrics, 1.0, shell)
+        }
         Key::Named(Named::ArrowLeft) => move_column(grid, state, metrics, -1, shell),
         Key::Named(Named::ArrowRight) => move_column(grid, state, metrics, 1, shell),
         Key::Named(Named::Enter) => match grid.active_slot(state, &metrics.strip) {
@@ -129,7 +133,10 @@ fn move_column<Message>(
     };
     let toward_end = (screen_step > 0) != metrics.frame.rtl;
     let index = if toward_end {
-        active.index.saturating_add(1).min(strip.len().saturating_sub(1))
+        active
+            .index
+            .saturating_add(1)
+            .min(strip.len().saturating_sub(1))
     } else {
         active.index.saturating_sub(1)
     };

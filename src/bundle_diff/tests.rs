@@ -42,7 +42,11 @@ fn text_diff_compares_names_and_labels_by_key() -> Result<(), AppError> {
     );
     assert_eq!(english.names.count, 0);
     assert!(english.labels.is_empty());
-    assert!(english.report().contains("packs: old embedded, new embedded"));
+    assert!(
+        english
+            .report()
+            .contains("packs: old embedded, new embedded")
+    );
 
     let korean = diff_text(
         GameLanguage::Korean,

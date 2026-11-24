@@ -4,9 +4,9 @@
 //! Symbols are compared by their resolved text because each bundle owns its own
 //! dictionary, so numeric `SymbolId` values are not comparable across bundles.
 
-mod text;
 #[cfg(test)]
 mod tests;
+mod text;
 mod values;
 
 use std::collections::BTreeMap;

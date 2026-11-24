@@ -96,7 +96,8 @@ impl<Message> ResultGrid<'_, Message> {
             state.selected_index = None;
             if let Some(row) = self.selected_row(state) {
                 let body = metrics.frame.body.height;
-                let wanted = window::scroll_into_view(metrics.offset_y, row, metrics.row_height, body);
+                let wanted =
+                    window::scroll_into_view(metrics.offset_y, row, metrics.row_height, body);
                 state.offset_y = metrics.clamp_y(wanted);
             }
         }
@@ -108,7 +109,10 @@ impl<Message> ResultGrid<'_, Message> {
         if state.hovered_row.is_some_and(|row| row >= metrics.rows) {
             state.hovered_row = None;
         }
-        if state.hovered_edge.is_some_and(|id| metrics.strip.position(id).is_none()) {
+        if state
+            .hovered_edge
+            .is_some_and(|id| metrics.strip.position(id).is_none())
+        {
             state.hovered_edge = None;
         }
     }

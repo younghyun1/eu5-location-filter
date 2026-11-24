@@ -38,7 +38,9 @@ impl Category {
 
     /// Category for a name written in a catalog file.
     pub fn parse(text: &str) -> Option<Self> {
-        Self::ALL.into_iter().find(|category| category.name() == text)
+        Self::ALL
+            .into_iter()
+            .find(|category| category.name() == text)
     }
 }
 
@@ -105,6 +107,8 @@ impl Catalog {
 
     /// Item for a base key.
     pub fn find(&self, key: &str) -> Option<&Item> {
-        self.index.get(key).and_then(|position| self.items.get(*position))
+        self.index
+            .get(key)
+            .and_then(|position| self.items.get(*position))
     }
 }

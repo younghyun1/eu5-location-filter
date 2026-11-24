@@ -42,7 +42,11 @@ impl Strip {
             content_width: GRID_INLINE_INSET,
         };
         for column in columns.visible() {
-            let width = if column.width.is_finite() { column.width.max(0.0) } else { 0.0 };
+            let width = if column.width.is_finite() {
+                column.width.max(0.0)
+            } else {
+                0.0
+            };
             let index = strip.len;
             if let (Some(id), Some(slot_width), Some(start)) = (
                 strip.ids.get_mut(index),
@@ -82,7 +86,11 @@ impl Strip {
         if index >= self.len {
             return None;
         }
-        match (self.ids.get(index), self.starts.get(index), self.widths.get(index)) {
+        match (
+            self.ids.get(index),
+            self.starts.get(index),
+            self.widths.get(index),
+        ) {
             (Some(id), Some(start), Some(width)) => Some(Slot {
                 index,
                 id: *id,
@@ -95,7 +103,10 @@ impl Strip {
 
     /// Strip position of a column, or `None` when it is hidden.
     pub(super) fn position(&self, id: ColumnId) -> Option<usize> {
-        self.ids.get(..self.len)?.iter().position(|candidate| *candidate == id)
+        self.ids
+            .get(..self.len)?
+            .iter()
+            .position(|candidate| *candidate == id)
     }
 
     /// Columns intersecting the inline window `offset..offset + extent`.
@@ -139,8 +150,18 @@ impl Frame {
         let body_y = bounds.y + header_height;
         Self {
             bounds,
-            header: Rectangle { x: view_x, y: bounds.y, width: view_width, height: header_height },
-            body: Rectangle { x: view_x, y: body_y, width: view_width, height: body_height },
+            header: Rectangle {
+                x: view_x,
+                y: bounds.y,
+                width: view_width,
+                height: header_height,
+            },
+            body: Rectangle {
+                x: view_x,
+                y: body_y,
+                width: view_width,
+                height: body_height,
+            },
             vertical_lane: Rectangle {
                 x: if rtl { bounds.x } else { bounds.x + view_width },
                 y: body_y,
@@ -159,7 +180,13 @@ impl Frame {
 
     /// Screen x of the left edge of an inline content span at a horizontal offset.
     pub(super) fn screen_x(&self, inline_x: f32, width: f32, offset_x: f32) -> f32 {
-        window::mirror(self.rtl, self.body.x, self.body.width, inline_x - offset_x, width)
+        window::mirror(
+            self.rtl,
+            self.body.x,
+            self.body.width,
+            inline_x - offset_x,
+            width,
+        )
     }
 
     /// Inline content x under a screen x at a horizontal offset.
@@ -179,6 +206,10 @@ impl Frame {
     /// Inline position of a screen x inside the horizontal lane, measured from its inline start.
     pub(super) fn lane_inline(&self, screen_x: f32) -> f32 {
         let lane = self.horizontal_lane;
-        if self.rtl { lane.x + lane.width - screen_x } else { screen_x - lane.x }
+        if self.rtl {
+            lane.x + lane.width - screen_x
+        } else {
+            screen_x - lane.x
+        }
     }
 }

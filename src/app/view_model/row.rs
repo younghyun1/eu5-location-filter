@@ -140,15 +140,24 @@ pub(crate) fn write_cell(
             push_optional_fixed(buffer, record.harbor_suitability, none);
             return CellTone::Ink;
         }
-        ColumnId::MovementPresence => {
-            t(locale, present_missing(record.movement_assistance.is_some()))
-        }
+        ColumnId::MovementPresence => t(
+            locale,
+            present_missing(record.movement_assistance.is_some()),
+        ),
         ColumnId::MovementX => {
-            push_optional_fixed(buffer, record.movement_assistance.map(|value| value[0]), none);
+            push_optional_fixed(
+                buffer,
+                record.movement_assistance.map(|value| value[0]),
+                none,
+            );
             return CellTone::Ink;
         }
         ColumnId::MovementY => {
-            push_optional_fixed(buffer, record.movement_assistance.map(|value| value[1]), none);
+            push_optional_fixed(
+                buffer,
+                record.movement_assistance.map(|value| value[1]),
+                none,
+            );
             return CellTone::Ink;
         }
         ColumnId::StaticCapacity => {
@@ -162,7 +171,9 @@ pub(crate) fn write_cell(
         ColumnId::EquatorCapacity => {
             push_optional_grouped(
                 buffer,
-                record.static_population_capacity.map(|value| value.equator.0),
+                record
+                    .static_population_capacity
+                    .map(|value| value.equator.0),
                 none,
             );
             return CellTone::Ink;
@@ -185,7 +196,11 @@ pub(super) fn material_tone(dataset: &Dataset, material: Option<SymbolId>) -> Ce
 /// Catalog text of a yes or no value.
 #[must_use]
 pub(super) const fn yes_no(value: bool) -> Text {
-    if value { Text::OptionYes } else { Text::OptionNo }
+    if value {
+        Text::OptionYes
+    } else {
+        Text::OptionNo
+    }
 }
 
 /// Catalog text of a present or missing value.

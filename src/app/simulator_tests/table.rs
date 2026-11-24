@@ -38,9 +38,10 @@ fn clicking_a_header_sorts_and_clicking_it_again_reverses() -> Result<(), AppErr
         Ok(())
     })?;
     assert!(
-        messages
-            .iter()
-            .any(|message| matches!(message, Message::Grid(GridMessage::Sort(ColumnId::Identifier)))),
+        messages.iter().any(|message| matches!(
+            message,
+            Message::Grid(GridMessage::Sort(ColumnId::Identifier))
+        )),
         "{messages:?}"
     );
     let expected = SortState {
@@ -50,7 +51,10 @@ fn clicking_a_header_sorts_and_clicking_it_again_reverses() -> Result<(), AppErr
     assert_eq!(harness.app.sort, expected);
     assert_eq!(harness.results()?, LAND_BY_IDENTIFIER.as_slice());
     let mut ui = harness.ui();
-    assert!(row_y(&mut ui, "Drovnik")? < row_y(&mut ui, "Aldoria")?, "Drovnik leads by identifier");
+    assert!(
+        row_y(&mut ui, "Drovnik")? < row_y(&mut ui, "Aldoria")?,
+        "Drovnik leads by identifier"
+    );
     drop(ui);
 
     for ascending in [true, false] {
@@ -69,7 +73,10 @@ fn clicking_a_header_sorts_and_clicking_it_again_reverses() -> Result<(), AppErr
     descending.reverse();
     assert_eq!(harness.results()?, descending.as_slice());
     let mut ui = harness.ui();
-    assert!(row_y(&mut ui, "Fenmark")? < row_y(&mut ui, "Aldoria")?, "Fenmark leads when descending");
+    assert!(
+        row_y(&mut ui, "Fenmark")? < row_y(&mut ui, "Aldoria")?,
+        "Fenmark leads when descending"
+    );
     Ok(())
 }
 
@@ -121,8 +128,14 @@ fn a_column_can_be_hidden_and_shown_from_the_menu() -> Result<(), AppError> {
     harness.send(Message::Overlay(OverlayMessage::Close));
     assert_eq!(harness.app.overlay.surface, None);
     let mut ui = harness.ui();
-    assert!(!grid_shows(&mut ui, title(column)), "the hidden column has no header");
-    assert!(grid_shows(&mut ui, title(ColumnId::Vegetation)), "its neighbours stay");
+    assert!(
+        !grid_shows(&mut ui, title(column)),
+        "the hidden column has no header"
+    );
+    assert!(
+        grid_shows(&mut ui, title(ColumnId::Vegetation)),
+        "its neighbours stay"
+    );
     drop(ui);
 
     open_column_menu(&mut harness)?;
@@ -137,7 +150,10 @@ fn a_column_can_be_hidden_and_shown_from_the_menu() -> Result<(), AppError> {
 fn selecting_a_row_fills_the_detail_pane() -> Result<(), AppError> {
     let mut harness = Harness::new(WIDE)?;
     let empty = t(Locale::EnUs, Text::DetailEmptyTitle);
-    assert!(harness.ui().find(empty).is_ok(), "no selection shows the empty state");
+    assert!(
+        harness.ui().find(empty).is_ok(),
+        "no selection shows the empty state"
+    );
 
     let messages = harness.drive(|ui| {
         let cell = text_selector(ui, ids::GRID, "Brevik")?;
@@ -152,16 +168,32 @@ fn selecting_a_row_fills_the_detail_pane() -> Result<(), AppError> {
         "{messages:?}"
     );
     assert_eq!(harness.app.selection, Some(BREVIK));
-    assert_eq!(harness.app.detail.as_ref().map(|detail| detail.name.as_str()), Some("Brevik"));
+    assert_eq!(
+        harness
+            .app
+            .detail
+            .as_ref()
+            .map(|detail| detail.name.as_str()),
+        Some("Brevik")
+    );
 
     let mut ui = harness.ui();
     assert!(ui.find(empty).is_err());
-    assert!(text_in(&mut ui, ids::DETAIL_SCROLL, "Brevik").is_ok(), "the name heading");
-    assert!(text_in(&mut ui, ids::DETAIL_SCROLL, "quill").is_ok(), "the identifier");
+    assert!(
+        text_in(&mut ui, ids::DETAIL_SCROLL, "Brevik").is_ok(),
+        "the name heading"
+    );
+    assert!(
+        text_in(&mut ui, ids::DETAIL_SCROLL, "quill").is_ok(),
+        "the identifier"
+    );
     drop(ui);
 
     harness.send(Message::Filter(FilterMessage::Search("ald".to_owned())));
-    assert_eq!(harness.app.selection, None, "a selection that leaves the results is dropped");
+    assert_eq!(
+        harness.app.selection, None,
+        "a selection that leaves the results is dropped"
+    );
     assert!(harness.ui().find(empty).is_ok());
     Ok(())
 }
@@ -227,9 +259,9 @@ fn space_on_the_selected_row_shows_a_hidden_detail_pane() -> Result<(), AppError
     })?;
 
     assert!(
-        messages
-            .iter()
-            .any(|message| matches!(message, Message::Grid(GridMessage::ShowDetail(id)) if *id == BREVIK)),
+        messages.iter().any(
+            |message| matches!(message, Message::Grid(GridMessage::ShowDetail(id)) if *id == BREVIK)
+        ),
         "{messages:?}"
     );
     assert!(!harness.app.panes.detail_hidden);

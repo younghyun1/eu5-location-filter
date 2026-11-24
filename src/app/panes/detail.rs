@@ -10,6 +10,7 @@ use iced::{Color, Element, Length, Padding, Theme};
 use crate::app::context::ViewContext;
 use crate::app::i18n::Text;
 use crate::app::ids;
+use crate::app::layout::anchored_text;
 use crate::app::layout::{
     BORDER_WIDTH, BUTTON_WIDTH, DETAIL_HEADER_HEIGHT, DETAIL_PADDING, DETAIL_SWATCH_HEIGHT,
     DIALOG_GAP, MENU_PADDING, inline_row,
@@ -54,7 +55,8 @@ pub(crate) fn view<'a>(
             .into(),
         None => empty_state(ctx),
     };
-    let divider = rule::horizontal(BORDER_WIDTH).style(move |_: &Theme| theme::rule(palette, false));
+    let divider =
+        rule::horizontal(BORDER_WIDTH).style(move |_: &Theme| theme::rule(palette, false));
     let pane = Column::new()
         .push(header(ctx, in_drawer))
         .push(divider)
@@ -70,15 +72,17 @@ pub(crate) fn view<'a>(
 
 /// Pinned header: the caption and, at the inline end, Hide (wide) or Close (drawer).
 fn header<'a>(ctx: ViewContext, in_drawer: bool) -> Element<'a, Message> {
-    let title = mono(
-        ctx,
-        ctx.t(Text::DetailTitle),
-        TEXT_CAPTION,
-        true,
-        ctx.palette.ink_faint,
-    )
-    .width(Length::Fill)
-    .wrapping(Wrapping::None);
+    let title: Element<'a, Message> = anchored_text(
+        mono(
+            ctx,
+            ctx.t(Text::DetailTitle),
+            TEXT_CAPTION,
+            true,
+            ctx.palette.ink_faint,
+        )
+        .wrapping(Wrapping::None),
+        ctx.direction.start(),
+    );
     let control: Element<'a, Message> = if in_drawer {
         text_button(
             ctx,
@@ -100,7 +104,7 @@ fn header<'a>(ctx: ViewContext, in_drawer: bool) -> Element<'a, Message> {
         .id(ids::DETAIL_HIDE)
         .into()
     };
-    inline_row(ctx.direction, vec![title.into(), control])
+    inline_row(ctx.direction, vec![title, control])
         .spacing(MENU_PADDING)
         .padding(Padding::ZERO.horizontal(DETAIL_PADDING))
         .align_y(Vertical::Center)
@@ -118,11 +122,16 @@ fn empty_state<'a>(ctx: ViewContext) -> Element<'a, Message> {
         TEXT_TITLE,
         Weight::Semibold,
         palette.ink,
+    );
+    // Natural width with default alignment; the column centres it. An explicit alignment
+    // would displace a single right-to-left line.
+    let body = prose(
+        ctx,
+        ctx.t(Text::DetailEmptyBody),
+        TEXT_BODY,
+        palette.ink_muted,
     )
-    .width(Length::Fill)
     .align_x(Alignment::Center);
-    let body = prose(ctx, ctx.t(Text::DetailEmptyBody), TEXT_BODY, palette.ink_muted)
-        .align_x(Alignment::Center);
     let column = Column::new()
         .push(title)
         .push(body)
@@ -146,18 +155,44 @@ fn content<'a>(ctx: ViewContext, detail: &'a LocationDetail) -> Element<'a, Mess
     let codes = wrapped(
         ctx.direction,
         vec![
-            mono(ctx, detail.hex.as_str(), TEXT_META, false, palette.ink_muted).into(),
-            mono(ctx, detail.rgb.as_str(), TEXT_META, false, palette.ink_muted).into(),
+            mono(
+                ctx,
+                detail.hex.as_str(),
+                TEXT_META,
+                false,
+                palette.ink_muted,
+            )
+            .into(),
+            mono(
+                ctx,
+                detail.rgb.as_str(),
+                TEXT_META,
+                false,
+                palette.ink_muted,
+            )
+            .into(),
         ],
         DIALOG_GAP,
         0.0,
     );
-    let name = sans(ctx, detail.name.as_str(), TEXT_HEADING, Weight::Semibold, palette.ink)
-        .width(Length::Fill)
-        .wrapping(Wrapping::WordOrGlyph);
-    let key = mono(ctx, detail.key.as_str(), TEXT_META, false, palette.ink_muted)
-        .width(Length::Fill)
-        .wrapping(Wrapping::WordOrGlyph);
+    let name = sans(
+        ctx,
+        detail.name.as_str(),
+        TEXT_HEADING,
+        Weight::Semibold,
+        palette.ink,
+    )
+    .width(Length::Fill)
+    .wrapping(Wrapping::WordOrGlyph);
+    let key = mono(
+        ctx,
+        detail.key.as_str(),
+        TEXT_META,
+        false,
+        palette.ink_muted,
+    )
+    .width(Length::Fill)
+    .wrapping(Wrapping::WordOrGlyph);
     let mut column = Column::new()
         .push(block)
         .push(codes)

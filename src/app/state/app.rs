@@ -12,8 +12,7 @@ use crate::app::layout::{self, Direction, Drawer, LayoutMode, PaneState};
 use crate::app::load::LoadedData;
 use crate::app::theme::Palette;
 use crate::app::view_model::{
-    Columns, FacetId, FacetOptions, FacetUi, LocationDetail, LocationKeys, SortState,
-    build_detail,
+    Columns, FacetId, FacetOptions, FacetUi, LocationDetail, LocationKeys, SortState, build_detail,
 };
 use crate::filter::{FilterEngine, FilterSet};
 use crate::model::{Dataset, LocationId};
@@ -153,7 +152,10 @@ impl App {
     #[must_use]
     #[cfg_attr(
         not(test),
-        allow(dead_code, reason = "only tests and benchmarks start from a prepared dataset")
+        allow(
+            dead_code,
+            reason = "only tests and benchmarks start from a prepared dataset"
+        )
     )]
     pub(crate) fn with_data(
         platform: Platform,

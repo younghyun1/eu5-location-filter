@@ -12,11 +12,25 @@ pub(super) enum Plan {
         /// Whether catalog and pack text of the embedded-font locales is required as well.
         with_text: bool,
     },
+    /// An embedded face from a wider Latin family, reduced to the characters of the
+    /// embedded-font locales that IBM Plex Sans lacks (rare transliteration letters in location
+    /// names), so those names never show a missing glyph.
+    LatinFallback,
     /// A CJK pack reduced to the codepoints of its locale's catalog and language pack.
     Subset,
     /// A complex-script pack copied unchanged, because shaping tables must survive.
     Whole,
 }
+
+impl Plan {
+    /// Whether the output is compiled into the binary instead of served as a lazy pack.
+    pub(super) const fn is_embedded(self) -> bool {
+        matches!(self, Self::Embedded { .. } | Self::LatinFallback)
+    }
+}
+
+/// Source whose coverage decides what the Latin fallback face must carry.
+pub(super) const PRIMARY_SANS_SOURCE: &str = "IBMPlexSans-Regular.ttf";
 
 /// One output font.
 #[derive(Clone, Copy, Debug)]
@@ -77,12 +91,19 @@ const fn pack(
 }
 
 /// Every output, in generation order.
-pub(super) const OUTPUTS: [OutputSpec; 13] = [
+pub(super) const OUTPUTS: [OutputSpec; 14] = [
     embedded("plex-sans-regular.ttf", "IBMPlexSans-Regular.ttf", true),
     embedded("plex-sans-medium.ttf", "IBMPlexSans-Medium.ttf", true),
     embedded("plex-sans-semibold.ttf", "IBMPlexSans-SemiBold.ttf", true),
     embedded("plex-mono-regular.ttf", "IBMPlexMono-Regular.ttf", false),
     embedded("plex-mono-medium.ttf", "IBMPlexMono-Medium.ttf", false),
+    OutputSpec {
+        name: "latin-fallback.ttf",
+        source: "NotoSans-Regular.ttf",
+        plan: Plan::LatinFallback,
+        locales: EMBEDDED_LOCALES,
+        languages: EMBEDDED_LANGUAGES,
+    },
     pack(
         "plex-sans-kr.ttf",
         "IBMPlexSansKR-Regular.ttf",
@@ -99,7 +120,7 @@ pub(super) const OUTPUTS: [OutputSpec; 13] = [
     ),
     pack(
         "sans-sc.ttf",
-        "NotoSansSC-Regular.ttf",
+        "IBMPlexSansSC-Regular.ttf",
         Plan::Subset,
         &["zh-Hans"],
         &[GameLanguage::SimplifiedChinese],
@@ -107,7 +128,7 @@ pub(super) const OUTPUTS: [OutputSpec; 13] = [
     // Traditional Chinese has no game-language pack; its game text stays English.
     pack(
         "sans-tc.ttf",
-        "NotoSansTC-Regular.ttf",
+        "IBMPlexSansTC-Regular.ttf",
         Plan::Subset,
         &["zh-Hant"],
         &[],
@@ -168,7 +189,7 @@ mod tests {
     fn script_pack_names_match_the_host_protocol() {
         let packs: Vec<&str> = OUTPUTS
             .iter()
-            .filter(|spec| !matches!(spec.plan, Plan::Embedded { .. }))
+            .filter(|spec| !spec.plan.is_embedded())
             .map(|spec| spec.name)
             .collect();
         assert_eq!(
@@ -190,7 +211,7 @@ mod tests {
     fn embedded_names_match_the_build_script() {
         let embedded: Vec<&str> = OUTPUTS
             .iter()
-            .filter(|spec| matches!(spec.plan, Plan::Embedded { .. }))
+            .filter(|spec| spec.plan.is_embedded())
             .map(|spec| spec.name)
             .collect();
         assert_eq!(
@@ -201,6 +222,7 @@ mod tests {
                 "plex-sans-semibold.ttf",
                 "plex-mono-regular.ttf",
                 "plex-mono-medium.ttf",
+                "latin-fallback.ttf",
             ]
         );
     }

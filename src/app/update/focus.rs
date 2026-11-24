@@ -70,7 +70,10 @@ pub(super) fn next_region(
     forward: bool,
 ) -> Option<(FocusRegion, Target)> {
     let count = REGIONS.len();
-    let start = REGIONS.iter().position(|region| *region == from).unwrap_or(0);
+    let start = REGIONS
+        .iter()
+        .position(|region| *region == from)
+        .unwrap_or(0);
     (1..=count).find_map(|step| {
         let offset = if forward { step } else { count - step };
         let region = *REGIONS.get((start + offset) % count)?;

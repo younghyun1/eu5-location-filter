@@ -79,7 +79,8 @@ pub(super) fn bar<'a>(
         .width(HEADER_STATUS_WIDTH)
         .center_y(Length::Fill);
 
-    let mut items: Vec<Element<'a, Message>> = vec![brand.into(), search_field.into(), status_block.into()];
+    let mut items: Vec<Element<'a, Message>> =
+        vec![brand.into(), search_field.into(), status_block.into()];
     if ctx.platform.has_desktop_controls() {
         items.push(
             opener(

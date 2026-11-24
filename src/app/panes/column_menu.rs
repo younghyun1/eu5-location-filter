@@ -131,9 +131,7 @@ fn legend<'a>(ctx: ViewContext) -> Element<'a, Message> {
 #[cfg(test)]
 mod tests {
     use super::{column_for_option, view, visible_rows};
-    use crate::app::layout::{
-        CHECKLIST_ROW_HEIGHT, CHECKLIST_ROW_HEIGHT_TOUCH, MENU_MAX_HEIGHT,
-    };
+    use crate::app::layout::{CHECKLIST_ROW_HEIGHT, CHECKLIST_ROW_HEIGHT_TOUCH, MENU_MAX_HEIGHT};
     use crate::app::panes::overlays::kit::test_support::contexts;
     use crate::app::view_model::{ColumnId, Columns};
 

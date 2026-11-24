@@ -125,8 +125,7 @@ fn every_locale_has_every_key_with_matching_placeholders() -> Result<(), String>
             continue;
         };
         checked += 1;
-        for (text, (entry, reference)) in Text::ALL.iter().zip(entries.iter().zip(english.iter()))
-        {
+        for (text, (entry, reference)) in Text::ALL.iter().zip(entries.iter().zip(english.iter())) {
             let context = format!("{} {}", locale.tag(), text.key());
             match (entry, reference) {
                 (Entry::Plain(value), Entry::Plain(expected)) => {
@@ -136,7 +135,10 @@ fn every_locale_has_every_key_with_matching_placeholders() -> Result<(), String>
                     let want = placeholders(expected.other);
                     for (category, form) in forms_of(forms) {
                         let got = placeholders(form);
-                        assert!(got.is_subset(&want), "{context} [{category:?}] adds a placeholder");
+                        assert!(
+                            got.is_subset(&want),
+                            "{context} [{category:?}] adds a placeholder"
+                        );
                         if category == Other {
                             assert_eq!(got, want, "{context} other form");
                         }

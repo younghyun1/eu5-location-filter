@@ -15,12 +15,13 @@ const BUNDLES: [&str; 2] = ["eu5-locations.bitcode.zst", "eu5-indexes.bitcode.zs
 
 /// Embedded interface faces, staged for every target as `OUT_DIR/fonts/<name>.ttf` from
 /// `assets/fonts/<name>.ttf`. Kept in the order of `app::load::fonts::EMBEDDED_FACES`.
-const EMBEDDED_FONTS: [&str; 5] = [
+const EMBEDDED_FONTS: [&str; 6] = [
     "plex-sans-regular",
     "plex-sans-medium",
     "plex-sans-semibold",
     "plex-mono-regular",
     "plex-mono-medium",
+    "latin-fallback",
 ];
 
 /// Script font packs, staged only for the desktop build as `OUT_DIR/fonts/<name>.ttf`. The names

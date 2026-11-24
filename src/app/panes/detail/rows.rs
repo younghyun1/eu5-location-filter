@@ -13,9 +13,7 @@ use crate::app::layout::{
 };
 use crate::app::message::Message;
 use crate::app::panes::overlays::kit::{mono, prose, sans, wrapped};
-use crate::app::theme::{
-    Icon, LINE_HEIGHT_PROSE, TEXT_BODY, TEXT_CAPTION, TEXT_META, TEXT_SMALL,
-};
+use crate::app::theme::{Icon, LINE_HEIGHT_PROSE, TEXT_BODY, TEXT_CAPTION, TEXT_META, TEXT_SMALL};
 use crate::app::view_model::{DetailField, DetailGroup, tone_color};
 
 /// Breadcrumb levels worth showing: a missing level is an empty label and is skipped, so the
@@ -61,8 +59,14 @@ pub(super) fn group_view<'a>(ctx: ViewContext, group: &'a DetailGroup) -> Elemen
     let palette = ctx.palette;
     let mut column = Column::new()
         .push(
-            mono(ctx, ctx.t(group.title), TEXT_CAPTION, true, palette.ink_faint)
-                .width(Length::Fill),
+            mono(
+                ctx,
+                ctx.t(group.title),
+                TEXT_CAPTION,
+                true,
+                palette.ink_faint,
+            )
+            .width(Length::Fill),
         )
         .width(Length::Fill);
     for field in &group.fields {
@@ -81,9 +85,15 @@ pub(super) fn group_view<'a>(ctx: ViewContext, group: &'a DetailGroup) -> Elemen
 /// Label column and wrapping value; technical values use the mono face.
 fn field_row<'a>(ctx: ViewContext, field: &'a DetailField) -> Element<'a, Message> {
     let palette = ctx.palette;
-    let label = sans(ctx, ctx.t(field.label), TEXT_SMALL, Weight::Normal, palette.ink_muted)
-        .width(Length::Fixed(DETAIL_LABEL_WIDTH))
-        .wrapping(Wrapping::WordOrGlyph);
+    let label = sans(
+        ctx,
+        ctx.t(field.label),
+        TEXT_SMALL,
+        Weight::Normal,
+        palette.ink_muted,
+    )
+    .width(Length::Fixed(DETAIL_LABEL_WIDTH))
+    .wrapping(Wrapping::WordOrGlyph);
     let color = tone_color(palette, field.tone);
     let value = if field.mono {
         mono(ctx, field.value.as_str(), TEXT_META, false, color)
@@ -99,4 +109,3 @@ fn field_row<'a>(ctx: ViewContext, field: &'a DetailField) -> Element<'a, Messag
         .align_y(Vertical::Top)
         .into()
 }
-

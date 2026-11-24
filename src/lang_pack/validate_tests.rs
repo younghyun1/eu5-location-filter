@@ -71,9 +71,15 @@ fn every_pairing_failure_is_a_mismatch() {
 #[test]
 fn string_table_failures_are_invalid_data() {
     assert!(invalid(rejected(|pack| pack.strings.push(String::new()))));
-    assert!(invalid(rejected(|pack| pack.strings.push("평\0지".to_owned()))));
-    assert!(invalid(rejected(|pack| pack.strings.push("에이레".to_owned()))));
-    assert!(invalid(rejected(|pack| pack.strings.push("가".repeat(342)))));
+    assert!(invalid(rejected(|pack| pack
+        .strings
+        .push("평\0지".to_owned()))));
+    assert!(invalid(rejected(|pack| pack
+        .strings
+        .push("에이레".to_owned()))));
+    assert!(invalid(rejected(|pack| pack
+        .strings
+        .push("가".repeat(342)))));
     // Two locations and five symbols allow at most seven strings.
     assert!(invalid(rejected(|pack| {
         pack.strings
@@ -96,14 +102,18 @@ fn name_and_label_reference_failures_are_invalid_data() {
     assert!(invalid(rejected(|pack| pack.labels.push(label(1, 0)))));
     assert!(invalid(rejected(|pack| pack.labels.push(label(2, 0)))));
     assert!(invalid(rejected(|pack| pack.labels.push(label(5, 0)))));
-    assert!(invalid(rejected(|pack| pack.labels[0].value = PackStringId(9))));
+    assert!(invalid(rejected(
+        |pack| pack.labels[0].value = PackStringId(9)
+    )));
 }
 
 #[test]
 fn oversized_diagnostics_are_invalid_data() {
     let diagnostic = |code: String| ImportDiagnostic { code, count: 1 };
     assert!(invalid(rejected(|pack| {
-        pack.diagnostics = (0..65).map(|index| diagnostic(format!("code_{index}"))).collect();
+        pack.diagnostics = (0..65)
+            .map(|index| diagnostic(format!("code_{index}")))
+            .collect();
     })));
     assert!(invalid(rejected(|pack| {
         pack.diagnostics = vec![diagnostic("x".repeat(65))];
@@ -117,7 +127,9 @@ fn oversized_diagnostics_are_invalid_data() {
 #[test]
 fn section_failures_are_invalid_data() {
     // Changing a name without rebuilding the section leaves search text for other labels.
-    assert!(invalid(rejected(|pack| pack.strings[0] = "에이리".to_owned())));
+    assert!(invalid(rejected(
+        |pack| pack.strings[0] = "에이리".to_owned()
+    )));
     assert!(invalid(rejected(|pack| {
         pack.section.searchable.pop();
     })));

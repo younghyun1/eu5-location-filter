@@ -59,7 +59,11 @@ fn list_item(item: &str, rule: ItemRule) -> Option<RawItem> {
         ItemRule::Keys { .. } => true,
         ItemRule::Tier => is_tier(&text),
     };
-    if accepted { Some(RawItem::Key(text)) } else { None }
+    if accepted {
+        Some(RawItem::Key(text))
+    } else {
+        None
+    }
 }
 
 /// Decimal integer 1 to 255 without leading zeros or sign.

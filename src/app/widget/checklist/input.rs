@@ -20,7 +20,14 @@ use crate::app::widget::window;
 
 impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
     /// Handles one event for a list laid out in `bounds`.
-    pub(super) fn handle_event(&self, state: &mut ChecklistState, event: &Event, bounds: Rectangle, cursor: mouse::Cursor, shell: &mut Shell<'_, Message>) {
+    pub(super) fn handle_event(
+        &self,
+        state: &mut ChecklistState,
+        event: &Event,
+        bounds: Rectangle,
+        cursor: mouse::Cursor,
+        shell: &mut Shell<'_, Message>,
+    ) {
         let count = self.model.row_count();
         let geometry = Geometry::new(bounds, self.row_height, count, self.direction.is_rtl());
         sync(state, &geometry, shell);
@@ -59,8 +66,12 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
                     refresh_hover(state, &geometry, cursor, shell);
                 }
             }
-            Event::Touch(touch_event) => self.handle_touch(state, &geometry, *touch_event, cursor, shell),
-            Event::Keyboard(keyboard::Event::KeyPressed { key, modifiers, .. }) if state.focused => {
+            Event::Touch(touch_event) => {
+                self.handle_touch(state, &geometry, *touch_event, cursor, shell)
+            }
+            Event::Keyboard(keyboard::Event::KeyPressed { key, modifiers, .. })
+                if state.focused =>
+            {
                 if !modifiers.command() && !modifiers.alt() {
                     self.key(state, &geometry, key, cursor, shell);
                 }
@@ -70,7 +81,13 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
     }
 
     /// Left press: focus follows the press, a row toggles, the lane starts a thumb drag.
-    fn press(&self, state: &mut ChecklistState, geometry: &Geometry, cursor: mouse::Cursor, shell: &mut Shell<'_, Message>) {
+    fn press(
+        &self,
+        state: &mut ChecklistState,
+        geometry: &Geometry,
+        cursor: mouse::Cursor,
+        shell: &mut Shell<'_, Message>,
+    ) {
         let Some(point) = cursor.position_over(geometry.bounds) else {
             if state.focused {
                 state.focused = false;
@@ -102,7 +119,14 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
 
     /// Touch: drag past `TOUCH_SLOP` scrolls, a shorter touch is a tap that toggles the row
     /// under the press.
-    fn handle_touch(&self, state: &mut ChecklistState, geometry: &Geometry, event: touch::Event, cursor: mouse::Cursor, shell: &mut Shell<'_, Message>) {
+    fn handle_touch(
+        &self,
+        state: &mut ChecklistState,
+        geometry: &Geometry,
+        event: touch::Event,
+        cursor: mouse::Cursor,
+        shell: &mut Shell<'_, Message>,
+    ) {
         match event {
             touch::Event::FingerPressed { id, position } => {
                 let point = match cursor {
@@ -136,7 +160,11 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
                 }
                 if state.touch_scrolling
                     && geometry.is_scrollable()
-                    && set_offset(state, geometry.clamp(state.offset + (last.y - position.y)), shell)
+                    && set_offset(
+                        state,
+                        geometry.clamp(state.offset + (last.y - position.y)),
+                        shell,
+                    )
                 {
                     refresh_hover(state, geometry, cursor, shell);
                 }
@@ -173,7 +201,14 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
     }
 
     /// Keys while focused; unhandled keys, Tab and Escape included, stay uncaptured.
-    fn key(&self, state: &mut ChecklistState, geometry: &Geometry, key: &Key, cursor: mouse::Cursor, shell: &mut Shell<'_, Message>) {
+    fn key(
+        &self,
+        state: &mut ChecklistState,
+        geometry: &Geometry,
+        key: &Key,
+        cursor: mouse::Cursor,
+        shell: &mut Shell<'_, Message>,
+    ) {
         let nav = match key.as_ref() {
             Key::Named(Named::ArrowUp) => Some(Nav::Previous),
             Key::Named(Named::ArrowDown) => Some(Nav::Next),
@@ -185,9 +220,14 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
             _ => return,
         };
         // The row drawn as active: the stored one, or the first visible row after a Tab focus.
-        let current = state.active.filter(|row| *row < geometry.count).or_else(|| geometry.first_visible(state.offset));
+        let current = state
+            .active
+            .filter(|row| *row < geometry.count)
+            .or_else(|| geometry.first_visible(state.offset));
         let target = match nav {
-            Some(nav) => current.and_then(|row| navigate(row, nav, geometry.count, geometry.page())),
+            Some(nav) => {
+                current.and_then(|row| navigate(row, nav, geometry.count, geometry.page()))
+            }
             None => current,
         };
         let Some(row) = target else {
@@ -207,7 +247,10 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
     /// Publishes the toggle of a row: its stable option index and the inverted checked state.
     fn toggle(&self, row: usize, shell: &mut Shell<'_, Message>) {
         if let Some(on_toggle) = &self.on_toggle {
-            shell.publish(on_toggle(self.model.option(row), !self.model.is_checked(row)));
+            shell.publish(on_toggle(
+                self.model.option(row),
+                !self.model.is_checked(row),
+            ));
         }
     }
 }
@@ -233,7 +276,11 @@ fn sync<Message>(state: &mut ChecklistState, geometry: &Geometry, shell: &mut Sh
 }
 
 /// Stores a new offset; returns whether it changed and requests a redraw when it did.
-fn set_offset<Message>(state: &mut ChecklistState, offset: f32, shell: &mut Shell<'_, Message>) -> bool {
+fn set_offset<Message>(
+    state: &mut ChecklistState,
+    offset: f32,
+    shell: &mut Shell<'_, Message>,
+) -> bool {
     if (offset - state.offset).abs() <= f32::EPSILON {
         return false;
     }
@@ -243,7 +290,12 @@ fn set_offset<Message>(state: &mut ChecklistState, offset: f32, shell: &mut Shel
 }
 
 /// Recomputes the hovered row and lane after the cursor or the offset moved.
-fn refresh_hover<Message>(state: &mut ChecklistState, geometry: &Geometry, cursor: mouse::Cursor, shell: &mut Shell<'_, Message>) {
+fn refresh_hover<Message>(
+    state: &mut ChecklistState,
+    geometry: &Geometry,
+    cursor: mouse::Cursor,
+    shell: &mut Shell<'_, Message>,
+) {
     let point: Option<Point> = cursor.position_over(geometry.bounds);
     let hovered = point.and_then(|point| geometry.row_at(point, state.offset));
     let lane_hovered = point.is_some_and(|point| geometry.in_lane(point));

@@ -47,7 +47,10 @@ fn unescape_rejects_malformed_escapes_and_bytes() {
 fn unescape_enforces_the_decoded_byte_limit() {
     let exact = "a".repeat(MAX_SEARCH_BYTES);
     let over = "a".repeat(MAX_SEARCH_BYTES + 1);
-    assert_eq!(unescape(&exact, MAX_SEARCH_BYTES).map(|text| text.len()), Some(MAX_SEARCH_BYTES));
+    assert_eq!(
+        unescape(&exact, MAX_SEARCH_BYTES).map(|text| text.len()),
+        Some(MAX_SEARCH_BYTES)
+    );
     assert_eq!(unescape(&over, MAX_SEARCH_BYTES), None);
     // Three escaped bytes count as one decoded byte each.
     assert_eq!(unescape("!EC!84!9C", 3).as_deref(), Some("서"));
@@ -56,7 +59,20 @@ fn unescape_enforces_the_decoded_byte_limit() {
 
 #[test]
 fn escape_and_unescape_round_trip() {
-    for text in ["river", "new york", "서울", "東京", "évora", "~*!", "a.b-c_d", "\u{1F600}"] {
-        assert_eq!(unescape(&escaped(text), 1_024).as_deref(), Some(text), "{text}");
+    for text in [
+        "river",
+        "new york",
+        "서울",
+        "東京",
+        "évora",
+        "~*!",
+        "a.b-c_d",
+        "\u{1F600}",
+    ] {
+        assert_eq!(
+            unescape(&escaped(text), 1_024).as_deref(),
+            Some(text),
+            "{text}"
+        );
     }
 }

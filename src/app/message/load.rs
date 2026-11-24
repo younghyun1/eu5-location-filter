@@ -49,7 +49,10 @@ pub(crate) enum LoadMessage {
     /// Desktop: pack decoded and validated off the UI thread.
     #[cfg_attr(
         not(feature = "desktop"),
-        allow(dead_code, reason = "only the desktop loader validates off the UI thread")
+        allow(
+            dead_code,
+            reason = "only the desktop loader validates off the UI thread"
+        )
     )]
     LanguagePackValidated {
         /// Requested language.

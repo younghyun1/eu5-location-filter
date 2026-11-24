@@ -7,9 +7,9 @@ use super::plan::{self, Menu, SurfacePlan, TOOLBAR_GAP, TOOLBAR_PADDING_INLINE};
 use super::surfaces::end_padding;
 use crate::app::layout::{
     BUTTON_HEIGHT, BUTTON_WIDTH, DIALOG_MARGIN, Direction, Drawer, GRID_TOOLBAR_HEIGHT,
-    HEADER_BRAND_MIN_WIDTH, HEADER_BUTTON_WIDTH, HEADER_GAP, HEADER_HEIGHT,
-    HEADER_PADDING_INLINE, LayoutMode, MENU_MAX_HEIGHT, MENU_OFFSET, MENU_WIDTH,
-    NARROW_HEADER_HEIGHT, NARROW_TOOLBAR_HEIGHT, PaneLayout, PaneSlot, SPLITTER_HIT_WIDTH,
+    HEADER_BRAND_MIN_WIDTH, HEADER_BUTTON_WIDTH, HEADER_GAP, HEADER_HEIGHT, HEADER_PADDING_INLINE,
+    LayoutMode, MENU_MAX_HEIGHT, MENU_OFFSET, MENU_WIDTH, NARROW_HEADER_HEIGHT,
+    NARROW_TOOLBAR_HEIGHT, PaneLayout, PaneSlot, SPLITTER_HIT_WIDTH,
 };
 use crate::app::state::{Notice, Surface};
 
@@ -78,8 +78,14 @@ fn drawers_appear_only_in_the_narrow_layout() {
         plan::plan(None, None, &details, LayoutMode::Narrow).drawer,
         Some((Drawer::Details, 312.0))
     );
-    assert_eq!(plan::plan(None, None, &closed, LayoutMode::Narrow).drawer, None);
-    assert_eq!(plan::plan(None, None, &filters, LayoutMode::Wide).drawer, None);
+    assert_eq!(
+        plan::plan(None, None, &closed, LayoutMode::Narrow).drawer,
+        None
+    );
+    assert_eq!(
+        plan::plan(None, None, &filters, LayoutMode::Wide).drawer,
+        None
+    );
 }
 
 #[test]
@@ -122,11 +128,19 @@ fn column_menu_follows_the_detail_pane() {
 fn narrow_menus_keep_the_dialog_margin() {
     let closed = panes(PaneSlot::Hidden, PaneSlot::Hidden);
     let anchor = plan::menu_anchor(Menu::Columns, LayoutMode::Narrow, &closed, PHONE);
-    assert_eq!(anchor.top, NARROW_HEADER_HEIGHT + NARROW_TOOLBAR_HEIGHT + MENU_OFFSET);
+    assert_eq!(
+        anchor.top,
+        NARROW_HEADER_HEIGHT + NARROW_TOOLBAR_HEIGHT + MENU_OFFSET
+    );
     assert_eq!(anchor.end_inset, DIALOG_MARGIN);
     assert_eq!(anchor.width, MENU_WIDTH);
     assert_eq!(anchor.max_height, PHONE.height - anchor.top - DIALOG_MARGIN);
-    let tiny = plan::menu_anchor(Menu::Columns, LayoutMode::Narrow, &closed, Size::new(200.0, 150.0));
+    let tiny = plan::menu_anchor(
+        Menu::Columns,
+        LayoutMode::Narrow,
+        &closed,
+        Size::new(200.0, 150.0),
+    );
     assert_eq!(tiny.width, 200.0 - 2.0 * DIALOG_MARGIN);
     assert_eq!(tiny.max_height, 0.0);
 }
@@ -134,13 +148,22 @@ fn narrow_menus_keep_the_dialog_margin() {
 #[test]
 fn notice_sits_under_the_header_of_each_mode() {
     assert_eq!(plan::header_height(LayoutMode::Wide), HEADER_HEIGHT);
-    assert_eq!(plan::header_height(LayoutMode::Narrow), NARROW_HEADER_HEIGHT);
+    assert_eq!(
+        plan::header_height(LayoutMode::Narrow),
+        NARROW_HEADER_HEIGHT
+    );
 }
 
 #[test]
 fn popover_padding_mirrors_for_right_to_left() {
     let ltr = end_padding(Direction::Ltr, 48.0, 132.0);
-    assert_eq!((ltr.top, ltr.right, ltr.bottom, ltr.left), (48.0, 132.0, 0.0, 0.0));
+    assert_eq!(
+        (ltr.top, ltr.right, ltr.bottom, ltr.left),
+        (48.0, 132.0, 0.0, 0.0)
+    );
     let rtl = end_padding(Direction::Rtl, 48.0, 132.0);
-    assert_eq!((rtl.top, rtl.right, rtl.bottom, rtl.left), (48.0, 0.0, 0.0, 132.0));
+    assert_eq!(
+        (rtl.top, rtl.right, rtl.bottom, rtl.left),
+        (48.0, 0.0, 0.0, 132.0)
+    );
 }

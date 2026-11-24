@@ -87,4 +87,3 @@ pub(super) fn fields(dataset: &Dataset, record: &LocationRecord) -> Vec<(&'stati
         ("vegetation", text(dataset, record.vegetation)),
     ]
 }
-

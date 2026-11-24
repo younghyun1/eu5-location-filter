@@ -1,8 +1,6 @@
 //! Option list building, key lookup and folded option search.
 
-use super::options::test_data::{
-    HILLS, KOURIM, WHEAT, dataset, english_options, korean_pack,
-};
+use super::options::test_data::{HILLS, KOURIM, WHEAT, dataset, english_options, korean_pack};
 use super::{FacetId, FacetOption, FacetOptions, OptionList, OptionValue};
 use crate::app::i18n::Locale;
 use crate::lang_pack::Labels;
@@ -50,15 +48,25 @@ fn static_lists_keep_contract_order_and_wire_keys() {
     let data = dataset();
     let options = english_options(&data);
     let kinds = options.get(FacetId::Kind);
-    assert_eq!(keys_of(kinds), ["land", "sea", "lake", "impassable", "unknown"]);
-    assert_eq!(labels_of(kinds), ["Land", "Sea", "Lake", "Impassable", "Unknown"]);
+    assert_eq!(
+        keys_of(kinds),
+        ["land", "sea", "lake", "impassable", "unknown"]
+    );
+    assert_eq!(
+        labels_of(kinds),
+        ["Land", "Sea", "Lake", "Impassable", "Unknown"]
+    );
     assert_eq!(kinds.value(1), Some(OptionValue::Kind(LocationKind::Sea)));
     let coastal = options.get(FacetId::Coastal);
     assert_eq!(keys_of(coastal), ["yes", "no"]);
     assert_eq!(labels_of(coastal), ["Yes", "No"]);
     assert_eq!(coastal.value(0), Some(OptionValue::Flag(true)));
     assert_eq!(coastal.value(1), Some(OptionValue::Flag(false)));
-    for facet in [FacetId::RiverPresence, FacetId::HarborPresence, FacetId::MovementPresence] {
+    for facet in [
+        FacetId::RiverPresence,
+        FacetId::HarborPresence,
+        FacetId::MovementPresence,
+    ] {
         let list = options.get(facet);
         assert_eq!(keys_of(list), ["present", "missing"], "{facet:?}");
         assert_eq!(labels_of(list), ["Present", "Missing"], "{facet:?}");
@@ -95,14 +103,29 @@ fn dataset_lists_are_sorted_by_folded_label_and_show_keys() {
     let continents = options.get(FacetId::Continent);
     assert_eq!(labels_of(continents), ["Europe [europe]"]);
     assert_eq!(keys_of(continents), ["europe"]);
-    assert_eq!(continents.value(0), Some(OptionValue::Symbol(Some(SymbolId(7)))));
-    assert_eq!(labels_of(options.get(FacetId::Subcontinent)), ["Kouřim [kourim]"]);
-    assert_eq!(labels_of(options.get(FacetId::Region)), ["Ra's al-'Ain [ras_al_ain]"]);
+    assert_eq!(
+        continents.value(0),
+        Some(OptionValue::Symbol(Some(SymbolId(7))))
+    );
+    assert_eq!(
+        labels_of(options.get(FacetId::Subcontinent)),
+        ["Kouřim [kourim]"]
+    );
+    assert_eq!(
+        labels_of(options.get(FacetId::Region)),
+        ["Ra's al-'Ain [ras_al_ain]"]
+    );
     assert_eq!(labels_of(options.get(FacetId::Area)), ["Москва [moskva]"]);
     assert_eq!(labels_of(options.get(FacetId::Province)), ["東京 [tokyo]"]);
     // A label equal to its key shows the key once.
-    assert_eq!(labels_of(options.get(FacetId::Topography)), ["hills", "mountains", "ocean"]);
-    assert_eq!(options.get(FacetId::Topography).value(0), Some(OptionValue::Symbol(Some(HILLS))));
+    assert_eq!(
+        labels_of(options.get(FacetId::Topography)),
+        ["hills", "mountains", "ocean"]
+    );
+    assert_eq!(
+        options.get(FacetId::Topography).value(0),
+        Some(OptionValue::Symbol(Some(HILLS)))
+    );
 }
 
 #[test]
@@ -140,9 +163,18 @@ fn find_key_resolves_every_option_and_rejects_unknown_keys() {
     for facet in FacetId::ALL {
         let list = options.get(facet);
         for index in 0..list.len() {
-            let Ok(index) = u32::try_from(index) else { continue };
-            let Some(option) = list.get(index) else { continue };
-            assert_eq!(list.find_key(&option.key), Some(option.value), "{facet:?} {}", option.key);
+            let Ok(index) = u32::try_from(index) else {
+                continue;
+            };
+            let Some(option) = list.get(index) else {
+                continue;
+            };
+            assert_eq!(
+                list.find_key(&option.key),
+                Some(option.value),
+                "{facet:?} {}",
+                option.key
+            );
             assert_eq!(list.position(option.value), Some(index));
         }
         assert_eq!(list.find_key("no_such_key"), None);
@@ -185,7 +217,13 @@ fn search_matches_diacritics_case_and_separators() {
     assert_eq!(search(&list, "KOUŘIM"), [0]);
     assert_eq!(search(&list, "ouř"), [0]);
     assert_eq!(search(&list, "hol"), [1]);
-    for query in ["rasalain", "ras al ain", "ras_al_ain", "ras—al—ʿain", "RAS AL-AIN"] {
+    for query in [
+        "rasalain",
+        "ras al ain",
+        "ras_al_ain",
+        "ras—al—ʿain",
+        "RAS AL-AIN",
+    ] {
         assert_eq!(search(&list, query), [2], "{query:?}");
     }
     assert_eq!(search(&list, "abudhabi"), [3]);
@@ -244,9 +282,18 @@ fn the_active_game_language_labels_the_options() {
     assert_eq!(search(list, "언덕"), [2]);
     assert_eq!(search(list, "hills"), [2]);
     assert_eq!(keys_of(list), ["mountains", "ocean", "hills"]);
-    assert_eq!(list.find_key("hills"), Some(OptionValue::Symbol(Some(HILLS))));
+    assert_eq!(
+        list.find_key("hills"),
+        Some(OptionValue::Symbol(Some(HILLS)))
+    );
     assert_eq!(options.get(FacetId::RawMaterial).label(3), "밀");
     // A symbol the pack leaves alone keeps its English label.
-    assert_eq!(options.get(FacetId::Subcontinent).get(0).map(|o| o.value), Some(OptionValue::Symbol(Some(KOURIM))));
-    assert_eq!(options.get(FacetId::Subcontinent).label(0), "Kouřim [kourim]");
+    assert_eq!(
+        options.get(FacetId::Subcontinent).get(0).map(|o| o.value),
+        Some(OptionValue::Symbol(Some(KOURIM)))
+    );
+    assert_eq!(
+        options.get(FacetId::Subcontinent).label(0),
+        "Kouřim [kourim]"
+    );
 }

@@ -1,0 +1,308 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = Pesquisar nome ou identificador
+header.search.tooltip = Pesquisar nomes de locais e identificadores
+header.result_count[one] = {count} local
+header.result_count[many] = {count} de locais
+header.result_count[other] = {count} locais
+header.build = EU5 {version} | Build {build}
+header.build.pending = Carregando dados
+header.about = Sobre
+header.language = Idioma
+header.appearance = Aparência
+header.filters = Filtros
+header.details = Detalhes
+
+# Appearance menu (desktop only)
+appearance.title = Aparência
+appearance.mode = Modo
+appearance.mode.light = Claro
+appearance.mode.dark = Escuro
+appearance.accent = Destaque
+appearance.accent.amber = Âmbar
+appearance.accent.lagoon = Lagoa
+appearance.accent.cobalt = Cobalto
+appearance.accent.orchid = Orquídea
+appearance.accent.graphite = Grafite
+appearance.motion = Animações
+appearance.motion.on = Ativadas
+appearance.motion.off = Desativadas
+appearance.close = Fechar
+
+# Language menu (desktop only)
+language.title = Idioma
+language.game_text_note = Os nomes de locais aparecem em inglês quando o jogo não tem tradução para este idioma.
+language.close = Fechar
+
+# Filter rail
+rail.title = Filtros
+rail.clear_all = Limpar tudo
+rail.collapse = Ocultar filtros
+rail.expand = Mostrar filtros
+rail.resize = Redimensionar o painel de filtros
+rail.active_count[one] = {count} filtro ativo
+rail.active_count[many] = {count} de filtros ativos
+rail.active_count[other] = {count} filtros ativos
+rail.show_impassable = Mostrar intransitáveis
+rail.food_only = Somente produtores de alimentos
+rail.section.location = Local
+rail.section.geography = Geografia
+rail.section.terrain = Terreno
+rail.section.society = Sociedade
+rail.section.economy = Economia
+rail.section.map_data = Dados do mapa
+
+# Facet titles
+facet.kind = Tipo
+facet.continent = Continente
+facet.subcontinent = Subcontinente
+facet.region = Região
+facet.area = Área
+facet.province = Província
+facet.topography = Topografia
+facet.vegetation = Vegetação
+facet.climate = Clima
+facet.religion = Religião
+facet.culture = Cultura
+facet.raw_material = Matéria-prima
+facet.modifier = Modificador
+facet.coastal = Costeiro
+facet.river_presence = Rio
+facet.river_level_min = Bônus mínimo de rio
+facet.river_level_max = Bônus máximo de rio
+facet.harbor_presence = Adequação a porto
+facet.movement_presence = Auxílio de movimento
+
+# Checklist controls
+checklist.search.placeholder = Filtrar opções
+checklist.expand = Expandir lista
+checklist.collapse = Recolher lista
+checklist.clear = Limpar seleção
+checklist.selected_count[one] = {count} selecionado
+checklist.selected_count[many] = {count} de selecionados
+checklist.selected_count[other] = {count} selecionados
+checklist.empty = Nenhuma opção correspondente
+
+# Static option labels
+option.kind.land = Terra
+option.kind.sea = Mar
+option.kind.lake = Lago
+option.kind.impassable = Intransitável
+option.kind.unknown = Desconhecido
+option.yes = Sim
+option.no = Não
+option.present = Presente
+option.missing = Ausente
+option.no_value = Ausente
+option.symbol_with_key = {label} [{key}]
+option.river_tier = Nível {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = Riacho
+river.tier.stream = Córrego
+river.tier.river = Rio
+river.tier.large_river = Rio grande
+river.tier.major_river = Rio principal
+river.tier.unknown = Desconhecido
+
+# Exact color and numeric ranges
+rgb.label = Cor exata
+rgb.placeholder = #RRGGBB
+rgb.tooltip = Digite de um a seis dígitos hexadecimais; zeros à esquerda podem ser omitidos.
+range.harbor = Valor de porto
+range.movement_x = Movimento X
+range.movement_y = Movimento Y
+range.min.placeholder = Mínimo
+range.max.placeholder = Máximo
+validation.rgb = Digite de um a seis dígitos hexadecimais, como #1A2B3C.
+validation.number = Digite um número, como 0,5.
+validation.number_finite = Digite um número finito.
+
+# Result grid
+grid.legend.food = Produtor de alimentos
+grid.legend.precious = Ouro ou prata
+grid.columns = Colunas
+grid.show_details = Mostrar detalhes
+grid.sort.ascending = Ordenado em ordem crescente
+grid.sort.descending = Ordenado em ordem decrescente
+grid.sort.hint = Selecione para ordenar; selecione de novo para inverter
+grid.resize.hint = Arraste a borda para redimensionar
+grid.empty.title = Nenhum local corresponde
+grid.empty.body = Altere ou limpe os filtros para ver mais locais.
+
+# Column headers
+column.color = Cor
+column.name = Nome
+column.identifier = Identificador
+column.kind = Tipo
+column.topography = Topografia
+column.vegetation = Vegetação
+column.climate = Clima
+column.continent = Continente
+column.subcontinent = Subcontinente
+column.region = Região
+column.area = Área
+column.province = Província
+column.religion = Religião
+column.culture = Cultura
+column.raw_material = Matéria-prima
+column.modifier = Modificador
+column.rgb = RGB
+column.coastal = Costeiro
+column.river_presence = Rio
+column.river_level = Bônus de rio
+column.harbor = Porto
+column.movement_presence = Movimento
+column.movement_x = Movimento X
+column.movement_y = Movimento Y
+column.static_capacity = Capacidade estática
+column.equator_capacity = Capacidade equatorial
+
+# Column menu
+column_menu.title = Colunas visíveis
+column_menu.close = Fechar
+column_menu.keep_one = Pelo menos uma coluna permanece visível.
+
+# Detail pane
+detail.title = Detalhes do local
+detail.hide = Ocultar detalhes
+detail.close = Fechar
+detail.resize = Redimensionar o painel de detalhes
+detail.empty.title = Selecione um local
+detail.empty.body = Os detalhes do local, a hierarquia, a cor e os dados de rio aparecem aqui.
+detail.breadcrumb = Hierarquia
+detail.group.classification = Classificação
+detail.group.society = Sociedade
+detail.group.economy = Economia
+detail.group.coast = Costa e movimento
+detail.group.river = Rio
+detail.group.capacity = Capacidade populacional estática
+detail.field.type = Tipo
+detail.field.topography = Topografia
+detail.field.vegetation = Vegetação
+detail.field.climate = Clima
+detail.field.religion = Religião
+detail.field.culture = Cultura
+detail.field.raw_material = Matéria-prima
+detail.field.modifier = Modificador
+detail.field.coastal = Costeiro
+detail.field.connected_sea = Mar conectado
+detail.field.harbor = Adequação a porto
+detail.field.movement = Auxílio de movimento
+detail.field.river = Rio
+detail.field.river_bonus = Bônus de capacidade
+detail.field.river_source = Nascente do rio
+detail.field.river_confluence = Confluência do rio
+detail.field.capacity_total = Capacidade total
+detail.field.capacity_vegetation = Capacidade de vegetação
+detail.field.capacity_equator = Proximidade do equador
+detail.field.capacity_modifier = Modificador de capacidade estática
+detail.capacity.note = Derivado somente de dados de mapa imutáveis; desenvolvimento, edifícios, leis e outros estados da campanha são excluídos.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = N{level} +{percent}%
+format.river_detail = {tier}, nível {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = Iniciando
+load.embedded = Carregando dados incorporados
+load.loading_data = Carregando dados do EU5 {version}
+load.preparing = Preparando dados do EU5 {version}
+load.external = Preparando dados externos
+load.rebuild = Preparando a reconstrução
+load.fonts = Carregando fontes
+load.names = Carregando nomes de locais
+import.templates = Lendo modelos de locais
+import.hierarchy = Lendo a hierarquia
+import.colors = Lendo as cores do mapa
+import.ports = Lendo os portos
+import.river_settings = Lendo as configurações de rios
+import.map_factors = Lendo os fatores estáticos do mapa
+import.localization = Lendo a localização
+import.rivers = Analisando o mapa e os rios
+import.capacity = Calculando a capacidade populacional estática
+import.complete = Importação concluída
+
+# Load errors
+error.title = Não foi possível carregar os locais do EU5
+error.detail = Detalhe técnico
+error.io = Falhou uma operação de arquivo para {path}.
+error.parse = Não foi possível analisar o arquivo do jogo {source} perto do byte {offset}.
+error.installation = A instalação do Europa Universalis V não foi encontrada.
+error.missing_file = Um arquivo necessário do jogo está ausente: {path}
+error.invalid_data = Os dados de locais são inválidos.
+error.encoding = Não foi possível decodificar os dados de locais.
+error.compression = Não foi possível descompactar os dados de locais.
+error.png = Não foi possível decodificar uma imagem do mapa: {path}
+error.ui = A interface falhou.
+error.worker = O carregador em segundo plano parou inesperadamente.
+error.hint.retryable = Verifique o diretório de instalação e tente novamente ou recrie os dados.
+error.hint.rebuild = Tentar novamente não resolve este erro; recrie os dados a partir dos arquivos do jogo.
+error.hint.web = Recarregue a página para tentar novamente.
+error.install_path.label = Diretório de instalação
+error.install_path.placeholder = Diretório de instalação do Europa Universalis V
+error.retry = Tentar novamente
+error.rebuild = Recriar dados
+
+# Notices shown over a loaded interface
+notice.language_pack = Não foi possível carregar os nomes de locais deste idioma, então os nomes em inglês são exibidos.
+notice.language_pack_mismatch = Os nomes de locais baixados pertencem a outra build de dados e não foram usados.
+notice.font_pack = Não foi possível carregar uma fonte para este idioma, então parte do texto pode não ser exibida.
+notice.dismiss = Dispensar
+
+# Drawers
+drawer.close = Fechar
+
+# About dialog
+about.title = EU5 Location DB
+about.version = Versão {version}
+about.data = Dados de locais do Europa Universalis V {version}, build do Steam {build}.
+about.author = Criado por Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = Um navegador não oficial de dados de mapa estáticos. Não é afiliado nem endossado pela Paradox Interactive.
+about.trademark = Europa Universalis e Paradox Interactive são marcas de seus respectivos proprietários.
+about.license.source = Licença do código-fonte: MIT OR Apache-2.0
+about.license.ui = Kit de ferramentas da interface: iced, licença MIT
+about.license.fonts = Fontes: famílias IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP e Noto Sans, SIL Open Font License 1.1
+about.licenses.show = Mostrar textos de licença
+about.licenses.hide = Ocultar textos de licença
+about.keys.title = Teclado
+about.keys.search = Focar a pesquisa
+about.keys.regions = Alternar entre cabeçalho, filtros, resultados e detalhes
+about.keys.focus = Alternar entre controles
+about.keys.rows = Mover a linha selecionada
+about.keys.columns = Mover a coluna ativa
+about.keys.sort = Ordenar pela coluna ativa
+about.keys.resize = Redimensionar a coluna ativa
+about.keys.details = Mostrar detalhes da linha selecionada
+about.keys.toggle = Alternar a opção ativa
+about.keys.close = Fechar um menu, diálogo ou painel
+about.close = Fechar
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Espaço
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = Setas
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

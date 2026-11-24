@@ -50,14 +50,27 @@ fn installed_pack_searches_and_labels_then_drop_restores_english() -> Result<(),
     let dataset = Arc::new(fixture());
     let mut engine = FilterEngine::new(Arc::clone(&dataset));
     let english = engine.apply(&FilterSet::default(), SortField::Name, true);
-    assert!(engine.apply(&search("에이"), SortField::Name, true).is_empty());
+    assert!(
+        engine
+            .apply(&search("에이"), SortField::Name, true)
+            .is_empty()
+    );
     let pack = engine.validate_language_pack(fixture_pack(&dataset), GameLanguage::Korean)?;
     engine.install_language_pack(pack)?;
     assert_eq!(engine.active_language(), GameLanguage::Korean);
-    assert_eq!(engine.apply(&search("에이"), SortField::Name, true), vec![LocationId(0)]);
+    assert_eq!(
+        engine.apply(&search("에이"), SortField::Name, true),
+        vec![LocationId(0)]
+    );
     // English names and identifiers stay searchable while another language is active.
-    assert_eq!(engine.apply(&search("Éire"), SortField::Name, true), vec![LocationId(0)]);
-    assert_eq!(engine.apply(&search("waste"), SortField::Name, true), vec![LocationId(1)]);
+    assert_eq!(
+        engine.apply(&search("Éire"), SortField::Name, true),
+        vec![LocationId(0)]
+    );
+    assert_eq!(
+        engine.apply(&search("waste"), SortField::Name, true),
+        vec![LocationId(1)]
+    );
     let labels = engine.labels();
     assert_eq!(labels.language(), GameLanguage::Korean);
     assert_eq!(labels.name(LocationId(0)), Some("에이레"));
@@ -66,8 +79,15 @@ fn installed_pack_searches_and_labels_then_drop_restores_english() -> Result<(),
     assert_eq!(engine.drop_language_pack(), Some(GameLanguage::Korean));
     assert_eq!(engine.drop_language_pack(), None);
     assert_eq!(engine.active_language(), GameLanguage::English);
-    assert_eq!(engine.apply(&FilterSet::default(), SortField::Name, true), english);
-    assert!(engine.apply(&search("에이"), SortField::Name, true).is_empty());
+    assert_eq!(
+        engine.apply(&FilterSet::default(), SortField::Name, true),
+        english
+    );
+    assert!(
+        engine
+            .apply(&search("에이"), SortField::Name, true)
+            .is_empty()
+    );
     assert_eq!(engine.labels().name(LocationId(0)), Some("Éire"));
     Ok(())
 }
@@ -141,7 +161,12 @@ fn name_order_follows_the_installed_pack() -> Result<(), AppError> {
         engine.apply(&FilterSet::default(), SortField::Name, true),
         vec![LocationId(0), LocationId(1)]
     );
-    let pack = pack_with(&dataset, GameLanguage::Korean, &[Some("하"), Some("가")], &[]);
+    let pack = pack_with(
+        &dataset,
+        GameLanguage::Korean,
+        &[Some("하"), Some("가")],
+        &[],
+    );
     let validated = engine.validate_language_pack(pack, GameLanguage::Korean)?;
     engine.install_language_pack(validated)?;
     assert_eq!(
@@ -162,8 +187,19 @@ fn installed_pack_matches_scan_for_every_column() -> Result<(), AppError> {
     equal_to_scan(&engine, &FilterSet::default());
     equal_to_scan(&engine, &FilterSet::land_only());
     for query in [
-        "도쿄", "쿄", "도쿄아아", "라스", "아인", "알아", "ras", "kourim", "東京", "eire", "아a",
-        "zzzz", "",
+        "도쿄",
+        "쿄",
+        "도쿄아아",
+        "라스",
+        "아인",
+        "알아",
+        "ras",
+        "kourim",
+        "東京",
+        "eire",
+        "아a",
+        "zzzz",
+        "",
     ] {
         equal_to_scan(&engine, &search(query));
     }
@@ -174,7 +210,9 @@ fn installed_pack_matches_scan_for_every_column() -> Result<(), AppError> {
         search: "아".to_owned(),
         ..FilterSet::default()
     };
-    filters.kinds.extend([LocationKind::Land, LocationKind::Sea]);
+    filters
+        .kinds
+        .extend([LocationKind::Land, LocationKind::Sea]);
     equal_to_scan(&engine, &filters);
     Ok(())
 }
@@ -199,7 +237,11 @@ fn assert_label_order(engine: &FilterEngine) {
         .iter()
         .map(|id| fold_sort(labels.name(*id).unwrap_or_default()))
         .collect();
-    assert!(names.windows(2).all(|pair| matches!(pair, [left, right] if left <= right)));
+    assert!(
+        names
+            .windows(2)
+            .all(|pair| matches!(pair, [left, right] if left <= right))
+    );
     for field in LabelField::ALL {
         let keys: Vec<Option<String>> = engine
             .apply(&all, field.sort_field(), true)

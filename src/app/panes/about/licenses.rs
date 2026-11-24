@@ -185,12 +185,15 @@ pub(super) fn reflow(source: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{ICED_MIT, FONTS_OFL, reflow, texts};
+    use super::{FONTS_OFL, ICED_MIT, reflow, texts};
 
     #[test]
     fn wrapped_lines_join_and_paragraphs_stay_apart() {
         let source = "first line\ncontinues here\n\n\n\nsecond paragraph\n";
-        assert_eq!(reflow(source), "first line continues here\n\nsecond paragraph");
+        assert_eq!(
+            reflow(source),
+            "first line continues here\n\nsecond paragraph"
+        );
     }
 
     #[test]

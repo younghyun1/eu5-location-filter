@@ -198,8 +198,5 @@ fn results(
 
 /// A docked pane at a fixed width and the full body height.
 fn fixed_width(content: Element<'_, Message>, width: f32) -> Element<'_, Message> {
-    container(content)
-        .width(width)
-        .height(Length::Fill)
-        .into()
+    container(content).width(width).height(Length::Fill).into()
 }

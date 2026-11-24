@@ -20,8 +20,8 @@ pub fn required_categories(tag: &str) -> Option<&'static [Category]> {
     use Category::{Few, Many, One, Other, Two, Zero};
     let categories: &'static [Category] = match tag {
         "ko-KR" | "ja-JP" | "zh-Hans" | "zh-Hant" | "vi-VN" | "id-ID" => &[Other],
-        "en-US" | "de-DE" | "nl-NL" | "sv-SE" | "tr-TR" | "hi-IN" | "bn-BD" | "te-IN"
-        | "ur-PK" | "fa-IR" | "tl-PH" => &[One, Other],
+        "en-US" | "de-DE" | "nl-NL" | "sv-SE" | "tr-TR" | "hi-IN" | "bn-BD" | "te-IN" | "ur-PK"
+        | "fa-IR" | "tl-PH" => &[One, Other],
         "fr-FR" | "es-ES" | "it-IT" | "pt-BR" => &[One, Many, Other],
         "ro-RO" | "sh" => &[One, Few, Other],
         "ru-RU" | "uk-UA" | "pl-PL" => &[One, Few, Many, Other],

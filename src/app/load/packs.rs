@@ -10,8 +10,7 @@ use crate::AppError;
 use crate::app::i18n::FontPack;
 use crate::app::message::{LoadMessage, Message};
 use crate::lang_pack::{
-    GameLanguage, PACK_DIRECTORY, ValidatedLanguagePack, decode_pack, pack_file_name,
-    validate_pack,
+    GameLanguage, PACK_DIRECTORY, ValidatedLanguagePack, decode_pack, pack_file_name, validate_pack,
 };
 use crate::model::Dataset;
 
@@ -54,7 +53,10 @@ pub(crate) fn register_font(pack: FontPack, bytes: impl Into<Cow<'static, [u8]>>
         font_message(
             pack,
             result.map_err(|error| {
-                AppError::Ui(format!("font pack {} was rejected: {error:?}", pack.file_stem()))
+                AppError::Ui(format!(
+                    "font pack {} was rejected: {error:?}",
+                    pack.file_stem()
+                ))
             }),
         )
     })

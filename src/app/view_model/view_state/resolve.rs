@@ -41,7 +41,10 @@ impl LocationKeys {
 
 /// Key text of a location; empty for an ID outside the dataset, which `build` never stores.
 fn key_of(dataset: &Dataset, id: LocationId) -> &str {
-    match dataset.location(id).and_then(|record| dataset.symbol(record.key)) {
+    match dataset
+        .location(id)
+        .and_then(|record| dataset.symbol(record.key))
+    {
         Some(key) => key,
         None => "",
     }

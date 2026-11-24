@@ -29,7 +29,13 @@ fn languages_without_plural_forms_always_use_other() {
             Locale::ViVn,
             Locale::IdId,
         ],
-        &[(0, Other), (1, Other), (2, Other), (21, Other), (1_000_000, Other)],
+        &[
+            (0, Other),
+            (1, Other),
+            (2, Other),
+            (21, Other),
+            (1_000_000, Other),
+        ],
     );
 }
 
@@ -45,7 +51,14 @@ fn one_only_for_exactly_one() {
             Locale::TrTr,
             Locale::TeIn,
         ],
-        &[(0, Other), (1, One), (2, Other), (11, Other), (21, Other), (1_000_000, Other)],
+        &[
+            (0, Other),
+            (1, One),
+            (2, Other),
+            (11, Other),
+            (21, Other),
+            (1_000_000, Other),
+        ],
     );
 }
 

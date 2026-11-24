@@ -40,7 +40,11 @@ pub(crate) fn button(
                 Status::Hovered | Status::Pressed => palette.accent_strong,
                 Status::Active | Status::Disabled => palette.accent,
             };
-            (Some(ground), palette.on_accent(), Border::default().rounded(RADIUS))
+            (
+                Some(ground),
+                palette.on_accent(),
+                Border::default().rounded(RADIUS),
+            )
         }
         ButtonKind::Primary | ButtonKind::Secondary => {
             let (ground, text, line) = match status {
@@ -79,11 +83,23 @@ pub(crate) fn text_input(
     status: input_widget::Status,
 ) -> input_widget::Style {
     use input_widget::Status;
-    let focus_color = if invalid { palette.danger } else { palette.accent };
-    let rest_color = if invalid { palette.danger } else { palette.line_strong };
+    let focus_color = if invalid {
+        palette.danger
+    } else {
+        palette.accent
+    };
+    let rest_color = if invalid {
+        palette.danger
+    } else {
+        palette.line_strong
+    };
     let border = match status {
         Status::Active => hairline(rest_color),
-        Status::Hovered => hairline(if invalid { palette.danger } else { palette.ink_faint }),
+        Status::Hovered => hairline(if invalid {
+            palette.danger
+        } else {
+            palette.ink_faint
+        }),
         Status::Focused { .. } => Border {
             color: focus_color,
             width: FOCUS_RING_WIDTH,
@@ -97,7 +113,11 @@ pub(crate) fn text_input(
         border,
         icon: palette.ink_muted,
         placeholder: palette.ink_faint,
-        value: if disabled { palette.ink_faint } else { palette.ink },
+        value: if disabled {
+            palette.ink_faint
+        } else {
+            palette.ink
+        },
         selection: palette.accent_soft,
     }
 }
@@ -127,7 +147,11 @@ pub(crate) fn checkbox(
         background: Background::Color(background),
         icon_color: palette.on_accent(),
         border: hairline(border_color),
-        text_color: Some(if disabled { palette.ink_faint } else { palette.ink }),
+        text_color: Some(if disabled {
+            palette.ink_faint
+        } else {
+            palette.ink
+        }),
     }
 }
 
@@ -146,16 +170,32 @@ pub(crate) fn scrollable(
             is_vertical_scrollbar_hovered,
             ..
         } => (
-            if is_vertical_scrollbar_hovered { ThumbState::Hovered } else { ThumbState::Idle },
-            if is_horizontal_scrollbar_hovered { ThumbState::Hovered } else { ThumbState::Idle },
+            if is_vertical_scrollbar_hovered {
+                ThumbState::Hovered
+            } else {
+                ThumbState::Idle
+            },
+            if is_horizontal_scrollbar_hovered {
+                ThumbState::Hovered
+            } else {
+                ThumbState::Idle
+            },
         ),
         Status::Dragged {
             is_horizontal_scrollbar_dragged,
             is_vertical_scrollbar_dragged,
             ..
         } => (
-            if is_vertical_scrollbar_dragged { ThumbState::Dragged } else { ThumbState::Idle },
-            if is_horizontal_scrollbar_dragged { ThumbState::Dragged } else { ThumbState::Idle },
+            if is_vertical_scrollbar_dragged {
+                ThumbState::Dragged
+            } else {
+                ThumbState::Idle
+            },
+            if is_horizontal_scrollbar_dragged {
+                ThumbState::Dragged
+            } else {
+                ThumbState::Idle
+            },
         ),
     };
     let rail = |state: ThumbState| scrollable_widget::Rail {

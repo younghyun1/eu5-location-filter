@@ -15,8 +15,8 @@ Place these files in one directory and pass it as `--source-dir`. Use static ins
 | `plex-mono-medium.ttf` | `IBMPlexMono-Medium.ttf` | IBM Plex Mono | same |
 | `plex-sans-kr.ttf` | `IBMPlexSansKR-Regular.ttf` | IBM Plex Sans KR | Korean catalog and language pack text |
 | `plex-sans-jp.ttf` | `IBMPlexSansJP-Regular.ttf` | IBM Plex Sans JP | Japanese catalog and language pack text |
-| `sans-sc.ttf` | `NotoSansSC-Regular.ttf` | Noto Sans SC | Simplified Chinese catalog and language pack text |
-| `sans-tc.ttf` | `NotoSansTC-Regular.ttf` | Noto Sans TC | Traditional Chinese catalog text |
+| `sans-sc.ttf` | `IBMPlexSansSC-Regular.ttf` | IBM Plex Sans SC | Simplified Chinese catalog and language pack text |
+| `sans-tc.ttf` | `IBMPlexSansTC-Regular.ttf` | IBM Plex Sans TC | Traditional Chinese catalog text |
 | `noto-sans-arabic.ttf` | `NotoSansArabic-Regular.ttf` | Noto Sans Arabic | whole font |
 | `noto-sans-devanagari.ttf` | `NotoSansDevanagari-Regular.ttf` | Noto Sans Devanagari | whole font |
 | `noto-sans-bengali.ttf` | `NotoSansBengali-Regular.ttf` | Noto Sans Bengali | whole font |
@@ -56,5 +56,5 @@ IBM Plex (including Plex Sans KR and Plex Sans JP) and the Noto fonts are publis
 
 | Family | Upstream |
 | --- | --- |
-| IBM Plex Sans, Mono, Sans KR, Sans JP | https://github.com/IBM/plex |
-| Noto Sans SC, TC, Arabic, Devanagari, Bengali, Telugu | https://github.com/notofonts |
+| IBM Plex Sans, Mono, Sans KR, Sans JP, Sans SC, Sans TC | https://github.com/IBM/plex |
+| Noto Sans Arabic, Devanagari, Bengali, Telugu | https://github.com/notofonts |

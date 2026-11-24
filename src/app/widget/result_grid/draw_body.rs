@@ -28,7 +28,11 @@ pub(super) fn grounds<Message>(
     let palette = grid.palette;
     let frame = &metrics.frame;
     paint::fill_rect(renderer, frame.bounds.intersection(&clip), palette.surface);
-    paint::fill_rect(renderer, frame.header.intersection(&clip), palette.surface_2());
+    paint::fill_rect(
+        renderer,
+        frame.header.intersection(&clip),
+        palette.surface_2(),
+    );
     let Some(body) = frame.body.intersection(&clip) else {
         return;
     };
@@ -86,7 +90,11 @@ pub(super) fn cells<Message>(
     let dataset = grid.context.labels.dataset();
     for slot in metrics.strip.visible(metrics.offset_x, frame.body.width) {
         let x = frame.screen_x(slot.start, slot.width, metrics.offset_x);
-        let column = Rectangle { x, width: slot.width, ..body };
+        let column = Rectangle {
+            x,
+            width: slot.width,
+            ..body
+        };
         let Some(layer) = column.intersection(&body) else {
             continue;
         };
@@ -165,7 +173,14 @@ fn draw_cell<Message>(
         width: right - left,
         ..cell
     };
-    paint::fill_line(renderer, buffer.as_str(), Side::of(column.align(), rtl), area, style, clip);
+    paint::fill_line(
+        renderer,
+        buffer.as_str(),
+        Side::of(column.align(), rtl),
+        area,
+        style,
+        clip,
+    );
 }
 
 /// Opaque swatch colour of a packed `0xRRGGBB` map colour; the masks keep each channel in

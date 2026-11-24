@@ -157,7 +157,10 @@ mod tests {
             command(press(tab(), Code::Tab, Modifiers::SHIFT, true)),
             Some(KeyCommand::FocusPrevious)
         );
-        assert_eq!(command(press(tab(), Code::Tab, Modifiers::ALT, false)), None);
+        assert_eq!(
+            command(press(tab(), Code::Tab, Modifiers::ALT, false)),
+            None
+        );
     }
 
     #[test]
@@ -199,7 +202,11 @@ mod tests {
             None
         );
         assert_eq!(
-            command_for(&Key::Character("g".into()), Physical::Code(Code::KeyG), chord),
+            command_for(
+                &Key::Character("g".into()),
+                Physical::Code(Code::KeyG),
+                chord
+            ),
             None
         );
     }
@@ -257,6 +264,13 @@ mod tests {
             window_size(resized, event::Status::Ignored, id),
             Some(Message::WindowResized(size)) if size == Size::new(1200.0, 800.0)
         ));
-        assert!(window_size(Event::Window(window::Event::Focused), event::Status::Ignored, id).is_none());
+        assert!(
+            window_size(
+                Event::Window(window::Event::Focused),
+                event::Status::Ignored,
+                id
+            )
+            .is_none()
+        );
     }
 }

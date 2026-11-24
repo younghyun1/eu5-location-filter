@@ -111,7 +111,10 @@ fn wait_for_frame(resolve: &Function) {
     };
     let pending = resolve.clone();
     let callback = Closure::once_into_js(move || defer_to_timer(&pending));
-    if window.request_animation_frame(callback.unchecked_ref()).is_err() {
+    if window
+        .request_animation_frame(callback.unchecked_ref())
+        .is_err()
+    {
         settle(resolve);
     }
 }

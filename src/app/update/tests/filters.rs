@@ -5,9 +5,7 @@ use crate::AppError;
 use crate::app::context::Platform;
 use crate::app::i18n::Text;
 use crate::app::layout::COLUMN_MAX_WIDTH;
-use crate::app::message::{
-    ColumnMessage, FilterMessage, GridMessage, Message, SelectionSource,
-};
+use crate::app::message::{ColumnMessage, FilterMessage, GridMessage, Message, SelectionSource};
 use crate::app::update::update;
 use crate::app::view_model::view_state::MAX_SEARCH_BYTES;
 use crate::app::view_model::{Bound, ColumnId, FacetId, RangeField};
@@ -68,7 +66,12 @@ fn search_is_truncated_on_a_character_boundary() -> Result<(), AppError> {
     let mut app = app(Platform::Desktop)?;
     send(&mut app, FilterMessage::Search("가".repeat(100)));
     assert!(app.filters.search.len() <= MAX_SEARCH_BYTES);
-    assert!(app.filters.search.chars().all(|character| character == '가'));
+    assert!(
+        app.filters
+            .search
+            .chars()
+            .all(|character| character == '가')
+    );
     Ok(())
 }
 
@@ -107,7 +110,10 @@ fn range_fields_distinguish_malformed_and_infinite_numbers() -> Result<(), AppEr
                 text: text.to_owned(),
             },
         );
-        assert_eq!(app.fields.range(RangeField::Harbor, Bound::Min).error, error);
+        assert_eq!(
+            app.fields.range(RangeField::Harbor, Bound::Min).error,
+            error
+        );
         if error.is_none() {
             assert_eq!(app.filters.harbor_range.min, min);
         }
@@ -142,7 +148,12 @@ fn clear_all_restores_defaults_and_empties_fields() -> Result<(), AppError> {
     assert!(app.filters.show_impassable);
     assert_eq!(app.filters.kinds.len(), 1);
     assert!(app.fields.rgb.text.is_empty());
-    assert!(app.fields.range(RangeField::MovementY, Bound::Max).text.is_empty());
+    assert!(
+        app.fields
+            .range(RangeField::MovementY, Bound::Max)
+            .text
+            .is_empty()
+    );
     assert!(app.facets.iter().all(|group| group.query.is_empty()));
     Ok(())
 }
@@ -180,10 +191,12 @@ fn sorting_the_same_column_reverses_it() -> Result<(), AppError> {
 fn column_widths_are_clamped_and_non_finite_widths_dropped() -> Result<(), AppError> {
     let mut app = app(Platform::Desktop)?;
     let before = app.columns.get(ColumnId::Name).width;
-    let resize = |width| Message::Grid(GridMessage::ResizeColumn {
-        column: ColumnId::Name,
-        width,
-    });
+    let resize = |width| {
+        Message::Grid(GridMessage::ResizeColumn {
+            column: ColumnId::Name,
+            width,
+        })
+    };
     let _task = update(&mut app, resize(f32::NAN));
     assert_eq!(app.columns.get(ColumnId::Name).width, before);
     let _task = update(&mut app, resize(10_000.0));

@@ -149,10 +149,7 @@ impl<'a> Fields<'a> {
         DetailGroup {
             title: Text::DetailGroupCoast,
             fields: vec![
-                self.row(
-                    Text::DetailFieldCoastal,
-                    self.text(yes_no(record.coastal)),
-                ),
+                self.row(Text::DetailFieldCoastal, self.text(yes_no(record.coastal))),
                 self.mono(Text::DetailFieldConnectedSea, sea),
                 self.mono(Text::DetailFieldHarbor, harbor),
                 self.mono(Text::DetailFieldMovement, movement),
@@ -166,10 +163,7 @@ impl<'a> Fields<'a> {
         let Some(river) = self.record.river else {
             return DetailGroup {
                 title: Text::DetailGroupRiver,
-                fields: vec![self.row(
-                    Text::DetailFieldRiver,
-                    self.text(present_missing(false)),
-                )],
+                fields: vec![self.row(Text::DetailFieldRiver, self.text(present_missing(false)))],
                 note: None,
             };
         };
@@ -255,5 +249,10 @@ fn signed_hundredths(basis_points: i16) -> String {
     let sign = if basis_points < 0 { '-' } else { '+' };
     let whole = Digits::new(u64::from(magnitude / 100));
     let fraction = magnitude % 100;
-    format!("{sign}{}.{}{}", whole.as_str(), fraction / 10, fraction % 10)
+    format!(
+        "{sign}{}.{}{}",
+        whole.as_str(),
+        fraction / 10,
+        fraction % 10
+    )
 }

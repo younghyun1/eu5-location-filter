@@ -253,7 +253,10 @@ mod tests {
         assert!(built.is_ok());
         let Ok((stored, _, _)) = built else { return };
         let label = |identifier: &str| {
-            let key = stored.dictionary.iter().position(|value| value == identifier)?;
+            let key = stored
+                .dictionary
+                .iter()
+                .position(|value| value == identifier)?;
             let entry = stored
                 .localizations
                 .iter()

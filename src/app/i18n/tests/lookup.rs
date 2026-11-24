@@ -30,10 +30,22 @@ fn locales_without_a_catalog_show_english() {
 
 #[test]
 fn english_plural_forms_select_by_count() {
-    assert_eq!(tp(Locale::EnUs, Text::HeaderResultCount, 1), "{count} location");
-    assert_eq!(tp(Locale::EnUs, Text::HeaderResultCount, 0), "{count} locations");
-    assert_eq!(tp(Locale::EnUs, Text::HeaderResultCount, 2), "{count} locations");
-    assert_eq!(t(Locale::EnUs, Text::HeaderResultCount), "{count} locations");
+    assert_eq!(
+        tp(Locale::EnUs, Text::HeaderResultCount, 1),
+        "{count} location"
+    );
+    assert_eq!(
+        tp(Locale::EnUs, Text::HeaderResultCount, 0),
+        "{count} locations"
+    );
+    assert_eq!(
+        tp(Locale::EnUs, Text::HeaderResultCount, 2),
+        "{count} locations"
+    );
+    assert_eq!(
+        t(Locale::EnUs, Text::HeaderResultCount),
+        "{count} locations"
+    );
 }
 
 #[test]
@@ -44,7 +56,10 @@ fn counted_text_formats_with_its_count() {
 
 #[test]
 fn plain_keys_ignore_the_count() {
-    assert_eq!(tp(Locale::EnUs, Text::AppTitle, 5), t(Locale::EnUs, Text::AppTitle));
+    assert_eq!(
+        tp(Locale::EnUs, Text::AppTitle, 5),
+        t(Locale::EnUs, Text::AppTitle)
+    );
     assert_eq!(t(Locale::EnUs, Text::AppTitle), "EU5 Location DB");
 }
 
@@ -79,7 +94,13 @@ fn every_table_entry_is_reachable_through_t() {
                 Entry::Plain(value) => *value,
                 Entry::Plural(forms) => forms.other,
             };
-            assert_eq!(t(locale, *text), expected, "{} {}", locale.tag(), text.key());
+            assert_eq!(
+                t(locale, *text),
+                expected,
+                "{} {}",
+                locale.tag(),
+                text.key()
+            );
         }
     }
 }

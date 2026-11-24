@@ -1,9 +1,9 @@
 //! Unit tests of the About dialog.
 
 use super::{data_line, version_line, view};
+use crate::app::context::Platform;
 use crate::app::i18n::Locale;
 use crate::app::layout::LayoutMode;
-use crate::app::context::Platform;
 use crate::app::panes::overlays::kit::test_support::{context, contexts};
 use crate::model::EU5_GAME_VERSION;
 

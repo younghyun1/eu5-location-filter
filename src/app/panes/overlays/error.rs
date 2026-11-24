@@ -180,11 +180,11 @@ mod tests {
     use super::{error_card, family_message, hint_text};
     use crate::AppError;
     use crate::app::context::Platform;
+    use crate::app::i18n::Locale;
     use crate::app::i18n::Text;
     use crate::app::layout::LayoutMode;
     use crate::app::panes::overlays::kit::test_support::{context, contexts};
     use crate::app::state::LoadFailure;
-    use crate::app::i18n::Locale;
     use std::sync::Arc;
 
     fn english(platform: Platform) -> crate::app::context::ViewContext {
@@ -204,7 +204,10 @@ mod tests {
         let ctx = english(Platform::Desktop);
         let parse = AppError::parse("hierarchy.txt", 412, "unexpected token");
         let shown = family_message(ctx, &parse);
-        assert!(shown.contains("hierarchy.txt") && shown.contains("412"), "{shown}");
+        assert!(
+            shown.contains("hierarchy.txt") && shown.contains("412"),
+            "{shown}"
+        );
         let shown = family_message(ctx, &io_error());
         assert!(shown.contains("lang/ko.bitcode.zst"), "{shown}");
         let shown = family_message(ctx, &AppError::MissingFile("common/a.txt".into()));

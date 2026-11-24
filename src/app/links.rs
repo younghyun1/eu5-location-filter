@@ -62,7 +62,9 @@ fn open_url(url: &str) -> Result<(), AppError> {
     use std::process::{Command, Stdio};
 
     if !url.starts_with("https://") {
-        return Err(AppError::Ui(format!("refusing to open a non-HTTPS link: {url}")));
+        return Err(AppError::Ui(format!(
+            "refusing to open a non-HTTPS link: {url}"
+        )));
     }
     let program = opener_program();
     let mut child = Command::new(program)
@@ -109,7 +111,11 @@ mod tests {
         let titles: Vec<Text> = Link::ALL.iter().map(|link| link.title()).collect();
         assert_eq!(
             titles,
-            [Text::AboutLinkGithub, Text::AboutLinkWebsite, Text::AboutLinkLinkedin]
+            [
+                Text::AboutLinkGithub,
+                Text::AboutLinkWebsite,
+                Text::AboutLinkLinkedin
+            ]
         );
     }
 

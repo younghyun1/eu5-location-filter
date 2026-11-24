@@ -218,7 +218,10 @@ mod tests {
             progress,
             Message::Load(LoadMessage::Progress { generation: 3, .. })
         ));
-        let done = event_message(4, LoadEvent::Done(Err(std::sync::Arc::new(AppError::Worker))));
+        let done = event_message(
+            4,
+            LoadEvent::Done(Err(std::sync::Arc::new(AppError::Worker))),
+        );
         assert!(matches!(
             done,
             Message::Load(LoadMessage::Finished { generation: 4, .. })
@@ -238,7 +241,10 @@ mod tests {
                 .is_ok()
         );
         let delivery = std::thread::spawn(move || {
-            deliver(&mut sender, LoadEvent::Done(Err(std::sync::Arc::new(AppError::Worker))));
+            deliver(
+                &mut sender,
+                LoadEvent::Done(Err(std::sync::Arc::new(AppError::Worker))),
+            );
         });
         let mut seen_done = false;
         for _ in 0..2_000 {
@@ -260,6 +266,9 @@ mod tests {
     fn delivery_returns_when_nobody_listens() {
         let (mut sender, receiver) = mpsc::channel(0);
         drop(receiver);
-        deliver(&mut sender, LoadEvent::Done(Err(std::sync::Arc::new(AppError::Worker))));
+        deliver(
+            &mut sender,
+            LoadEvent::Done(Err(std::sync::Arc::new(AppError::Worker))),
+        );
     }
 }

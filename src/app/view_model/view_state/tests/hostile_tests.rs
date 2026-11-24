@@ -6,8 +6,30 @@ use crate::app::view_model::view_state::{VIEW_STATE_MAX_LEN, decode, passes_whol
 
 /// Fragments that exercise every field and the grammar's edge cases.
 const FRAGMENTS: [&str; 24] = [
-    "~", "*", "!", ".", "q.", "k.", "tp.", "vg.", "cl.!", "rm.!*wheat", "c.", "hr.", "mx.-", "s.",
-    "l.", "si.0", "fo.1", "lm.", "!EC", "!8", "name*d", "1.5", "-0", "zz.",
+    "~",
+    "*",
+    "!",
+    ".",
+    "q.",
+    "k.",
+    "tp.",
+    "vg.",
+    "cl.!",
+    "rm.!*wheat",
+    "c.",
+    "hr.",
+    "mx.-",
+    "s.",
+    "l.",
+    "si.0",
+    "fo.1",
+    "lm.",
+    "!EC",
+    "!8",
+    "name*d",
+    "1.5",
+    "-0",
+    "zz.",
 ];
 
 /// Characters of the view-state charset.
@@ -62,7 +84,11 @@ fn random_strings_decode_and_canonicalize_idempotently() {
         if let Some(first) = loaded.canonical(&text) {
             assert!(first.len() <= VIEW_STATE_MAX_LEN, "{text}");
             assert!(passes_whole_checks(&first), "{text} -> {first}");
-            assert_eq!(loaded.canonical(&first).as_deref(), Some(first.as_str()), "{text}");
+            assert_eq!(
+                loaded.canonical(&first).as_deref(),
+                Some(first.as_str()),
+                "{text}"
+            );
         }
     }
 }
@@ -75,11 +101,24 @@ fn adversarial_strings_are_bounded() {
     let many_bangs = format!("s1~q.{}", "!".repeat(1_995));
     let deep_escapes = format!("s1~l.{}", "!41".repeat(600));
     let star_storm = format!("s1~k.{}", "*".repeat(1_990));
-    for text in [many_fields, many_items, many_bangs, deep_escapes, star_storm] {
+    for text in [
+        many_fields,
+        many_items,
+        many_bangs,
+        deep_escapes,
+        star_storm,
+    ] {
         assert!(text.len() <= VIEW_STATE_MAX_LEN, "{}", text.len());
         let canonical = loaded.canonical(&text);
-        assert!(canonical.as_ref().is_some_and(|value| value.len() <= VIEW_STATE_MAX_LEN));
+        assert!(
+            canonical
+                .as_ref()
+                .is_some_and(|value| value.len() <= VIEW_STATE_MAX_LEN)
+        );
     }
-    assert_eq!(loaded.canonical(&format!("s1~q.{}", "a".repeat(1_996))), None);
+    assert_eq!(
+        loaded.canonical(&format!("s1~q.{}", "a".repeat(1_996))),
+        None
+    );
     assert_eq!(loaded.canonical("s1~k.~k.~k.").as_deref(), Some("s1~k."));
 }

@@ -62,7 +62,10 @@ pub(crate) fn veil(palette: Palette, kind: Veil) -> Style {
 /// Scrim behind drawers and dialogs; `opacity` in `0..=1` follows the drawer animation.
 #[must_use]
 pub(crate) fn scrim(palette: Palette, opacity: f32) -> Style {
-    filled(palette.scrim().scale_alpha(opacity.clamp(0.0, 1.0)), palette.ink)
+    filled(
+        palette.scrim().scale_alpha(opacity.clamp(0.0, 1.0)),
+        palette.ink,
+    )
 }
 
 /// Count badge pill.

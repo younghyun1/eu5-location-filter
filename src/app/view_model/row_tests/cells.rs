@@ -22,7 +22,11 @@ fn cell(location: u32, column: ColumnId) -> (String, CellTone) {
 /// Asserts the text of every column of a location against `expected` in column order.
 fn assert_row(location: u32, expected: [&str; ColumnId::COUNT]) {
     for (column, text) in ColumnId::ALL.into_iter().zip(expected) {
-        assert_eq!(cell(location, column).0, text, "location {location} {column:?}");
+        assert_eq!(
+            cell(location, column).0,
+            text,
+            "location {location} {column:?}"
+        );
     }
 }
 
@@ -134,7 +138,8 @@ fn every_food_and_precious_good_is_classified() {
         ("iron", CellTone::Ink),
     ] {
         let mut data = dataset();
-        let symbol = crate::model::SymbolId(u32::try_from(data.stored.dictionary.len()).unwrap_or(0));
+        let symbol =
+            crate::model::SymbolId(u32::try_from(data.stored.dictionary.len()).unwrap_or(0));
         data.stored.dictionary.push(material.to_owned());
         if let Some(record) = data.stored.locations.first_mut() {
             record.raw_material = Some(symbol);

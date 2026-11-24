@@ -45,7 +45,9 @@ pub(super) fn chrome<Message>(
                 width: active.width,
                 height: ACTIVE_COLUMN_UNDERLINE,
             };
-            let visible = header.intersection(&clip).and_then(|area| underline.intersection(&area));
+            let visible = header
+                .intersection(&clip)
+                .and_then(|area| underline.intersection(&area));
             paint::fill_rect(renderer, visible, palette.accent);
         }
         if let Some(body) = frame.body.intersection(&clip) {
@@ -78,7 +80,10 @@ fn dividers<Message>(
     } else {
         frame.header.height + frame.body.height
     };
-    let area = Rectangle { height, ..frame.header };
+    let area = Rectangle {
+        height,
+        ..frame.header
+    };
     let Some(area) = area.intersection(&clip) else {
         return;
     };
@@ -136,7 +141,13 @@ fn thumbs<Message>(
             width,
             height: thumb.length,
         };
-        draw_thumb(renderer, bounds, clip, grid.palette.scrollbar_thumb(thumb_state(state, Axis::Vertical)));
+        draw_thumb(
+            renderer,
+            bounds,
+            clip,
+            grid.palette
+                .scrollbar_thumb(thumb_state(state, Axis::Vertical)),
+        );
     }
     if let Some(thumb) = metrics.horizontal_thumb(metrics.offset_x) {
         let lane = frame.horizontal_lane;
@@ -147,7 +158,13 @@ fn thumbs<Message>(
             width: thumb.length,
             height,
         };
-        draw_thumb(renderer, bounds, clip, grid.palette.scrollbar_thumb(thumb_state(state, Axis::Horizontal)));
+        draw_thumb(
+            renderer,
+            bounds,
+            clip,
+            grid.palette
+                .scrollbar_thumb(thumb_state(state, Axis::Horizontal)),
+        );
     }
 }
 
@@ -199,11 +216,26 @@ fn empty<Message>(
     };
     renderer.with_layer(body, |renderer| {
         if !grid.empty_title.is_empty() {
-            paint::fill_line(renderer, grid.empty_title, Side::Center, title, title_style, body);
+            paint::fill_line(
+                renderer,
+                grid.empty_title,
+                Side::Center,
+                title,
+                title_style,
+                body,
+            );
         }
         if !grid.empty_body.is_empty() && width > 0.0 {
             let top = title.y + title.height + EMPTY_GAP;
-            paint::fill_block(renderer, grid.empty_body, full.center_x(), top, width, body_style, body);
+            paint::fill_block(
+                renderer,
+                grid.empty_body,
+                full.center_x(),
+                top,
+                width,
+                body_style,
+                body,
+            );
         }
     });
 }

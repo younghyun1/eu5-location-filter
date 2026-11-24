@@ -22,10 +22,8 @@ fn finds_values_case_insensitively() {
 
 #[test]
 fn localization_roots_follow_the_language_directory() -> Result<(), AppError> {
-    let root = std::env::temp_dir().join(format!(
-        "eu5-location-filter-roots-{}",
-        std::process::id()
-    ));
+    let root =
+        std::env::temp_dir().join(format!("eu5-location-filter-roots-{}", std::process::id()));
     let _ = fs::remove_dir_all(&root);
     let scoped = |scope: &str, language: GameLanguage| -> PathBuf {
         root.join("game")
@@ -56,7 +54,11 @@ fn localization_roots_follow_the_language_directory() -> Result<(), AppError> {
         installation.localization_roots(GameLanguage::SimplifiedChinese),
         vec![scoped("main_menu", GameLanguage::SimplifiedChinese)]
     );
-    assert!(installation.localization_roots(GameLanguage::Korean).is_empty());
+    assert!(
+        installation
+            .localization_roots(GameLanguage::Korean)
+            .is_empty()
+    );
     let _ = fs::remove_dir_all(root);
     Ok(())
 }

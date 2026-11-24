@@ -46,7 +46,10 @@ fn every_embedded_pack_decodes_validates_and_installs() -> Result<(), AppError> 
         engine.install_language_pack(pack)?;
         assert_eq!(engine.active_language(), language);
         for field in SortField::ALL {
-            assert_eq!(engine.apply(&FilterSet::default(), field, true).len(), total);
+            assert_eq!(
+                engine.apply(&FilterSet::default(), field, true).len(),
+                total
+            );
         }
         assert_eq!(engine.drop_language_pack(), Some(language));
     }
@@ -62,8 +65,16 @@ fn korean_pack_finds_localized_and_english_names() -> Result<(), AppError> {
     let (dataset, mut engine) = engine()?;
     let pack = engine.validate_language_pack(decode_pack(bytes)?, GameLanguage::Korean)?;
     engine.install_language_pack(pack)?;
-    assert!(keys_for(&engine, &dataset, "스톡").iter().any(|key| key == "stockholm"));
-    assert!(keys_for(&engine, &dataset, "stockholm").iter().any(|key| key == "stockholm"));
+    assert!(
+        keys_for(&engine, &dataset, "스톡")
+            .iter()
+            .any(|key| key == "stockholm")
+    );
+    assert!(
+        keys_for(&engine, &dataset, "stockholm")
+            .iter()
+            .any(|key| key == "stockholm")
+    );
     assert_eq!(keys_for(&engine, &dataset, "N'Goussa"), ["ngoussa"]);
     Ok(())
 }

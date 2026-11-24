@@ -49,4 +49,3 @@ pub(crate) struct LocationDetail {
     /// Classification, society, economy, coast and movement, river, capacity.
     pub(crate) groups: Vec<DetailGroup>,
 }
-

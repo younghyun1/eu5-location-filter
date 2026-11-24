@@ -266,10 +266,11 @@ impl<Message: Clone> Widget<Message, iced::Theme, iced::Renderer> for FocusRing<
         translation: Vector,
     ) -> Option<overlay::Element<'b, Message, iced::Theme, iced::Renderer>> {
         match tree.children.first_mut() {
-            Some(child) => self
-                .content
-                .as_widget_mut()
-                .overlay(child, layout, renderer, viewport, translation),
+            Some(child) => {
+                self.content
+                    .as_widget_mut()
+                    .overlay(child, layout, renderer, viewport, translation)
+            }
             None => None,
         }
     }

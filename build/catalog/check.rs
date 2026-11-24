@@ -39,10 +39,7 @@ pub fn check_catalog(english: &Catalog, catalog: &Catalog) -> Vec<String> {
     };
     for reference in &english.items {
         match catalog.find(&reference.key) {
-            None => errors.push(format!(
-                "{}: missing key `{}`",
-                catalog.path, reference.key
-            )),
+            None => errors.push(format!("{}: missing key `{}`", catalog.path, reference.key)),
             Some(item) => check_item(catalog, required, reference, item, &mut errors),
         }
     }

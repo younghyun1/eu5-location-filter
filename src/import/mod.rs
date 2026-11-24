@@ -18,7 +18,6 @@ mod templates;
 pub use game::import_game;
 pub(crate) use labels::record_use;
 pub use packs::{
-    load_paired_pack, pack_path, reindex_language_packs, selected_languages,
-    write_language_packs,
+    load_paired_pack, pack_path, reindex_language_packs, selected_languages, write_language_packs,
 };
 pub use progress::{ImportProgress, ImportStage};

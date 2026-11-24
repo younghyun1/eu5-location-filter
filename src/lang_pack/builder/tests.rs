@@ -55,8 +55,14 @@ fn builds_a_valid_pack_with_labels_for_location_key_symbols() -> Result<(), AppE
     // string with the location name.
     let keys: Vec<SymbolId> = pack.labels.iter().map(|label| label.key).collect();
     assert_eq!(keys, vec![SymbolId(0), SymbolId(2), SymbolId(3)]);
-    assert_eq!(pack.labels.first().map(|label| label.value), Some(PackStringId(0)));
-    assert_eq!(pack.location_names, vec![Some(PackStringId(0)), Some(PackStringId(1))]);
+    assert_eq!(
+        pack.labels.first().map(|label| label.value),
+        Some(PackStringId(0))
+    );
+    assert_eq!(
+        pack.location_names,
+        vec![Some(PackStringId(0)), Some(PackStringId(1))]
+    );
     assert_eq!(pack.strings, vec!["에이레", "황무지", "평지", "가톨릭"]);
     assert!(pack.diagnostics.is_empty());
     let validated = validate_pack(pack, &dataset, GameLanguage::Korean)?;
@@ -67,7 +73,11 @@ fn builds_a_valid_pack_with_labels_for_location_key_symbols() -> Result<(), AppE
 #[test]
 fn text_equal_to_english_and_missing_text_stay_out_of_the_pack() -> Result<(), AppError> {
     let dataset = fixture();
-    let french = values(&[("eire", "Éire"), ("waste", "waste"), ("flatland", "flatland")]);
+    let french = values(&[
+        ("eire", "Éire"),
+        ("waste", "waste"),
+        ("flatland", "flatland"),
+    ]);
     let pack = build_pack(&dataset, GameLanguage::French, &french)?;
     assert_eq!(pack.location_names, vec![None, None]);
     // `eire` as a label differs: its English label is the identifier, not the name.
@@ -88,7 +98,10 @@ fn modifiers_use_their_static_modifier_key() -> Result<(), AppError> {
     let dataset = with_modifier();
     let mut text = korean();
     text.insert("coastal_mod".to_owned(), "잘못된 키".to_owned());
-    text.insert("STATIC_MODIFIER_NAME_coastal_mod".to_owned(), "해안".to_owned());
+    text.insert(
+        "STATIC_MODIFIER_NAME_coastal_mod".to_owned(),
+        "해안".to_owned(),
+    );
     let pack = build_pack(&dataset, GameLanguage::Korean, &text)?;
     let validated = validate_pack(pack, &dataset, GameLanguage::Korean)?;
     assert_eq!(validated.label(SymbolId(5)), Some("해안"));

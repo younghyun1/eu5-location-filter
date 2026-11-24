@@ -13,11 +13,7 @@ struct Parsed {
 
 /// Parses one file, decoding escapes and checking keys and braces. Every line problem is
 /// collected so one build reports them all.
-pub fn parse_catalog(
-    tag: &'static str,
-    path: String,
-    text: &str,
-) -> Result<Catalog, Vec<String>> {
+pub fn parse_catalog(tag: &'static str, path: String, text: &str) -> Result<Catalog, Vec<String>> {
     let mut errors = Vec::new();
     let body = match text.strip_prefix('\u{feff}') {
         Some(rest) => {
@@ -182,9 +178,7 @@ fn decode_escapes(raw: &str) -> Result<String, String> {
             Some('s') => out.push(' '),
             Some('\\') => out.push('\\'),
             Some(other) => {
-                return Err(format!(
-                    "unknown escape `\\{other}`; use \\n, \\s or \\\\"
-                ));
+                return Err(format!("unknown escape `\\{other}`; use \\n, \\s or \\\\"));
             }
             None => return Err("the value ends with a lone backslash".to_owned()),
         }
@@ -221,7 +215,9 @@ fn scan_braces(text: &str) -> Result<Vec<String>, String> {
                     name.push(next);
                 }
                 if !closed {
-                    return Err("`{` without a closing `}`; write `{{` for a literal brace".to_owned());
+                    return Err(
+                        "`{` without a closing `}`; write `{{` for a literal brace".to_owned()
+                    );
                 }
                 if !valid_name(&name) {
                     return Err(format!(

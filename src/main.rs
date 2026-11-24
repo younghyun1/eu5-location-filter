@@ -7,12 +7,12 @@ use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 use clap::{Parser, Subcommand};
+use eu5_location_filter::filter::FilterEngine;
 use eu5_location_filter::font_pack::{self, FontPackArgs};
 use eu5_location_filter::import::{self, ImportProgress, import_game};
 use eu5_location_filter::lang_pack::{GameLanguage, Labels, ValidatedLanguagePack};
 use eu5_location_filter::model::Dataset;
 use eu5_location_filter::{AppError, app, bundle_diff, index_storage, steam, storage};
-use eu5_location_filter::filter::FilterEngine;
 
 const DEFAULT_DATA_FILE: &str = "assets/eu5-locations.bitcode.zst";
 const DEFAULT_INDEX_FILE: &str = "assets/eu5-indexes.bitcode.zst";

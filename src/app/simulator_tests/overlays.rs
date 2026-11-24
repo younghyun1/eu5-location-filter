@@ -45,7 +45,10 @@ fn the_error_card_offers_retry_and_rebuild_on_the_desktop() -> Result<(), AppErr
     let mut ui = harness.ui();
     assert!(ui.find(t(Locale::EnUs, Text::ErrorTitle)).is_ok());
     assert!(ui.find(t(Locale::EnUs, Text::ErrorHintRetryable)).is_ok());
-    assert!(ui.find(missing_file().to_string()).is_ok(), "the technical detail is shown");
+    assert!(
+        ui.find(missing_file().to_string()).is_ok(),
+        "the technical detail is shown"
+    );
     assert!(has_id(&mut ui, ids::INSTALL_PATH));
     drop(ui);
 
@@ -54,12 +57,18 @@ fn the_error_card_offers_retry_and_rebuild_on_the_desktop() -> Result<(), AppErr
         let _button = ui.click(t(Locale::EnUs, Text::ErrorRetry))?;
         Ok(())
     })?;
-    assert!(matches!(retry.as_slice(), [Message::Load(LoadMessage::Retry)]), "{retry:?}");
+    assert!(
+        matches!(retry.as_slice(), [Message::Load(LoadMessage::Retry)]),
+        "{retry:?}"
+    );
     let rebuild = harness.interact(|ui| {
         let _button = ui.click(t(Locale::EnUs, Text::ErrorRebuild))?;
         Ok(())
     })?;
-    assert!(matches!(rebuild.as_slice(), [Message::Load(LoadMessage::Rebuild)]), "{rebuild:?}");
+    assert!(
+        matches!(rebuild.as_slice(), [Message::Load(LoadMessage::Rebuild)]),
+        "{rebuild:?}"
+    );
     Ok(())
 }
 
@@ -72,7 +81,10 @@ fn the_installation_path_field_keeps_what_is_typed() -> Result<(), AppError> {
         Ok(())
     })?;
     assert_eq!(harness.app.fields.install_path, "games");
-    assert!(matches!(harness.app.phase, Phase::Failed(_)), "typing does not restart the load");
+    assert!(
+        matches!(harness.app.phase, Phase::Failed(_)),
+        "typing does not restart the load"
+    );
     Ok(())
 }
 
@@ -82,8 +94,14 @@ fn the_browser_error_card_asks_for_a_reload_instead() -> Result<(), AppError> {
     let mut ui = harness.ui();
     assert!(ui.find(t(Locale::EnUs, Text::ErrorTitle)).is_ok());
     assert!(ui.find(t(Locale::EnUs, Text::ErrorHintWeb)).is_ok());
-    assert!(ui.find(t(Locale::EnUs, Text::ErrorRetry)).is_err(), "no Retry in the browser");
-    assert!(ui.find(t(Locale::EnUs, Text::ErrorRebuild)).is_err(), "no Rebuild in the browser");
+    assert!(
+        ui.find(t(Locale::EnUs, Text::ErrorRetry)).is_err(),
+        "no Retry in the browser"
+    );
+    assert!(
+        ui.find(t(Locale::EnUs, Text::ErrorRebuild)).is_err(),
+        "no Rebuild in the browser"
+    );
     assert!(!has_id(&mut ui, ids::INSTALL_PATH));
     Ok(())
 }
@@ -103,7 +121,12 @@ fn the_error_veil_blocks_the_interface_beneath_it() -> Result<(), AppError> {
 fn the_loading_card_follows_progress_and_blocks_the_interface() -> Result<(), AppError> {
     let mut harness = unloaded(Platform::Desktop);
     assert!(matches!(harness.app.phase, Phase::AwaitingPaint));
-    assert!(harness.ui().find(t(Locale::EnUs, Text::LoadStarting)).is_ok());
+    assert!(
+        harness
+            .ui()
+            .find(t(Locale::EnUs, Text::LoadStarting))
+            .is_ok()
+    );
 
     let generation = harness.app.load_generation;
     harness.send(Message::Load(LoadMessage::Progress {
@@ -112,7 +135,12 @@ fn the_loading_card_follows_progress_and_blocks_the_interface() -> Result<(), Ap
         fraction: 0.5,
     }));
     assert!(matches!(harness.app.phase, Phase::Loading(_)));
-    assert!(harness.ui().find(t(Locale::EnUs, Text::LoadEmbedded)).is_ok());
+    assert!(
+        harness
+            .ui()
+            .find(t(Locale::EnUs, Text::LoadEmbedded))
+            .is_ok()
+    );
 
     let messages = harness.interact(|ui| {
         let _button = ui.click(ids::COLUMNS_BUTTON)?;
@@ -126,7 +154,10 @@ fn the_loading_card_follows_progress_and_blocks_the_interface() -> Result<(), Ap
 fn the_about_dialog_closes_from_its_button_and_from_the_scrim() -> Result<(), AppError> {
     let mut harness = Harness::new(WIDE)?;
     let close = t(Locale::EnUs, Text::AboutClose);
-    assert!(harness.ui().find(close).is_err(), "the dialog starts closed");
+    assert!(
+        harness.ui().find(close).is_err(),
+        "the dialog starts closed"
+    );
 
     harness.drive(|ui| {
         let _button = ui.click(ids::ABOUT_BUTTON)?;
@@ -161,7 +192,12 @@ fn only_the_desktop_header_has_the_language_and_appearance_menus() -> Result<(),
     assert!(has_id(&mut ui, ids::APPEARANCE_BUTTON));
     drop(ui);
 
-    let app = App::with_data(Platform::Browser, Locale::EnUs, PALETTE_DARK, fixture::loaded()?);
+    let app = App::with_data(
+        Platform::Browser,
+        Locale::EnUs,
+        PALETTE_DARK,
+        fixture::loaded()?,
+    );
     let browser = Harness::from_app(app, WIDE);
     let mut ui = browser.ui();
     assert!(!has_id(&mut ui, ids::LANGUAGE_BUTTON));

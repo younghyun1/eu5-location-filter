@@ -1,14 +1,16 @@
 //! Embedded font bytes staged by `build.rs`. A face whose source was missing at build time is
 //! an empty file and is skipped, so the build never fails for lack of fonts.
 
-/// IBM Plex Sans Regular, Medium and SemiBold, and Plex Mono Regular and Medium, in the order
-/// of `EMBEDDED_FONTS` in `build.rs`.
-const EMBEDDED_FACES: [&[u8]; 5] = [
+/// IBM Plex Sans Regular, Medium and SemiBold, Plex Mono Regular and Medium, and the Latin
+/// fallback face for transliteration letters Plex lacks, in the order of `EMBEDDED_FONTS` in
+/// `build.rs`.
+const EMBEDDED_FACES: [&[u8]; 6] = [
     include_bytes!(concat!(env!("OUT_DIR"), "/fonts/plex-sans-regular.ttf")),
     include_bytes!(concat!(env!("OUT_DIR"), "/fonts/plex-sans-medium.ttf")),
     include_bytes!(concat!(env!("OUT_DIR"), "/fonts/plex-sans-semibold.ttf")),
     include_bytes!(concat!(env!("OUT_DIR"), "/fonts/plex-mono-regular.ttf")),
     include_bytes!(concat!(env!("OUT_DIR"), "/fonts/plex-mono-medium.ttf")),
+    include_bytes!(concat!(env!("OUT_DIR"), "/fonts/latin-fallback.ttf")),
 ];
 
 /// Non-empty embedded faces, registered with the application builder at startup.

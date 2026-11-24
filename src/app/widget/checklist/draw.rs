@@ -24,7 +24,13 @@ type RendererParagraph = <iced::Renderer as text::Renderer>::Paragraph;
 
 impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
     /// Draws the list into `bounds`, clipped to `viewport`.
-    pub(super) fn draw_list(&self, state: &ChecklistState, renderer: &mut iced::Renderer, bounds: Rectangle, viewport: &Rectangle) {
+    pub(super) fn draw_list(
+        &self,
+        state: &ChecklistState,
+        renderer: &mut iced::Renderer,
+        bounds: Rectangle,
+        viewport: &Rectangle,
+    ) {
         let Some(clip) = bounds.intersection(viewport) else {
             return;
         };
@@ -36,7 +42,10 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
         let hovered = state.hovered.filter(|row| *row < count);
         // Focus that arrives by Tab has no active row yet; outline the row Space would toggle.
         let active = if state.focused {
-            state.active.filter(|row| *row < count).or_else(|| geometry.first_visible(offset))
+            state
+                .active
+                .filter(|row| *row < count)
+                .or_else(|| geometry.first_visible(offset))
         } else {
             None
         };
@@ -47,11 +56,27 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
                 let rect = geometry.row_rect(row, offset);
                 let row_hovered = hovered == Some(row);
                 if row_hovered {
-                    fill(renderer, rect, palette.hover(palette.surface), Border::default());
+                    fill(
+                        renderer,
+                        rect,
+                        palette.hover(palette.surface),
+                        Border::default(),
+                    );
                 }
-                self.draw_checkbox(renderer, &geometry, rect, self.model.is_checked(row), row_hovered, clip);
+                self.draw_checkbox(
+                    renderer,
+                    &geometry,
+                    rect,
+                    self.model.is_checked(row),
+                    row_hovered,
+                    clip,
+                );
                 if active == Some(row) {
-                    let outline = Border { color: palette.accent, width: ACTIVE_OPTION_OUTLINE, radius: RADIUS.into() };
+                    let outline = Border {
+                        color: palette.accent,
+                        width: ACTIVE_OPTION_OUTLINE,
+                        radius: RADIUS.into(),
+                    };
                     fill(renderer, rect, Color::TRANSPARENT, outline);
                 }
             }
@@ -62,7 +87,15 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
                     (None, false) => ThumbState::Idle,
                 };
                 let radius = thumb.width / 2.0;
-                fill(renderer, thumb, palette.scrollbar_thumb(thumb_state), Border { radius: radius.into(), ..Border::default() });
+                fill(
+                    renderer,
+                    thumb,
+                    palette.scrollbar_thumb(thumb_state),
+                    Border {
+                        radius: radius.into(),
+                        ..Border::default()
+                    },
+                );
             }
         });
 
@@ -70,32 +103,77 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
             renderer.with_layer(lane, |renderer| {
                 if count == 0 {
                     let rect = geometry.row_rect(0, 0.0);
-                    self.draw_label(renderer, &geometry, rect, self.empty_text, palette.ink_faint, lane);
+                    self.draw_label(
+                        renderer,
+                        &geometry,
+                        rect,
+                        self.empty_text,
+                        palette.ink_faint,
+                        lane,
+                    );
                 }
                 for row in range.start..range.end {
                     let rect = geometry.row_rect(row, offset);
-                    self.draw_label(renderer, &geometry, rect, self.model.label(row), palette.ink, lane);
+                    self.draw_label(
+                        renderer,
+                        &geometry,
+                        rect,
+                        self.model.label(row),
+                        palette.ink,
+                        lane,
+                    );
                 }
             });
         }
 
         // Quads issued after a layer closes go back to the parent layer, which renders first, so
         // the frame gets its own last layer to stay above hovered rows.
-        let frame = Border { color: palette.line, width: BORDER_WIDTH, radius: RADIUS.into() };
-        renderer.with_layer(clip, |renderer| fill(renderer, bounds, Color::TRANSPARENT, frame));
+        let frame = Border {
+            color: palette.line,
+            width: BORDER_WIDTH,
+            radius: RADIUS.into(),
+        };
+        renderer.with_layer(clip, |renderer| {
+            fill(renderer, bounds, Color::TRANSPARENT, frame)
+        });
     }
 
     /// Draws one checkbox: an outlined square, or an accent square with the check glyph.
-    fn draw_checkbox(&self, renderer: &mut iced::Renderer, geometry: &Geometry, row: Rectangle, checked: bool, hovered: bool, clip: Rectangle) {
+    fn draw_checkbox(
+        &self,
+        renderer: &mut iced::Renderer,
+        geometry: &Geometry,
+        row: Rectangle,
+        checked: bool,
+        hovered: bool,
+        clip: Rectangle,
+    ) {
         let palette = self.palette;
         let rect = geometry.checkbox_rect(row);
         if !checked {
-            let border = Border { color: palette.line_strong, width: BORDER_WIDTH, radius: RADIUS.into() };
+            let border = Border {
+                color: palette.line_strong,
+                width: BORDER_WIDTH,
+                radius: RADIUS.into(),
+            };
             fill(renderer, rect, palette.surface, border);
             return;
         }
-        let ground = if hovered { palette.accent_strong } else { palette.accent };
-        fill(renderer, rect, ground, Border { color: ground, width: BORDER_WIDTH, radius: RADIUS.into() });
+        let ground = if hovered {
+            palette.accent_strong
+        } else {
+            palette.accent
+        };
+        fill(
+            renderer,
+            rect,
+            ground,
+            Border {
+                color: ground,
+                width: BORDER_WIDTH,
+                radius: RADIUS.into(),
+            },
+        );
         let Some(glyph_clip) = rect.intersection(&clip) else {
             return;
         };
@@ -122,7 +200,15 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
     /// with `Right`, and one with right-to-left script is measured once and placed by its
     /// left edge with `Default`, which is the only alignment iced lays out correctly for
     /// such text against an infinite width.
-    fn draw_label(&self, renderer: &mut iced::Renderer, geometry: &Geometry, row: Rectangle, label: &str, color: Color, clip: Rectangle) {
+    fn draw_label(
+        &self,
+        renderer: &mut iced::Renderer,
+        geometry: &Geometry,
+        row: Rectangle,
+        label: &str,
+        color: Color,
+        clip: Rectangle,
+    ) {
         if label.is_empty() {
             return;
         }
@@ -133,7 +219,10 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
         let (x, align_x) = if !geometry.rtl {
             (lane.x, text::Alignment::Default)
         } else if has_rtl_script(label) {
-            (lane.x + lane.width - measure(label, self.font, row.height), text::Alignment::Default)
+            (
+                lane.x + lane.width - measure(label, self.font, row.height),
+                text::Alignment::Default,
+            )
         } else {
             (lane.x + lane.width, text::Alignment::Right)
         };
@@ -147,7 +236,13 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
 }
 
 /// Label text with the checklist's size, line height and shaping.
-fn label_text<C>(content: C, font: Font, row_height: f32, align_x: text::Alignment) -> Text<C, Font> {
+fn label_text<C: AsRef<str>>(
+    content: C,
+    font: Font,
+    row_height: f32,
+    align_x: text::Alignment,
+) -> Text<C, Font> {
+    let font = crate::app::theme::font_for_text(font, content.as_ref());
     Text {
         content,
         bounds: Size::new(f32::INFINITY, row_height),
@@ -163,10 +258,23 @@ fn label_text<C>(content: C, font: Font, row_height: f32, align_x: text::Alignme
 
 /// Measured width of a single-line label.
 fn measure(label: &str, font: Font, row_height: f32) -> f32 {
-    RendererParagraph::with_text(label_text(label, font, row_height, text::Alignment::Default)).min_width()
+    RendererParagraph::with_text(label_text(
+        label,
+        font,
+        row_height,
+        text::Alignment::Default,
+    ))
+    .min_width()
 }
 
 /// Fills a quad with a border drawn on its inside.
 fn fill(renderer: &mut iced::Renderer, bounds: Rectangle, color: Color, border: Border) {
-    renderer.fill_quad(renderer::Quad { bounds, border, ..renderer::Quad::default() }, color);
+    renderer.fill_quad(
+        renderer::Quad {
+            bounds,
+            border,
+            ..renderer::Quad::default()
+        },
+        color,
+    );
 }

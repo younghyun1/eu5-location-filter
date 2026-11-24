@@ -42,11 +42,7 @@ impl FacetOptions {
 fn build_list(labels: Labels<'_>, locale: Locale, facet: FacetId) -> OptionList {
     match facet {
         FacetId::Kind => kinds(locale),
-        FacetId::Coastal => flags(
-            locale,
-            (Text::OptionYes, "yes"),
-            (Text::OptionNo, "no"),
-        ),
+        FacetId::Coastal => flags(locale, (Text::OptionYes, "yes"), (Text::OptionNo, "no")),
         FacetId::RiverPresence | FacetId::HarborPresence | FacetId::MovementPresence => flags(
             locale,
             (Text::OptionPresent, "present"),

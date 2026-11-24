@@ -5,7 +5,10 @@ use crate::app::i18n::{format, format_into, push_fixed, push_grouped};
 #[test]
 fn substitutes_named_placeholders() {
     assert_eq!(
-        format("EU5 {version} | Build {build}", &[("version", "1.4.8"), ("build", "26547371")]),
+        format(
+            "EU5 {version} | Build {build}",
+            &[("version", "1.4.8"), ("build", "26547371")]
+        ),
         "EU5 1.4.8 | Build 26547371"
     );
 }
@@ -38,7 +41,10 @@ fn unknown_and_unterminated_braces_stay_visible() {
 
 #[test]
 fn non_ascii_text_survives() {
-    assert_eq!(format("{count} Éléments 한국", &[("count", "3")]), "3 Éléments 한국");
+    assert_eq!(
+        format("{count} Éléments 한국", &[("count", "3")]),
+        "3 Éléments 한국"
+    );
     assert_eq!(format("عدد: {count}", &[("count", "١")]), "عدد: ١");
 }
 

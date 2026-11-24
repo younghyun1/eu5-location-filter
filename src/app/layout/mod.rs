@@ -7,7 +7,7 @@ mod panes;
 mod tests;
 
 pub(crate) use constants::*;
-pub(crate) use direction::{Direction, inline_row, mirror_x};
+pub(crate) use direction::{Direction, anchored_text, inline_row, mirror_x};
 pub(crate) use panes::{
     Drawer, LayoutMode, PaneEdge, PaneLayout, PaneSlot, PaneState, clamp_detail, clamp_rail,
     drawer_width, key_step, mode_for_width, resolve, splitter_width,

@@ -33,7 +33,10 @@ fn every_context() -> [ViewContext; 4] {
 
 #[test]
 fn text_button_size_ignores_the_label() {
-    for label in ["OK", "A label far longer than the button can show at its width"] {
+    for label in [
+        "OK",
+        "A label far longer than the button can show at its width",
+    ] {
         let wide = context(Direction::Ltr, LayoutMode::Wide);
         let element: Element<'_, Message> =
             text_button(wide, label, ButtonKind::Secondary, BUTTON_WIDTH, None).into();
@@ -66,7 +69,10 @@ fn wide_icon_button_is_square() {
     let icon: Element<'_, Message> = icon_button(wide, Icon::TowardStart, "Hide", None).into();
     assert_eq!(
         icon.as_widget().size(),
-        Size::new(Length::Fixed(ICON_BUTTON_SIZE), Length::Fixed(ICON_BUTTON_SIZE))
+        Size::new(
+            Length::Fixed(ICON_BUTTON_SIZE),
+            Length::Fixed(ICON_BUTTON_SIZE)
+        )
     );
 }
 
@@ -94,19 +100,14 @@ fn every_control_builds_in_every_context() {
         let _: Element<'_, Message> = field_error(ctx, "Error");
         let _: Element<'_, Message> = with_tooltip(ctx, caption(ctx, "x"), "tip");
         let _: Element<'_, Message> = with_tooltip_owned(ctx, caption(ctx, "x"), "tip".to_owned());
-        let _: Element<'_, Message> = text_field(
-            ctx,
-            ids::RGB_FIELD,
-            "placeholder",
-            "value",
-            true,
-            |text| Message::Filter(FilterMessage::Rgb(text)),
-        );
+        let _: Element<'_, Message> =
+            text_field(ctx, ids::RGB_FIELD, "placeholder", "value", true, |text| {
+                Message::Filter(FilterMessage::Rgb(text))
+            });
         let _: Element<'_, Message> = toggle_row(ctx, "Toggle", true, |on| {
             Message::Filter(FilterMessage::FoodOnly(on))
         });
-        let _: Element<'_, Message> =
-            menu_frame(ctx, "Menu", "Close", caption(ctx, "Content"));
+        let _: Element<'_, Message> = menu_frame(ctx, "Menu", "Close", caption(ctx, "Content"));
     }
 }
 
@@ -115,7 +116,10 @@ fn counted_text_follows_the_plural_form() {
     let ctx = context(Direction::Ltr, LayoutMode::Wide);
     assert_eq!(counted(ctx, Text::RailActiveCount, 1), "1 filter active");
     assert_eq!(counted(ctx, Text::RailActiveCount, 3), "3 filters active");
-    assert_eq!(counted(ctx, Text::HeaderResultCount, 1234), "1,234 locations");
+    assert_eq!(
+        counted(ctx, Text::HeaderResultCount, 1234),
+        "1,234 locations"
+    );
 }
 
 #[test]

@@ -132,7 +132,10 @@ mod tests {
     fn rebuild_with_a_missing_installation_fails_after_announcing_itself() {
         let mut stages = Vec::new();
         let result = load_or_import(
-            &launch(Some("/nonexistent/eu5-test.bitcode.zst"), Some("/nonexistent/eu5-game")),
+            &launch(
+                Some("/nonexistent/eu5-test.bitcode.zst"),
+                Some("/nonexistent/eu5-game"),
+            ),
             true,
             &mut |stage, _| stages.push(stage),
         );
@@ -144,7 +147,10 @@ mod tests {
     fn a_missing_data_file_falls_back_to_import() {
         let mut stages = Vec::new();
         let result = load_or_import(
-            &launch(Some("/nonexistent/eu5-test.bitcode.zst"), Some("/nonexistent/eu5-game")),
+            &launch(
+                Some("/nonexistent/eu5-test.bitcode.zst"),
+                Some("/nonexistent/eu5-game"),
+            ),
             false,
             &mut |stage, _| stages.push(stage),
         );

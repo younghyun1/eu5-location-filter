@@ -159,7 +159,11 @@ fn thumb_length(content: f32, viewport: f32, track: f32, min_length: f32) -> Opt
     if !positive(content) || !positive(viewport) || !positive(track) || content <= viewport {
         return None;
     }
-    let min_length = if positive(min_length) { min_length } else { 0.0 };
+    let min_length = if positive(min_length) {
+        min_length
+    } else {
+        0.0
+    };
     Some((viewport / content * track).max(min_length).min(track))
 }
 

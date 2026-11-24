@@ -129,10 +129,22 @@ mod tests {
 
     #[test]
     fn drawers_attach_to_their_inline_edge() {
-        assert_eq!(drawer_side(Direction::Ltr, Drawer::Filters), Horizontal::Left);
-        assert_eq!(drawer_side(Direction::Ltr, Drawer::Details), Horizontal::Right);
-        assert_eq!(drawer_side(Direction::Rtl, Drawer::Filters), Horizontal::Right);
-        assert_eq!(drawer_side(Direction::Rtl, Drawer::Details), Horizontal::Left);
+        assert_eq!(
+            drawer_side(Direction::Ltr, Drawer::Filters),
+            Horizontal::Left
+        );
+        assert_eq!(
+            drawer_side(Direction::Ltr, Drawer::Details),
+            Horizontal::Right
+        );
+        assert_eq!(
+            drawer_side(Direction::Rtl, Drawer::Filters),
+            Horizontal::Right
+        );
+        assert_eq!(
+            drawer_side(Direction::Rtl, Drawer::Details),
+            Horizontal::Left
+        );
     }
 
     #[test]

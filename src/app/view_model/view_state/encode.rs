@@ -136,7 +136,12 @@ fn write_facet(out: &mut String, items: &mut Vec<String>, facet: FacetId, view: 
         FacetId::RawMaterial => push_optional(items, dataset, &filters.raw_materials, true),
         FacetId::Modifier => push_optional(items, dataset, &filters.modifiers, true),
         FacetId::Coastal => {
-            items.extend(filters.coastal.iter().map(|value| coastal_word(*value).to_owned()));
+            items.extend(
+                filters
+                    .coastal
+                    .iter()
+                    .map(|value| coastal_word(*value).to_owned()),
+            );
         }
         FacetId::RiverPresence => push_presence(items, &filters.river_presence),
         FacetId::HarborPresence => push_presence(items, &filters.harbor_presence),

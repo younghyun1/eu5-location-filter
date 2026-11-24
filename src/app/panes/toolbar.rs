@@ -58,7 +58,9 @@ pub(crate) fn view<'a>(
             ctx.t(Text::GridColumns),
             columns_kind,
             BUTTON_WIDTH,
-            Some(Message::Overlay(OverlayMessage::Toggle(Surface::ColumnMenu))),
+            Some(Message::Overlay(OverlayMessage::Toggle(
+                Surface::ColumnMenu,
+            ))),
         )
         .id(ids::COLUMNS_BUTTON)
         .into(),

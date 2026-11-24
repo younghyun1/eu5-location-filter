@@ -5,9 +5,9 @@
 mod buttons;
 mod fields;
 mod menu;
-mod text;
 #[cfg(test)]
 mod tests;
+mod text;
 
 pub(crate) use buttons::{button_frame, button_label, icon_button, text_button};
 pub(crate) use fields::{field_error, text_field, text_field_sized, toggle_row};

@@ -9,6 +9,7 @@ use iced::{Element, Length};
 use super::buttons::icon_button;
 use super::text::sans_font;
 use crate::app::context::ViewContext;
+use crate::app::layout::anchored_text;
 use crate::app::layout::{MENU_MAX_HEIGHT, MENU_PADDING, MENU_WIDTH, inline_row};
 use crate::app::message::{Message, OverlayMessage};
 use crate::app::theme::{self, Icon, TEXT_BODY};
@@ -23,20 +24,21 @@ pub(crate) fn menu_frame<'a>(
     content: Element<'a, Message>,
 ) -> Element<'a, Message> {
     let palette = ctx.palette;
-    let heading = text(title)
-        .size(TEXT_BODY)
-        .font(sans_font(ctx, Weight::Semibold))
-        .color(palette.ink)
-        .width(Length::Fill)
-        .align_x(ctx.direction.text_start())
-        .wrapping(Wrapping::None);
+    let heading: Element<'a, Message> = anchored_text(
+        text(title)
+            .size(TEXT_BODY)
+            .font(sans_font(ctx, Weight::Semibold))
+            .color(palette.ink)
+            .wrapping(Wrapping::None),
+        ctx.direction.start(),
+    );
     let close = icon_button(
         ctx,
         Icon::Close,
         close_label,
         Some(Message::Overlay(OverlayMessage::Close)),
     );
-    let head = inline_row(ctx.direction, vec![heading.into(), close.into()])
+    let head = inline_row(ctx.direction, vec![heading, close.into()])
         .spacing(MENU_PADDING)
         .align_y(Vertical::Center);
     let body = scrollable(content)

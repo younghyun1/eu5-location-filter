@@ -151,8 +151,14 @@ pub(in crate::app::view_model) fn dataset() -> Dataset {
         has_confluence: false,
     });
     let locations = vec![stockholm, baltic, mine, hill];
-    let by_key = locations.iter().map(|record| (record.key, record.id)).collect();
-    let by_color = locations.iter().map(|record| (record.color, record.id)).collect();
+    let by_key = locations
+        .iter()
+        .map(|record| (record.key, record.id))
+        .collect();
+    let by_color = locations
+        .iter()
+        .map(|record| (record.color, record.id))
+        .collect();
     let localizations: Vec<LocalizedValue> = LABELLED
         .iter()
         .map(|(key, value)| LocalizedValue {

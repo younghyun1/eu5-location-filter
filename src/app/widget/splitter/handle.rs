@@ -76,7 +76,12 @@ impl<Message> Splitter<'_, Message> {
     }
 
     /// Starts a drag at screen x `x` and takes focus for the arrow keys.
-    pub(super) fn start_drag(&self, state: &mut SplitterState, x: f32, finger: Option<touch::Finger>) {
+    pub(super) fn start_drag(
+        &self,
+        state: &mut SplitterState,
+        x: f32,
+        finger: Option<touch::Finger>,
+    ) {
         state.drag = Some((x, self.width));
         state.finger = finger;
         state.focused = true;

@@ -30,8 +30,13 @@ fn kind_defaults_follow_the_three_states() {
     assert_eq!(kinds("s1").map(|set| set.len()), Some(1));
     assert!(kinds("s1").is_some_and(|set| set.contains(&LocationKind::Land)));
     assert!(kinds("s1~k.").is_some_and(|set| set.is_empty()));
-    assert!(kinds("s1~k.foo").is_some_and(|set| set.len() == 1 && set.contains(&LocationKind::Land)));
-    assert!(kinds("s1~k.sea*lake").is_some_and(|set| set.len() == 2 && !set.contains(&LocationKind::Land)));
+    assert!(
+        kinds("s1~k.foo").is_some_and(|set| set.len() == 1 && set.contains(&LocationKind::Land))
+    );
+    assert!(
+        kinds("s1~k.sea*lake")
+            .is_some_and(|set| set.len() == 2 && !set.contains(&LocationKind::Land))
+    );
 }
 
 #[test]
@@ -55,7 +60,10 @@ fn facet_items_resolve_through_option_keys() {
 fn escaped_bang_never_selects_the_missing_value() {
     let loaded = Loaded::new();
     let view = loaded.resolve("s1~vg.!21~cl.!");
-    assert!(view.as_ref().is_some_and(|view| view.filters.vegetation.is_empty()));
+    assert!(
+        view.as_ref()
+            .is_some_and(|view| view.filters.vegetation.is_empty())
+    );
     assert!(view.is_some_and(|view| view.filters.climates.contains(&None)));
 }
 
@@ -73,11 +81,19 @@ fn selection_resolves_by_key() {
 fn non_canonical_input_reports_the_canonical_string() {
     let loaded = Loaded::new();
     assert_eq!(
-        loaded.canonical("s1~k.sea*land~zz.9~q.river~q.lake").as_deref(),
+        loaded
+            .canonical("s1~k.sea*land~zz.9~q.river~q.lake")
+            .as_deref(),
         Some("s1~q.river~k.land*sea")
     );
-    assert_eq!(loaded.canonical("s1~s.rgb*a~k.land").as_deref(), Some("s1~s.color*a"));
-    assert_eq!(loaded.canonical("s1~hr.-0*~lm.03*3").as_deref(), Some("s1~lm.3~hr.0*"));
+    assert_eq!(
+        loaded.canonical("s1~s.rgb*a~k.land").as_deref(),
+        Some("s1~s.color*a")
+    );
+    assert_eq!(
+        loaded.canonical("s1~hr.-0*~lm.03*3").as_deref(),
+        Some("s1~lm.3~hr.0*")
+    );
     assert_eq!(loaded.canonical("s2~q.river"), None);
 }
 

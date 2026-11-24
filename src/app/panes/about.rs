@@ -67,8 +67,18 @@ pub(crate) fn view<'a>(
     let body = Column::new()
         .push(header(ctx, build_id))
         .push(links(ctx))
-        .push(prose(ctx, ctx.t(Text::AboutDisclaimer), TEXT_BODY, palette.ink_muted))
-        .push(prose(ctx, ctx.t(Text::AboutTrademark), TEXT_SMALL, palette.ink_muted))
+        .push(prose(
+            ctx,
+            ctx.t(Text::AboutDisclaimer),
+            TEXT_BODY,
+            palette.ink_muted,
+        ))
+        .push(prose(
+            ctx,
+            ctx.t(Text::AboutTrademark),
+            TEXT_SMALL,
+            palette.ink_muted,
+        ))
         .push(license_block(ctx, licenses_expanded))
         .push(keyboard_table(ctx))
         .spacing(DIALOG_GAP)
@@ -110,21 +120,36 @@ fn header<'a>(ctx: ViewContext, build_id: Option<u64>) -> Element<'a, Message> {
     let palette = ctx.palette;
     Column::new()
         .push(
-            sans(ctx, ctx.t(Text::AboutTitle), TEXT_HEADING, Weight::Semibold, palette.ink)
-                .width(Length::Fill),
+            sans(
+                ctx,
+                ctx.t(Text::AboutTitle),
+                TEXT_HEADING,
+                Weight::Semibold,
+                palette.ink,
+            )
+            .width(Length::Fill),
+        )
+        .push(mono(ctx, version_line(ctx), TEXT_META, false, palette.ink_muted).width(Length::Fill))
+        .push(
+            mono(
+                ctx,
+                data_line(ctx, build_id),
+                TEXT_META,
+                false,
+                palette.ink_muted,
+            )
+            .width(Length::Fill)
+            .wrapping(Wrapping::WordOrGlyph),
         )
         .push(
-            mono(ctx, version_line(ctx), TEXT_META, false, palette.ink_muted)
-                .width(Length::Fill),
-        )
-        .push(
-            mono(ctx, data_line(ctx, build_id), TEXT_META, false, palette.ink_muted)
-                .width(Length::Fill)
-                .wrapping(Wrapping::WordOrGlyph),
-        )
-        .push(
-            sans(ctx, ctx.t(Text::AboutAuthor), TEXT_BODY, Weight::Semibold, palette.ink)
-                .width(Length::Fill),
+            sans(
+                ctx,
+                ctx.t(Text::AboutAuthor),
+                TEXT_BODY,
+                Weight::Semibold,
+                palette.ink,
+            )
+            .width(Length::Fill),
         )
         .spacing(MENU_PADDING / 2.0)
         .width(Length::Fill)
@@ -186,22 +211,34 @@ fn license_block<'a>(ctx: ViewContext, expanded: bool) -> Element<'a, Message> {
     } else {
         Text::AboutLicensesShow
     };
-    column = column.push(
-        text_button(
-            ctx,
-            ctx.t(label),
-            ButtonKind::Secondary,
-            DIALOG_WIDTH / 2.0,
-            Some(Message::Overlay(OverlayMessage::SetLicensesExpanded(!expanded))),
-        ),
-    );
+    column = column.push(text_button(
+        ctx,
+        ctx.t(label),
+        ButtonKind::Secondary,
+        DIALOG_WIDTH / 2.0,
+        Some(Message::Overlay(OverlayMessage::SetLicensesExpanded(
+            !expanded,
+        ))),
+    ));
     if expanded {
         let texts = licenses::texts();
         column = column
-            .push(license_text(ctx, Text::AboutLicenseSource, texts.source_mit.as_str()))
-            .push(license_text(ctx, Text::AboutLicenseSource, texts.source_apache.as_str()))
+            .push(license_text(
+                ctx,
+                Text::AboutLicenseSource,
+                texts.source_mit.as_str(),
+            ))
+            .push(license_text(
+                ctx,
+                Text::AboutLicenseSource,
+                texts.source_apache.as_str(),
+            ))
             .push(license_text(ctx, Text::AboutLicenseUi, texts.iced.as_str()))
-            .push(license_text(ctx, Text::AboutLicenseFonts, texts.fonts.as_str()));
+            .push(license_text(
+                ctx,
+                Text::AboutLicenseFonts,
+                texts.fonts.as_str(),
+            ));
     }
     column.into()
 }
@@ -210,7 +247,11 @@ fn license_block<'a>(ctx: ViewContext, expanded: bool) -> Element<'a, Message> {
 fn key_cap<'a>(ctx: ViewContext, label: &'a str) -> Element<'a, Message> {
     let palette = ctx.palette;
     container(mono(ctx, label, TEXT_CAPTION, true, palette.ink).wrapping(Wrapping::None))
-        .padding(Padding::ZERO.horizontal(MENU_PADDING * 0.75).vertical(MENU_PADDING / 4.0))
+        .padding(
+            Padding::ZERO
+                .horizontal(MENU_PADDING * 0.75)
+                .vertical(MENU_PADDING / 4.0),
+        )
         .style(move |_: &Theme| theme::detail_block(palette))
         .into()
 }
@@ -229,7 +270,12 @@ fn key_caps<'a>(ctx: ViewContext, row: KeyRow) -> Element<'a, Message> {
             Cap::Or => mono(ctx, "/", TEXT_CAPTION, true, palette.ink_faint).into(),
         })
         .collect();
-    wrapped(ctx.direction, children, MENU_PADDING / 2.0, MENU_PADDING / 2.0)
+    wrapped(
+        ctx.direction,
+        children,
+        MENU_PADDING / 2.0,
+        MENU_PADDING / 2.0,
+    )
 }
 
 /// The keyboard table: the keys on one side, what they do on the other.
@@ -237,8 +283,14 @@ fn keyboard_table<'a>(ctx: ViewContext) -> Element<'a, Message> {
     let palette = ctx.palette;
     let mut column = Column::new()
         .push(
-            sans(ctx, ctx.t(Text::AboutKeysTitle), TEXT_BODY, Weight::Semibold, palette.ink)
-                .width(Length::Fill),
+            sans(
+                ctx,
+                ctx.t(Text::AboutKeysTitle),
+                TEXT_BODY,
+                Weight::Semibold,
+                palette.ink,
+            )
+            .width(Length::Fill),
         )
         .spacing(MENU_PADDING)
         .width(Length::Fill);

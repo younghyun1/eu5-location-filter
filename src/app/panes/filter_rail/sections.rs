@@ -6,13 +6,12 @@ use std::sync::OnceLock;
 use iced::widget::{Column, container, space};
 use iced::{Element, Length, Padding};
 
+use super::facet_group;
 use super::fields::{range_row, rgb_field};
 use super::rail::RailModel;
-use super::facet_group;
 use crate::app::context::ViewContext;
 use crate::app::layout::{
-    RAIL_GROUP_GAP, RAIL_PADDING_BLOCK, RAIL_PADDING_INLINE, RAIL_SECTION_GAP,
-    SECTION_TITLE_HEIGHT,
+    RAIL_GROUP_GAP, RAIL_PADDING_BLOCK, RAIL_PADDING_INLINE, RAIL_SECTION_GAP, SECTION_TITLE_HEIGHT,
 };
 use crate::app::message::{FilterMessage, Message};
 use crate::app::panes::controls::{caption, toggle_row};
@@ -69,10 +68,9 @@ fn empty_options() -> &'static OptionList {
 /// All sections in a column with the rail's content padding.
 #[must_use]
 pub(super) fn content<'a>(ctx: ViewContext, rail: RailModel<'a>) -> Element<'a, Message> {
-    let mut column = Column::new().width(Length::Fill).padding(Padding::from([
-        RAIL_PADDING_BLOCK,
-        RAIL_PADDING_INLINE,
-    ]));
+    let mut column = Column::new()
+        .width(Length::Fill)
+        .padding(Padding::from([RAIL_PADDING_BLOCK, RAIL_PADDING_INLINE]));
     for section in RailSection::ALL {
         column = column.push(section_view(ctx, rail, section));
     }

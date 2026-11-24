@@ -51,9 +51,21 @@ mod tests {
 
     #[test]
     fn stages_map_to_their_catalog_keys() {
-        assert_eq!(import_stage_text(ImportStage::Hierarchy), Text::ImportHierarchy);
-        assert_eq!(import_stage_text(ImportStage::MapAndRivers), Text::ImportRivers);
-        assert_eq!(import_stage_text(ImportStage::Complete), Text::ImportComplete);
-        assert_eq!(import_stage_text(ImportStage::LanguagePacks), Text::LoadNames);
+        assert_eq!(
+            import_stage_text(ImportStage::Hierarchy),
+            Text::ImportHierarchy
+        );
+        assert_eq!(
+            import_stage_text(ImportStage::MapAndRivers),
+            Text::ImportRivers
+        );
+        assert_eq!(
+            import_stage_text(ImportStage::Complete),
+            Text::ImportComplete
+        );
+        assert_eq!(
+            import_stage_text(ImportStage::LanguagePacks),
+            Text::LoadNames
+        );
     }
 }

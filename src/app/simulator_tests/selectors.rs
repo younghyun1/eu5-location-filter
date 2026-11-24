@@ -47,7 +47,10 @@ impl Selector for TextIn {
 }
 
 /// Layout bounds of the widget reported under `id`.
-pub(super) fn bounds_of(ui: &mut Ui<'_>, id: iced::widget::Id) -> Result<Rectangle, SimulatorError> {
+pub(super) fn bounds_of(
+    ui: &mut Ui<'_>,
+    id: iced::widget::Id,
+) -> Result<Rectangle, SimulatorError> {
     Ok(ui.find(id)?.bounds())
 }
 

@@ -2,10 +2,10 @@
 //! middle-button panning and wheel scrolling. State changes without a message request a
 //! redraw; handled events are captured.
 
+use iced::Point;
 use iced::advanced::Shell;
 use iced::advanced::mouse::{Click, click};
 use iced::mouse::{self, Button, Cursor, ScrollDelta};
-use iced::Point;
 
 use super::grid::ResultGrid;
 use super::metrics::{Hit, Metrics};
@@ -25,7 +25,9 @@ pub(super) fn handle<Message>(
 ) {
     let bounds = metrics.frame.bounds;
     match event {
-        mouse::Event::CursorMoved { position } => moved(grid, state, metrics, *position, cursor, shell),
+        mouse::Event::CursorMoved { position } => {
+            moved(grid, state, metrics, *position, cursor, shell)
+        }
         mouse::Event::ButtonPressed(Button::Left) => match cursor.position_over(bounds) {
             Some(point) => press(grid, state, metrics, point, shell),
             None => {
@@ -54,7 +56,10 @@ pub(super) fn handle<Message>(
             }
         }
         mouse::Event::CursorLeft => {
-            if state.hovered_row.is_some() || state.hovered_edge.is_some() || state.hovered_lane.is_some() {
+            if state.hovered_row.is_some()
+                || state.hovered_edge.is_some()
+                || state.hovered_lane.is_some()
+            {
                 state.hovered_row = None;
                 state.hovered_edge = None;
                 state.hovered_lane = None;
@@ -139,7 +144,13 @@ fn grab_horizontal(state: &mut GridState, metrics: &Metrics, point: Point) {
 /// Vertical offset for a thumb start along the body height.
 fn vertical_offset(metrics: &Metrics, start: f32) -> f32 {
     let track = metrics.frame.body.height;
-    let offset = window::offset_for_thumb(start, metrics.content_height(), track, track, SCROLLBAR_MIN_THUMB);
+    let offset = window::offset_for_thumb(
+        start,
+        metrics.content_height(),
+        track,
+        track,
+        SCROLLBAR_MIN_THUMB,
+    );
     metrics.clamp_y(offset)
 }
 
@@ -147,7 +158,13 @@ fn vertical_offset(metrics: &Metrics, start: f32) -> f32 {
 fn horizontal_offset(metrics: &Metrics, start: f32) -> f32 {
     let track = metrics.frame.body.width;
     let content = metrics.strip.content_width();
-    metrics.clamp_x(window::offset_for_thumb(start, content, track, track, SCROLLBAR_MIN_THUMB))
+    metrics.clamp_x(window::offset_for_thumb(
+        start,
+        content,
+        track,
+        track,
+        SCROLLBAR_MIN_THUMB,
+    ))
 }
 
 /// Pointer movement: continues a drag, or updates hover.
@@ -161,9 +178,21 @@ fn moved<Message>(
 ) {
     let frame = &metrics.frame;
     match state.drag {
-        Some(GridDrag::Resize { column, start_x, start_width }) => {
-            if let Some(slot) = metrics.strip.position(column).and_then(|index| metrics.strip.slot(index)) {
-                grid.request_width(shell, slot, start_width + frame.to_inline(position.x - start_x));
+        Some(GridDrag::Resize {
+            column,
+            start_x,
+            start_width,
+        }) => {
+            if let Some(slot) = metrics
+                .strip
+                .position(column)
+                .and_then(|index| metrics.strip.slot(index))
+            {
+                grid.request_width(
+                    shell,
+                    slot,
+                    start_width + frame.to_inline(position.x - start_x),
+                );
             }
             shell.capture_event();
         }
@@ -189,7 +218,12 @@ fn moved<Message>(
 }
 
 /// Stores offsets and requests a redraw when they changed.
-pub(super) fn set_offsets<Message>(state: &mut GridState, x: f32, y: f32, shell: &mut Shell<'_, Message>) {
+pub(super) fn set_offsets<Message>(
+    state: &mut GridState,
+    x: f32,
+    y: f32,
+    shell: &mut Shell<'_, Message>,
+) {
     if x != state.offset_x || y != state.offset_y {
         state.offset_x = x;
         state.offset_y = y;
@@ -198,8 +232,15 @@ pub(super) fn set_offsets<Message>(state: &mut GridState, x: f32, y: f32, shell:
 }
 
 /// Recomputes the hovered row, resize edge and scrollbar lane under the cursor.
-pub(super) fn hover<Message>(state: &mut GridState, metrics: &Metrics, cursor: Cursor, shell: &mut Shell<'_, Message>) {
-    let hit = cursor.position_over(metrics.frame.bounds).and_then(|point| metrics.hit(point));
+pub(super) fn hover<Message>(
+    state: &mut GridState,
+    metrics: &Metrics,
+    cursor: Cursor,
+    shell: &mut Shell<'_, Message>,
+) {
+    let hit = cursor
+        .position_over(metrics.frame.bounds)
+        .and_then(|point| metrics.hit(point));
     let row = match hit {
         Some(Hit::Row(row)) => Some(row),
         _ => None,

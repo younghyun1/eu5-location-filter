@@ -33,11 +33,7 @@ pub(super) fn kinds(locale: Locale) -> OptionList {
 
 /// A two-option presence list: the `true` option first, then the `false` option.
 #[must_use]
-pub(super) fn flags(
-    locale: Locale,
-    on: (Text, &str),
-    off: (Text, &str),
-) -> OptionList {
+pub(super) fn flags(locale: Locale, on: (Text, &str), off: (Text, &str)) -> OptionList {
     OptionList::new(vec![
         FacetOption::new(OptionValue::Flag(true), on.1, t(locale, on.0).to_owned()),
         FacetOption::new(OptionValue::Flag(false), off.1, t(locale, off.0).to_owned()),

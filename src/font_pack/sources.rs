@@ -38,9 +38,9 @@ pub(super) fn gather(
         match read_bounded(&path) {
             Ok(text) => add_catalog_text(&text, &mut gathered.codepoints),
             Err(AppError::Io { source, .. }) if source.kind() == ErrorKind::NotFound => {
-                gathered
-                    .notes
-                    .push(format!("catalog {tag}.txt not found; it adds no codepoints"));
+                gathered.notes.push(format!(
+                    "catalog {tag}.txt not found; it adds no codepoints"
+                ));
             }
             Err(error) => return Err(error),
         }
@@ -77,7 +77,10 @@ fn read_bounded(path: &Path) -> Result<String, AppError> {
 
 /// Whether `name` is `<code>.<digits>.bitcode.zst`, the file name of a pack for `code`.
 pub(super) fn is_pack_name(name: &str, code: &str) -> bool {
-    let Some(rest) = name.strip_prefix(code).and_then(|rest| rest.strip_prefix('.')) else {
+    let Some(rest) = name
+        .strip_prefix(code)
+        .and_then(|rest| rest.strip_prefix('.'))
+    else {
         return false;
     };
     rest.strip_suffix(".bitcode.zst")
@@ -87,7 +90,8 @@ pub(super) fn is_pack_name(name: &str, code: &str) -> bool {
 /// Finds the single pack file of `language` inside `lang_dir`.
 fn find_pack(lang_dir: &Path, language: GameLanguage) -> Result<PathBuf, AppError> {
     let code = language.code();
-    let entries = fs::read_dir(lang_dir).map_err(|source| AppError::io("list", lang_dir, source))?;
+    let entries =
+        fs::read_dir(lang_dir).map_err(|source| AppError::io("list", lang_dir, source))?;
     let mut found = Vec::new();
     for entry in entries {
         let entry = entry.map_err(|source| AppError::io("list", lang_dir, source))?;
@@ -132,11 +136,13 @@ mod tests {
 
     #[test]
     fn catalogs_are_read_and_absent_ones_are_noted() -> Result<(), AppError> {
-        let root = std::env::temp_dir().join(format!("eu5-font-pack-gather-{}", std::process::id()));
+        let root =
+            std::env::temp_dir().join(format!("eu5-font-pack-gather-{}", std::process::id()));
         let _ = fs::remove_dir_all(&root);
         fs::create_dir_all(&root).map_err(|e| AppError::io("create", &root, e))?;
         let catalog = root.join("ko-KR.txt");
-        fs::write(&catalog, "# note\napp.title = 한\n").map_err(|e| AppError::io("write", &catalog, e))?;
+        fs::write(&catalog, "# note\napp.title = 한\n")
+            .map_err(|e| AppError::io("write", &catalog, e))?;
         let gathered = gather(&["ko-KR", "ja-JP"], &[], &root, &root)?;
         let _ = fs::remove_dir_all(&root);
         assert!(gathered.codepoints.contains(&0xD55C));

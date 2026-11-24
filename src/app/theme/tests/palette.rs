@@ -39,7 +39,10 @@ fn valid_host_palette_maps_values_in_protocol_order() {
         danger: Color::from_rgb8(0xBE, 0x12, 0x3C),
     };
     assert_eq!(Palette::from_host("light", &HOST_VALUES), Some(expected));
-    assert_eq!(Palette::from_host("light", &HOST_VALUES), Some(PALETTE_LIGHT));
+    assert_eq!(
+        Palette::from_host("light", &HOST_VALUES),
+        Some(PALETTE_LIGHT)
+    );
 }
 
 #[test]
@@ -60,7 +63,11 @@ fn wrong_token_count_is_rejected() {
 #[test]
 fn unknown_or_miscased_mode_is_rejected() {
     for mode in ["", "auto", "Dark", "LIGHT", "light ", "dim"] {
-        assert_eq!(Palette::from_host(mode, &HOST_VALUES), None, "mode {mode:?}");
+        assert_eq!(
+            Palette::from_host(mode, &HOST_VALUES),
+            None,
+            "mode {mode:?}"
+        );
     }
     assert_eq!(Mode::from_host("light"), Some(Mode::Light));
     assert_eq!(Mode::from_host("dark"), Some(Mode::Dark));
@@ -134,8 +141,14 @@ fn mixed_palette_hits_both_ends_and_switches_mode_at_the_midpoint() {
     assert_eq!(PALETTE_DARK.mixed(&PALETTE_LIGHT, 0.49).mode, Mode::Dark);
     assert_eq!(PALETTE_DARK.mixed(&PALETTE_LIGHT, 0.5).mode, Mode::Light);
     let middle = PALETTE_DARK.mixed(&PALETTE_LIGHT, 0.5);
-    assert!(colors_close(middle.paper, mix(PALETTE_DARK.paper, PALETTE_LIGHT.paper, 0.5)));
-    assert!(colors_close(middle.danger, mix(PALETTE_DARK.danger, PALETTE_LIGHT.danger, 0.5)));
+    assert!(colors_close(
+        middle.paper,
+        mix(PALETTE_DARK.paper, PALETTE_LIGHT.paper, 0.5)
+    ));
+    assert!(colors_close(
+        middle.danger,
+        mix(PALETTE_DARK.danger, PALETTE_LIGHT.danger, 0.5)
+    ));
 }
 
 #[test]
@@ -152,7 +165,10 @@ fn preset_replaces_only_the_three_accent_tokens() {
         for preset in AccentPreset::ALL {
             let tinted = base.with_accent(preset);
             let [accent, strong, soft] = preset.tokens(base.mode);
-            assert_eq!((tinted.accent, tinted.accent_strong, tinted.accent_soft), (accent, strong, soft));
+            assert_eq!(
+                (tinted.accent, tinted.accent_strong, tinted.accent_soft),
+                (accent, strong, soft)
+            );
             assert_eq!(tinted.mode, base.mode);
             assert_eq!(tinted.paper, base.paper);
             assert_eq!(tinted.surface, base.surface);
@@ -169,7 +185,11 @@ fn presets_are_distinct_in_every_mode() {
     for mode in [Mode::Light, Mode::Dark] {
         for (index, first) in AccentPreset::ALL.iter().enumerate() {
             for second in AccentPreset::ALL.iter().skip(index + 1) {
-                assert_ne!(first.tokens(mode), second.tokens(mode), "{first:?} vs {second:?}");
+                assert_ne!(
+                    first.tokens(mode),
+                    second.tokens(mode),
+                    "{first:?} vs {second:?}"
+                );
             }
         }
     }

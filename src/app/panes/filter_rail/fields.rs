@@ -64,7 +64,11 @@ pub(super) fn range_row<'a>(
         .spacing(LABEL_GAP)
         .width(Length::Fill)
         .push(small_label(ctx, ctx.t(field.title())))
-        .push(inline_row(ctx.direction, cells).spacing(RANGE_GAP).width(Length::Fill));
+        .push(
+            inline_row(ctx.direction, cells)
+                .spacing(RANGE_GAP)
+                .width(Length::Fill),
+        );
     for error in errors {
         column = column.push(error);
     }

@@ -8,6 +8,7 @@ use iced::{Element, Length, Padding, mouse};
 
 use super::text::sans_font;
 use crate::app::context::ViewContext;
+use crate::app::layout::anchored_text;
 use crate::app::layout::{
     CHECK_LABEL_GAP, CHECKBOX_SIZE, INPUT_HEIGHT, INPUT_PADDING_INLINE, TOUCH_TARGET, inline_row,
 };
@@ -89,13 +90,14 @@ pub(crate) fn toggle_row<'a>(
         .size(CHECKBOX_SIZE)
         .on_toggle(on_toggle)
         .style(move |_theme, status| theme::checkbox(palette, status));
-    let caption = text(label)
-        .size(TEXT_BODY)
-        .font(sans_font(ctx, Weight::Normal))
-        .color(palette.ink)
-        .width(Length::Fill)
-        .align_x(ctx.direction.text_start());
-    let row = inline_row(ctx.direction, vec![boxed.into(), caption.into()])
+    let caption: Element<'a, Message> = anchored_text(
+        text(label)
+            .size(TEXT_BODY)
+            .font(sans_font(ctx, Weight::Normal))
+            .color(palette.ink),
+        ctx.direction.start(),
+    );
+    let row = inline_row(ctx.direction, vec![boxed.into(), caption])
         .spacing(CHECK_LABEL_GAP)
         .align_y(Vertical::Center)
         .width(Length::Fill);
@@ -111,11 +113,11 @@ pub(crate) fn toggle_row<'a>(
 /// Inline error message under a field, Sans `TEXT_SMALL` `danger`.
 #[must_use]
 pub(crate) fn field_error<'a>(ctx: ViewContext, message: &'a str) -> Element<'a, Message> {
-    text(message)
-        .size(TEXT_SMALL)
-        .font(sans_font(ctx, Weight::Normal))
-        .color(ctx.palette.danger)
-        .width(Length::Fill)
-        .align_x(ctx.direction.text_start())
-        .into()
+    anchored_text(
+        text(message)
+            .size(TEXT_SMALL)
+            .font(sans_font(ctx, Weight::Normal))
+            .color(ctx.palette.danger),
+        ctx.direction.start(),
+    )
 }

@@ -146,9 +146,10 @@ fn check_references(stored: &StoredLanguagePack) -> Result<(), AppError> {
         .all(|pair| matches!(pair, [left, right] if left.key < right.key));
     if usize::try_from(stored.symbol_count).map_or(true, |count| stored.labels.len() > count)
         || !ordered
-        || stored.labels.iter().any(|label| {
-            label.key.0 >= stored.symbol_count || !in_range(label.value, strings)
-        })
+        || stored
+            .labels
+            .iter()
+            .any(|label| label.key.0 >= stored.symbol_count || !in_range(label.value, strings))
     {
         return Err(AppError::InvalidData(
             "language pack labels are unordered, duplicated, or out of range".to_owned(),

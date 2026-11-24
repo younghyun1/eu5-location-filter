@@ -38,7 +38,10 @@ fn the_narrow_header_replaces_the_docked_panes() -> Result<(), AppError> {
     assert!(!has_id(&mut ui, ids::RAIL_CLEAR_ALL), "no docked rail");
     assert!(!has_id(&mut ui, ids::RAIL_SPLITTER));
     assert!(!has_id(&mut ui, ids::DETAIL_HIDE), "no docked detail pane");
-    assert!(!has_id(&mut ui, ids::SHOW_DETAILS_BUTTON), "the Details button replaces it");
+    assert!(
+        !has_id(&mut ui, ids::SHOW_DETAILS_BUTTON),
+        "the Details button replaces it"
+    );
     Ok(())
 }
 
@@ -53,7 +56,10 @@ fn the_filter_drawer_stays_open_while_filtering_and_closes_on_the_scrim() -> Res
     assert!(opened(&messages, Drawer::Filters), "{messages:?}");
     harness.settle();
     assert_eq!(harness.app.open_drawer(), Some(Drawer::Filters));
-    assert!(has_id(&mut harness.ui(), ids::RAIL_CLEAR_ALL), "the drawer holds the rail");
+    assert!(
+        has_id(&mut harness.ui(), ids::RAIL_CLEAR_ALL),
+        "the drawer holds the rail"
+    );
 
     let sea = t(Locale::EnUs, Text::OptionKindSea);
     harness.drive(|ui| {
@@ -62,7 +68,11 @@ fn the_filter_drawer_stays_open_while_filtering_and_closes_on_the_scrim() -> Res
         Ok(())
     })?;
     assert_eq!(harness.results()?.len(), LAND_COUNT + SEA_COUNT);
-    assert_eq!(harness.app.open_drawer(), Some(Drawer::Filters), "filtering keeps the drawer");
+    assert_eq!(
+        harness.app.open_drawer(),
+        Some(Drawer::Filters),
+        "filtering keeps the drawer"
+    );
 
     // The drawer covers the inline start; the far end of the window is scrim.
     let messages = harness.interact(|ui| {
@@ -74,7 +84,10 @@ fn the_filter_drawer_stays_open_while_filtering_and_closes_on_the_scrim() -> Res
     harness.apply(messages);
     assert_eq!(harness.app.open_drawer(), None);
     harness.settle();
-    assert_eq!(harness.app.panes.drawer, None, "the closed drawer is removed after its slide");
+    assert_eq!(
+        harness.app.panes.drawer, None,
+        "the closed drawer is removed after its slide"
+    );
     Ok(())
 }
 
@@ -91,7 +104,10 @@ fn tapping_a_row_opens_the_detail_drawer_and_its_close_button_closes_it() -> Res
     harness.settle();
     assert_eq!(harness.app.open_drawer(), Some(Drawer::Details));
     let mut ui = harness.ui();
-    assert!(text_in(&mut ui, ids::DETAIL_SCROLL, "Brevik").is_ok(), "the drawer shows the detail");
+    assert!(
+        text_in(&mut ui, ids::DETAIL_SCROLL, "Brevik").is_ok(),
+        "the drawer shows the detail"
+    );
     drop(ui);
 
     let messages = harness.drive(|ui| {
@@ -112,7 +128,12 @@ fn the_details_button_opens_an_empty_detail_drawer() -> Result<(), AppError> {
     })?;
     assert!(opened(&messages, Drawer::Details), "{messages:?}");
     harness.settle();
-    assert!(harness.ui().find(t(Locale::EnUs, Text::DetailEmptyTitle)).is_ok());
+    assert!(
+        harness
+            .ui()
+            .find(t(Locale::EnUs, Text::DetailEmptyTitle))
+            .is_ok()
+    );
     Ok(())
 }
 
@@ -131,7 +152,9 @@ fn keyboard_selection_does_not_open_the_detail_drawer() -> Result<(), AppError> 
 #[test]
 fn widening_the_window_closes_an_open_drawer() -> Result<(), AppError> {
     let mut harness = Harness::new(NARROW)?;
-    harness.send(Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Filters)));
+    harness.send(Message::Overlay(OverlayMessage::OpenDrawer(
+        Drawer::Filters,
+    )));
     harness.settle();
     assert_eq!(harness.app.open_drawer(), Some(Drawer::Filters));
 
@@ -139,14 +162,19 @@ fn widening_the_window_closes_an_open_drawer() -> Result<(), AppError> {
     assert_eq!(harness.app.layout_mode, LayoutMode::Wide);
     assert_eq!(harness.app.open_drawer(), None);
     assert_eq!(harness.app.panes.drawer, None);
-    assert!(has_id(&mut harness.ui(), ids::RAIL_CLEAR_ALL), "the rail is docked again");
+    assert!(
+        has_id(&mut harness.ui(), ids::RAIL_CLEAR_ALL),
+        "the rail is docked again"
+    );
     Ok(())
 }
 
 #[test]
 fn a_drawer_request_in_the_wide_layout_is_ignored() -> Result<(), AppError> {
     let mut harness = Harness::new(WIDE)?;
-    harness.send(Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Details)));
+    harness.send(Message::Overlay(OverlayMessage::OpenDrawer(
+        Drawer::Details,
+    )));
     assert_eq!(harness.app.open_drawer(), None);
     assert_eq!(harness.app.panes.drawer, None);
     Ok(())

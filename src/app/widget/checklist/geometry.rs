@@ -15,9 +15,18 @@ use crate::app::widget::window::{self, Thumb, VisibleRange};
 /// Height a checklist asks for: `min(rows, max_visible_rows) * row_height`, and one row when
 /// the list is empty but has an empty-state text to show.
 #[must_use]
-pub(super) fn list_height(rows: usize, max_visible_rows: usize, row_height: f32, has_empty_text: bool) -> f32 {
+pub(super) fn list_height(
+    rows: usize,
+    max_visible_rows: usize,
+    row_height: f32,
+    has_empty_text: bool,
+) -> f32 {
     let shown = rows.min(max_visible_rows);
-    let shown = if shown == 0 && has_empty_text { 1 } else { shown };
+    let shown = if shown == 0 && has_empty_text {
+        1
+    } else {
+        shown
+    };
     rows_to_pixels(shown, sane_row_height(row_height))
 }
 
@@ -57,7 +66,12 @@ impl Geometry {
     /// Geometry for the given bounds, metrics and row count.
     #[must_use]
     pub(super) fn new(bounds: Rectangle, row_height: f32, count: usize, rtl: bool) -> Self {
-        Self { bounds, row_height: sane_row_height(row_height), count, rtl }
+        Self {
+            bounds,
+            row_height: sane_row_height(row_height),
+            count,
+            rtl,
+        }
     }
 
     /// Total height of all rows.
@@ -81,7 +95,11 @@ impl Geometry {
     /// Width of the scrollbar lane, zero when the content fits.
     #[must_use]
     fn lane_width(&self) -> f32 {
-        if self.is_scrollable() { SCROLLBAR_WIDTH.min(self.bounds.width) } else { 0.0 }
+        if self.is_scrollable() {
+            SCROLLBAR_WIDTH.min(self.bounds.width)
+        } else {
+            0.0
+        }
     }
 
     /// The scrollbar lane at the inline end, when the content overflows.
@@ -91,8 +109,19 @@ impl Geometry {
         if width <= 0.0 {
             return None;
         }
-        let x = window::mirror(self.rtl, self.bounds.x, self.bounds.width, self.bounds.width - width, width);
-        Some(Rectangle { x, y: self.bounds.y, width, height: self.bounds.height })
+        let x = window::mirror(
+            self.rtl,
+            self.bounds.x,
+            self.bounds.width,
+            self.bounds.width - width,
+            width,
+        );
+        Some(Rectangle {
+            x,
+            y: self.bounds.y,
+            width,
+            height: self.bounds.height,
+        })
     }
 
     /// Area the rows occupy: the bounds without the scrollbar lane.
@@ -100,7 +129,12 @@ impl Geometry {
     pub(super) fn rows_area(&self) -> Rectangle {
         let width = (self.bounds.width - self.lane_width()).max(0.0);
         let x = window::mirror(self.rtl, self.bounds.x, self.bounds.width, 0.0, width);
-        Rectangle { x, y: self.bounds.y, width, height: self.bounds.height }
+        Rectangle {
+            x,
+            y: self.bounds.y,
+            width,
+            height: self.bounds.height,
+        }
     }
 
     /// Rows intersecting the part of the bounds that is inside `clip`, so a list inside an
@@ -131,7 +165,13 @@ impl Geometry {
     #[must_use]
     pub(super) fn checkbox_rect(&self, row: Rectangle) -> Rectangle {
         let area = self.rows_area();
-        let x = window::mirror(self.rtl, area.x, area.width, CHECKLIST_PADDING_INLINE, CHECKBOX_SIZE);
+        let x = window::mirror(
+            self.rtl,
+            area.x,
+            area.width,
+            CHECKLIST_PADDING_INLINE,
+            CHECKBOX_SIZE,
+        );
         Rectangle {
             x,
             y: row.y + (row.height - CHECKBOX_SIZE) / 2.0,
@@ -148,7 +188,12 @@ impl Geometry {
         let start = CHECKLIST_PADDING_INLINE + CHECKBOX_SIZE + CHECK_LABEL_GAP;
         let width = (area.width - start - CHECKLIST_PADDING_INLINE).max(0.0);
         let x = window::mirror(self.rtl, area.x, area.width, start, width);
-        Rectangle { x, y: self.bounds.y, width, height: self.bounds.height }
+        Rectangle {
+            x,
+            y: self.bounds.y,
+            width,
+            height: self.bounds.height,
+        }
     }
 
     /// Row under an absolute point, excluding the scrollbar lane.
@@ -173,7 +218,13 @@ impl Geometry {
             return None;
         }
         let height = self.bounds.height;
-        window::thumb(offset, self.content_height(), height, height, SCROLLBAR_MIN_THUMB)
+        window::thumb(
+            offset,
+            self.content_height(),
+            height,
+            height,
+            SCROLLBAR_MIN_THUMB,
+        )
     }
 
     /// Drawn thumb rectangle, centred across the lane.
@@ -181,7 +232,11 @@ impl Geometry {
     pub(super) fn thumb_rect(&self, offset: f32, touch: bool) -> Option<Rectangle> {
         let lane = self.lane()?;
         let thumb = self.thumb(offset)?;
-        let width = if touch { SCROLLBAR_THUMB_WIDTH_TOUCH } else { SCROLLBAR_THUMB_WIDTH };
+        let width = if touch {
+            SCROLLBAR_THUMB_WIDTH_TOUCH
+        } else {
+            SCROLLBAR_THUMB_WIDTH
+        };
         let width = width.min(lane.width);
         Some(Rectangle {
             x: lane.x + (lane.width - width) / 2.0,
@@ -195,7 +250,13 @@ impl Geometry {
     #[must_use]
     pub(super) fn offset_for_thumb(&self, thumb_start: f32) -> f32 {
         let height = self.bounds.height;
-        let offset = window::offset_for_thumb(thumb_start, self.content_height(), height, height, SCROLLBAR_MIN_THUMB);
+        let offset = window::offset_for_thumb(
+            thumb_start,
+            self.content_height(),
+            height,
+            height,
+            SCROLLBAR_MIN_THUMB,
+        );
         self.clamp(offset)
     }
 
@@ -207,14 +268,23 @@ impl Geometry {
             return if self.count > 0 { Some(0) } else { None };
         }
         let top = rows_to_pixels(range.start, self.row_height);
-        let first = if top < offset { range.start + 1 } else { range.start };
+        let first = if top < offset {
+            range.start + 1
+        } else {
+            range.start
+        };
         Some(first.min(self.count.saturating_sub(1)))
     }
 
     /// Offset that shows `row` fully, clamped to the scroll range.
     #[must_use]
     pub(super) fn reveal(&self, offset: f32, row: usize) -> f32 {
-        self.clamp(window::scroll_into_view(offset, row, self.row_height, self.bounds.height))
+        self.clamp(window::scroll_into_view(
+            offset,
+            row,
+            self.row_height,
+            self.bounds.height,
+        ))
     }
 
     /// Rows a page key moves.

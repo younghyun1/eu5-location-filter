@@ -32,14 +32,19 @@ fn escape_closes_a_menu() -> Result<(), AppError> {
     key(&mut harness, KeyCommand::Escape);
     assert_eq!(harness.app.overlay.surface, None);
     key(&mut harness, KeyCommand::Escape);
-    assert_eq!(harness.app.overlay.surface, None, "Escape with nothing open does nothing");
+    assert_eq!(
+        harness.app.overlay.surface, None,
+        "Escape with nothing open does nothing"
+    );
     Ok(())
 }
 
 #[test]
 fn escape_closes_the_dialog_before_the_drawer_beneath_it() -> Result<(), AppError> {
     let mut harness = Harness::new(NARROW)?;
-    harness.send(Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Filters)));
+    harness.send(Message::Overlay(OverlayMessage::OpenDrawer(
+        Drawer::Filters,
+    )));
     harness.settle();
     harness.send(Message::Overlay(OverlayMessage::Open(Surface::About)));
     assert_eq!(harness.app.overlay.surface, Some(Surface::About));
@@ -47,7 +52,11 @@ fn escape_closes_the_dialog_before_the_drawer_beneath_it() -> Result<(), AppErro
 
     key(&mut harness, KeyCommand::Escape);
     assert_eq!(harness.app.overlay.surface, None);
-    assert_eq!(harness.app.open_drawer(), Some(Drawer::Filters), "the drawer is still open");
+    assert_eq!(
+        harness.app.open_drawer(),
+        Some(Drawer::Filters),
+        "the drawer is still open"
+    );
 
     key(&mut harness, KeyCommand::Escape);
     assert_eq!(harness.app.open_drawer(), None);
@@ -114,21 +123,34 @@ fn the_search_shortcut_closes_a_menu_but_not_a_dialog() -> Result<(), AppError> 
     let mut harness = Harness::new(WIDE)?;
     harness.send(Message::Overlay(OverlayMessage::Open(Surface::ColumnMenu)));
     key(&mut harness, KeyCommand::FocusSearch);
-    assert_eq!(harness.app.overlay.surface, None, "focus leaves the menu, so it closes");
+    assert_eq!(
+        harness.app.overlay.surface, None,
+        "focus leaves the menu, so it closes"
+    );
 
     harness.send(Message::Overlay(OverlayMessage::Open(Surface::About)));
     key(&mut harness, KeyCommand::FocusSearch);
-    assert_eq!(harness.app.overlay.surface, Some(Surface::About), "the dialog covers the search");
+    assert_eq!(
+        harness.app.overlay.surface,
+        Some(Surface::About),
+        "the dialog covers the search"
+    );
     Ok(())
 }
 
 #[test]
 fn the_search_shortcut_is_ignored_while_a_drawer_covers_the_header() -> Result<(), AppError> {
     let mut harness = Harness::new(NARROW)?;
-    harness.send(Message::Overlay(OverlayMessage::OpenDrawer(Drawer::Details)));
+    harness.send(Message::Overlay(OverlayMessage::OpenDrawer(
+        Drawer::Details,
+    )));
     harness.settle();
     key(&mut harness, KeyCommand::NextRegion);
-    assert_eq!(harness.app.focus.region, FocusRegion::Header, "a drawer holds focus too");
+    assert_eq!(
+        harness.app.focus.region,
+        FocusRegion::Header,
+        "a drawer holds focus too"
+    );
     key(&mut harness, KeyCommand::FocusSearch);
     assert_eq!(harness.app.open_drawer(), Some(Drawer::Details));
     Ok(())

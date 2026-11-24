@@ -100,9 +100,8 @@ fn build_orders(dataset: &Dataset, keys: &SortKeys, fields: &[SortField]) -> Vec
             let field = *field;
             let mut ascending = base.clone();
             let mut descending = base.clone();
-            ascending.sort_unstable_by(|left, right| {
-                compare(dataset, keys, *left, *right, field, true)
-            });
+            ascending
+                .sort_unstable_by(|left, right| compare(dataset, keys, *left, *right, field, true));
             descending.sort_unstable_by(|left, right| {
                 compare(dataset, keys, *left, *right, field, false)
             });

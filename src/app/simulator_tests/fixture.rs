@@ -57,14 +57,86 @@ struct Row {
 
 /// Locations in identifier order.
 const ROWS: [Row; 9] = [
-    row("Castellane", "tarn", LocationKind::Land, "mountains", "europe", false, None, None),
-    row("Aldoria", "umber", LocationKind::Land, "flatland", "europe", true, Some(0.5), Some(1)),
-    row("Fenmark", "ridge", LocationKind::Land, "flatland", "asia", true, Some(0.25), None),
-    row("Brevik", "quill", LocationKind::Land, "hills", "europe", false, None, None),
-    row("Eskarra", "pyre", LocationKind::Land, "hills", "asia", false, None, Some(1)),
-    row("Drovnik", "oxbow", LocationKind::Land, "flatland", "asia", false, None, None),
-    row("Hale Sound", "nave_sea", LocationKind::Sea, "ocean", "ocean_world", false, None, None),
-    row("Ivory Deep", "mist_sea", LocationKind::Sea, "ocean", "ocean_world", false, None, None),
+    row(
+        "Castellane",
+        "tarn",
+        LocationKind::Land,
+        "mountains",
+        "europe",
+        false,
+        None,
+        None,
+    ),
+    row(
+        "Aldoria",
+        "umber",
+        LocationKind::Land,
+        "flatland",
+        "europe",
+        true,
+        Some(0.5),
+        Some(1),
+    ),
+    row(
+        "Fenmark",
+        "ridge",
+        LocationKind::Land,
+        "flatland",
+        "asia",
+        true,
+        Some(0.25),
+        None,
+    ),
+    row(
+        "Brevik",
+        "quill",
+        LocationKind::Land,
+        "hills",
+        "europe",
+        false,
+        None,
+        None,
+    ),
+    row(
+        "Eskarra",
+        "pyre",
+        LocationKind::Land,
+        "hills",
+        "asia",
+        false,
+        None,
+        Some(1),
+    ),
+    row(
+        "Drovnik",
+        "oxbow",
+        LocationKind::Land,
+        "flatland",
+        "asia",
+        false,
+        None,
+        None,
+    ),
+    row(
+        "Hale Sound",
+        "nave_sea",
+        LocationKind::Sea,
+        "ocean",
+        "ocean_world",
+        false,
+        None,
+        None,
+    ),
+    row(
+        "Ivory Deep",
+        "mist_sea",
+        LocationKind::Sea,
+        "ocean",
+        "ocean_world",
+        false,
+        None,
+        None,
+    ),
     row(
         "Jagged Waste",
         "ash_waste",
@@ -77,7 +149,10 @@ const ROWS: [Row; 9] = [
     ),
 ];
 
-#[allow(clippy::too_many_arguments, reason = "a flat table row reads best as one call")]
+#[allow(
+    clippy::too_many_arguments,
+    reason = "a flat table row reads best as one call"
+)]
 const fn row(
     name: &'static str,
     key: &'static str,
@@ -165,10 +240,14 @@ pub(super) fn dataset() -> Dataset {
         .enumerate()
         .map(|(index, row)| record(index, row, &mut dictionary))
         .collect();
-    let by_key: HashMap<SymbolId, LocationId> =
-        locations.iter().map(|record| (record.key, record.id)).collect();
-    let by_color: HashMap<MapColor, LocationId> =
-        locations.iter().map(|record| (record.color, record.id)).collect();
+    let by_key: HashMap<SymbolId, LocationId> = locations
+        .iter()
+        .map(|record| (record.key, record.id))
+        .collect();
+    let by_color: HashMap<MapColor, LocationId> = locations
+        .iter()
+        .map(|record| (record.color, record.id))
+        .collect();
     let stored = StoredDataset {
         format_version: FORMAT_VERSION,
         app_id: EU5_APP_ID,

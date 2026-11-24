@@ -1,0 +1,159 @@
+{
+  "format": 1,
+  "outputs": [
+    {
+      "name": "plex-sans-regular.ttf",
+      "source": "IBMPlexSans-Regular.ttf",
+      "source_sha256": "b47ebd72b5ce53b60f909033ff84d6fc12358cc147e2981f8c321ad3f36246b6",
+      "source_version": "Version 3.006",
+      "codepoints": 714,
+      "size_bytes": 152688,
+      "sha256": "854d51b72727582b8a2a175653af1508f4c0fcc109c95fbb9c38a338554b7543",
+      "copied_whole": false,
+      "notes": []
+    },
+    {
+      "name": "plex-sans-medium.ttf",
+      "source": "IBMPlexSans-Medium.ttf",
+      "source_sha256": "a494d5a69fa094f7071a9ffbc98e86c85337d1a29f3fc1ff7c2e1c46161ddf27",
+      "source_version": "Version 3.006",
+      "codepoints": 714,
+      "size_bytes": 153612,
+      "sha256": "7b021208efb12b5d2f82987e95fb2e800062376f85561855ea4db2de9a3fbbc0",
+      "copied_whole": false,
+      "notes": []
+    },
+    {
+      "name": "plex-sans-semibold.ttf",
+      "source": "IBMPlexSans-SemiBold.ttf",
+      "source_sha256": "c51119b25f4a296da2b66edf3201b9aa1735091ed7efc1fca0313346f3851a4d",
+      "source_version": "Version 3.006",
+      "codepoints": 714,
+      "size_bytes": 153900,
+      "sha256": "7825954629ce57905c745947b90d09fdbb5ac8175b8ab4070da8dda111e2f0c2",
+      "copied_whole": false,
+      "notes": []
+    },
+    {
+      "name": "plex-mono-regular.ttf",
+      "source": "IBMPlexMono-Regular.ttf",
+      "source_sha256": "7c6fbddca4b700be918f5f6183d9bd4464fa427fe435f0b480d77fe2bb8c5a43",
+      "source_version": "Version 2.005",
+      "codepoints": 695,
+      "size_bytes": 105048,
+      "sha256": "bf76ff6ba46a2bfef4d66097125437f22276314adea4a8c478d49d2c1ade61b5",
+      "copied_whole": false,
+      "notes": []
+    },
+    {
+      "name": "plex-mono-medium.ttf",
+      "source": "IBMPlexMono-Medium.ttf",
+      "source_sha256": "98fbd727aae340b236955879dabed4d991aac9e8e90b3b2a67ce4a59221cc97c",
+      "source_version": "Version 2.005",
+      "codepoints": 695,
+      "size_bytes": 106036,
+      "sha256": "d916c042d9487ffb87ecef543a076e8c7608ef15fcf6340016e9d052172b9723",
+      "copied_whole": false,
+      "notes": []
+    },
+    {
+      "name": "latin-fallback.ttf",
+      "source": "NotoSans-Regular.ttf",
+      "source_sha256": "478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823",
+      "source_version": "Version 2.015; ttfautohint (v1.8.4.7-5d5b)",
+      "codepoints": 14,
+      "size_bytes": 8956,
+      "sha256": "4577f9df07f1b1372177f87d9a7889934b699ef97a3209cecf95a9c414efc024",
+      "copied_whole": false,
+      "notes": []
+    },
+    {
+      "name": "plex-sans-kr.ttf",
+      "source": "IBMPlexSansKR-Regular.ttf",
+      "source_sha256": "193af4c0c4f979251edd13708ea4c3eb4d0d07f9352b3d2a58b43b042767183b",
+      "source_version": "Version 1.003",
+      "codepoints": 1240,
+      "size_bytes": 273976,
+      "sha256": "c589e2b23483c87dc51c4080c927819429586d5cba1287f3940a0475b02d154e",
+      "copied_whole": false,
+      "notes": []
+    },
+    {
+      "name": "plex-sans-jp.ttf",
+      "source": "IBMPlexSansJP-Regular.ttf",
+      "source_sha256": "e5e9ee949e05ca25bf75be44d6412c7071fcdeb8ca6c4361a8d6aeb81f96289a",
+      "source_version": "Version 1.004",
+      "codepoints": 1811,
+      "size_bytes": 1070248,
+      "sha256": "c8339647df0121f6830d400123f2a2b73634652eeb3c73dbc1179bee657703df",
+      "copied_whole": false,
+      "notes": ["IBMPlexSansJP-Regular.ttf lacks 1 codepoint(s) used by the text, shown as missing glyphs: U+987A"]
+    },
+    {
+      "name": "sans-sc.ttf",
+      "source": "IBMPlexSansSC-Regular.ttf",
+      "source_sha256": "012e587c5a78d25f456057614b880fc7450b748c352573d8052245df2a71158a",
+      "source_version": "Version 1.000",
+      "codepoints": 2186,
+      "size_bytes": 828580,
+      "sha256": "b4a67435e9ae5f6b50310f8fc11c961e200cd7e6b5ace2b2a2b34270a9c35f8d",
+      "copied_whole": false,
+      "notes": []
+    },
+    {
+      "name": "sans-tc.ttf",
+      "source": "IBMPlexSansTC-Regular.ttf",
+      "source_sha256": "654677156ffc9ba35503ff569a4d55bc7044501f055bd7752a404445ed31cee7",
+      "source_version": "Version 1.001",
+      "codepoints": 445,
+      "size_bytes": 221896,
+      "sha256": "6fd3c6fae94fbafff02f2f6bc24091bf76876716269aa225fec273265da85d2d",
+      "copied_whole": false,
+      "notes": []
+    },
+    {
+      "name": "noto-sans-arabic.ttf",
+      "source": "NotoSansArabic-Regular.ttf",
+      "source_sha256": "bdff3e5659d67e67def05b33f749683b9376ae819d65d3dd62ac4640b3aaef48",
+      "source_version": "Version 2.013; ttfautohint (v1.8.4.16-eb64)",
+      "codepoints": 1250,
+      "size_bytes": 234892,
+      "sha256": "bdff3e5659d67e67def05b33f749683b9376ae819d65d3dd62ac4640b3aaef48",
+      "copied_whole": true,
+      "notes": []
+    },
+    {
+      "name": "noto-sans-devanagari.ttf",
+      "source": "NotoSansDevanagari-Regular.ttf",
+      "source_sha256": "4e3c66638958c3e2ab5d37f47a8deb89fffeb7be9985c665a519bbc7ba762313",
+      "source_version": "Version 2.007; ttfautohint (v1.8.4.16-eb64)",
+      "codepoints": 281,
+      "size_bytes": 243520,
+      "sha256": "4e3c66638958c3e2ab5d37f47a8deb89fffeb7be9985c665a519bbc7ba762313",
+      "copied_whole": true,
+      "notes": []
+    },
+    {
+      "name": "noto-sans-bengali.ttf",
+      "source": "NotoSansBengali-Regular.ttf",
+      "source_sha256": "b55c62ee531e3214da6c0701daecea89a52ba42db7d8206b92e6b51f397a3193",
+      "source_version": "Version 3.011; ttfautohint (v1.8.4.16-eb64)",
+      "codepoints": 134,
+      "size_bytes": 143072,
+      "sha256": "b55c62ee531e3214da6c0701daecea89a52ba42db7d8206b92e6b51f397a3193",
+      "copied_whole": true,
+      "notes": []
+    },
+    {
+      "name": "noto-sans-telugu.ttf",
+      "source": "NotoSansTelugu-Regular.ttf",
+      "source_sha256": "b274780b69d1d23fe84b55e809a152cb2ac5306d33864b1f87622f6971871aae",
+      "source_version": "Version 2.005; ttfautohint (v1.8.4.7-5d5b)",
+      "codepoints": 165,
+      "size_bytes": 235176,
+      "sha256": "b274780b69d1d23fe84b55e809a152cb2ac5306d33864b1f87622f6971871aae",
+      "copied_whole": true,
+      "notes": []
+    }
+  ]
+}

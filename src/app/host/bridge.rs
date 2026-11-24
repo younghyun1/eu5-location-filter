@@ -170,10 +170,7 @@ pub(crate) fn report(state: &str) {
 /// Fetches a document-relative asset through the host and returns its bytes, or
 /// `AppError::Fetch` when the promise rejects, the global is missing, or the value is not a
 /// `Uint8Array`.
-pub(crate) async fn fetch_asset_bytes(
-    path: String,
-    max_bytes: u32,
-) -> Result<Vec<u8>, AppError> {
+pub(crate) async fn fetch_asset_bytes(path: String, max_bytes: u32) -> Result<Vec<u8>, AppError> {
     let promise = match fetch_asset(&path, max_bytes) {
         Ok(promise) => promise,
         Err(error) => return Err(fetch_error(&path, "the host fetch could not start", &error)),
@@ -216,7 +213,9 @@ fn fetch_error(path: &str, context: &str, error: &JsValue) -> AppError {
 /// return `null` on success, so only a thrown exception counts as failure.
 pub(crate) fn open_url(url: &str) -> Result<(), AppError> {
     if !url.starts_with("https://") {
-        return Err(AppError::Ui(format!("refusing to open a non-HTTPS link: {url}")));
+        return Err(AppError::Ui(format!(
+            "refusing to open a non-HTTPS link: {url}"
+        )));
     }
     let window = match web_sys::window() {
         Some(window) => window,

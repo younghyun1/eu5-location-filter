@@ -22,8 +22,12 @@ pub(super) fn handle<Message>(
     shell: &mut Shell<'_, Message>,
 ) {
     match *event {
-        touch::Event::FingerPressed { id, position } => pressed(state, metrics, id, position, shell),
-        touch::Event::FingerMoved { id, position } => moved(grid, state, metrics, id, position, shell),
+        touch::Event::FingerPressed { id, position } => {
+            pressed(state, metrics, id, position, shell)
+        }
+        touch::Event::FingerMoved { id, position } => {
+            moved(grid, state, metrics, id, position, shell)
+        }
         touch::Event::FingerLifted { id, position: _ } => lifted(grid, state, metrics, id, shell),
         touch::Event::FingerLost { id, position: _ } => {
             if state.touch.is_some_and(|pan| pan.finger == id) {
@@ -77,9 +81,22 @@ fn moved<Message>(
     position: Point,
     shell: &mut Shell<'_, Message>,
 ) {
-    if let Some(GridDrag::Resize { column, start_x, start_width }) = state.drag {
-        if let Some(slot) = metrics.strip.position(column).and_then(|index| metrics.strip.slot(index)) {
-            grid.request_width(shell, slot, start_width + metrics.frame.to_inline(position.x - start_x));
+    if let Some(GridDrag::Resize {
+        column,
+        start_x,
+        start_width,
+    }) = state.drag
+    {
+        if let Some(slot) = metrics
+            .strip
+            .position(column)
+            .and_then(|index| metrics.strip.slot(index))
+        {
+            grid.request_width(
+                shell,
+                slot,
+                start_width + metrics.frame.to_inline(position.x - start_x),
+            );
         }
         shell.capture_event();
         return;
@@ -94,7 +111,11 @@ fn moved<Message>(
             shell.capture_event();
             return;
         }
-        pan.axis = Some(if dx.abs() > dy.abs() { Axis::Horizontal } else { Axis::Vertical });
+        pan.axis = Some(if dx.abs() > dy.abs() {
+            Axis::Horizontal
+        } else {
+            Axis::Vertical
+        });
         // Apply the movement made inside the slop as well, so the content catches up.
         pan.last = pan.start;
     }
