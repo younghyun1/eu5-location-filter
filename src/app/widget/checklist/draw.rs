@@ -247,7 +247,7 @@ fn label_text<C: AsRef<str>>(
         content,
         bounds: Size::new(f32::INFINITY, row_height),
         size: Pixels(TEXT_BODY),
-        line_height: text::LineHeight::Relative(LINE_HEIGHT),
+        line_height: crate::app::theme::cached_line_height(LINE_HEIGHT),
         font,
         align_x,
         align_y: Vertical::Center,

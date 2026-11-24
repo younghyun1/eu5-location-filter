@@ -8,7 +8,7 @@
 
 use iced::advanced::renderer::{Quad, Renderer as _};
 use iced::advanced::text::{
-    Alignment, LineHeight, Paragraph as _, Renderer as TextRenderer, Shaping, Text, Wrapping,
+    Alignment, Paragraph as _, Renderer as TextRenderer, Shaping, Text, Wrapping,
 };
 use iced::alignment::Vertical;
 use iced::{Border, Color, Font, Pixels, Point, Rectangle, Size};
@@ -110,7 +110,7 @@ fn text<C: AsRef<str>>(
         content,
         bounds,
         size: Pixels(style.size),
-        line_height: LineHeight::Relative(LINE_HEIGHT),
+        line_height: crate::app::theme::cached_line_height(LINE_HEIGHT),
         font,
         align_x,
         align_y,

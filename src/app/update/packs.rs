@@ -129,6 +129,8 @@ pub(super) fn font_loaded(
             if let Some(slot) = app.packs.fonts_loaded.get_mut(index) {
                 *slot = true;
             }
+            // Text the grid and checklists already drew without this face must be reshaped.
+            crate::app::theme::note_font_registered();
         }
         Err(_failure) => app.overlay.notice = Some(Notice::FontPack),
     }

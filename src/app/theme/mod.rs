@@ -15,7 +15,9 @@ mod tests;
 pub(crate) use accent::AccentPreset;
 pub(crate) use constants::*;
 pub(crate) use derived::ThumbState;
-pub(crate) use fonts::{MONO, MONO_MEDIUM, SANS, font_for_text, sans_for};
+pub(crate) use fonts::{
+    MONO, MONO_MEDIUM, SANS, cached_line_height, font_for_text, note_font_registered, sans_for,
+};
 pub(crate) use glyphs::Icon;
 pub(crate) use motion::{PaletteFade, drawer_duration};
 #[cfg(test)]
