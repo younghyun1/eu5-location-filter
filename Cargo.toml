@@ -64,8 +64,9 @@ ruzstd = { version = "0.9.0", default-features = false, features = ["std"] }
 wasm-bindgen = "0.2.103"
 # Awaits the host fetch promise.
 wasm-bindgen-futures = "0.4.53"
-# Window only: About links open through window.open, which the frame sandbox allows as a popup.
-web-sys = { version = "0.3.80", default-features = false, features = ["Window"] }
+# Window for About links (window.open, which the frame sandbox allows as a popup) and console
+# for reporting a panic message before the module traps.
+web-sys = { version = "0.3.80", default-features = false, features = ["Window", "console"] }
 
 [target.'cfg(not(target_family = "wasm"))'.dev-dependencies]
 iced_test = "=0.14.0"

@@ -63,6 +63,11 @@ pub fn run(
 /// browser.
 #[cfg(all(feature = "web", target_family = "wasm"))]
 pub(crate) fn run_web() -> Result<(), AppError> {
+    // A panic in the browser build ends as an opaque `unreachable` trap; writing its message
+    // to the console first is the only way to diagnose one from a user report.
+    std::panic::set_hook(Box::new(|info| {
+        web_sys::console::error_1(&wasm_bindgen::JsValue::from_str(&info.to_string()));
+    }));
     let window = iced::window::Settings {
         platform_specific: iced::window::settings::PlatformSpecific {
             target: Some(String::from("canvas")),
