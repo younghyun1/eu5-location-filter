@@ -3,6 +3,7 @@
 /web/pkg/
 *.bitcode.zst
 !assets/*.bitcode.zst
+!assets/lang/*.bitcode.zst
 *.bitcode.zst.bak
 *.tmp
 /artifacts/
