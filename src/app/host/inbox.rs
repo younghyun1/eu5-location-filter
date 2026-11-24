@@ -26,6 +26,8 @@ pub(super) struct Inbox {
     pub(super) view_state: Option<String>,
     /// Set by the first `set_palette`.
     pub(super) connected: bool,
+    /// Latest text of the host page's search field.
+    pub(super) search_text: Option<String>,
     /// Wake signal of the running subscription; a full buffer is ignored, because the pending
     /// wake already drains every slot.
     pub(super) waker: Option<mpsc::Sender<()>>,

@@ -1,6 +1,7 @@
 //! Custom widgets: the virtualized result grid and checklist on a shared windowing core, the
 //! pane splitter, and the focus ring that makes stock controls keyboard operable.
 
+mod anchor;
 pub(crate) mod checklist;
 mod focus_ring;
 pub(crate) mod result_grid;
@@ -9,6 +10,7 @@ pub(crate) mod window;
 #[cfg(test)]
 mod window_tests;
 
+pub(crate) use anchor::{Anchor, anchor};
 pub(crate) use checklist::{Checklist, ChecklistModel};
 pub(crate) use focus_ring::{FocusRing, focus_ring};
 pub(crate) use result_grid::ResultGrid;

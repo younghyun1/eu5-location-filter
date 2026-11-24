@@ -70,6 +70,14 @@ pub fn apply_view_state(text: &str) -> bool {
     app::host::apply_view_state(text)
 }
 
+/// Applies text typed into the host page's search field, which exists because the browser
+/// canvas receives no input-method composition; returns `false` when the text is too long.
+#[cfg(all(feature = "web", target_family = "wasm"))]
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub fn set_search_text(text: &str) -> bool {
+    app::host::set_search_text(text)
+}
+
 /// Runs bounded real-data filter scans for browser optimization comparisons.
 #[cfg(all(feature = "web-benchmark", feature = "web", target_family = "wasm"))]
 #[wasm_bindgen::prelude::wasm_bindgen]

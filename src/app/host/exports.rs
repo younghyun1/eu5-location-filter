@@ -4,7 +4,7 @@
 use super::inbox::store;
 use crate::app::i18n::Locale;
 use crate::app::theme::Palette;
-use crate::app::view_model::view_state::passes_whole_checks;
+use crate::app::view_model::view_state::{MAX_SEARCH_BYTES, passes_whole_checks};
 
 /// Stores a palette when `Palette::from_host` accepts it; always marks the host connected.
 pub(crate) fn set_palette(mode: &str, colours: &[u32]) -> bool {
@@ -37,4 +37,12 @@ pub(crate) fn apply_view_state(text: &str) -> bool {
         return false;
     }
     store(|inbox| inbox.view_state = Some(text.to_owned()))
+}
+
+/// Stores the host search field's text; rejects text longer than `MAX_SEARCH_BYTES`.
+pub(crate) fn set_search_text(text: &str) -> bool {
+    if text.len() > MAX_SEARCH_BYTES {
+        return false;
+    }
+    store(|inbox| inbox.search_text = Some(text.to_owned()))
 }

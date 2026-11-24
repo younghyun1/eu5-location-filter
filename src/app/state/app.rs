@@ -52,6 +52,8 @@ pub(crate) struct HostState {
     pub(crate) last_reported: Option<String>,
     /// View-state string received before the dataset and option lists were ready.
     pub(crate) pending_view_state: Option<String>,
+    /// Last bounds of the header search slot reported by the `Anchor` widget; browser only.
+    pub(crate) search_anchor: Option<iced::Rectangle>,
 }
 
 /// The whole interface state. Fields are crate-visible so update helpers and panes read them

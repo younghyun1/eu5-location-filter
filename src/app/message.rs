@@ -244,6 +244,9 @@ pub(crate) enum LoadMessage {
 pub(crate) enum HostMessage {
     /// Latest value of every slot that changed since the previous drain.
     Update(HostSnapshot),
+    /// Window-space bounds of the header search slot, published by the `Anchor` widget so the
+    /// host page can place its real text field (which supports input methods) over it.
+    SearchAnchor(iced::Rectangle),
 }
 
 /// One drain of the browser inbox; each slot holds only the latest value.
@@ -259,6 +262,8 @@ pub(crate) struct HostSnapshot {
     pub(crate) view_state: Option<String>,
     /// Whether `set_palette` has been called at least once.
     pub(crate) connected: bool,
+    /// Text typed into the host page's search field, at most `MAX_SEARCH_BYTES` bytes.
+    pub(crate) search_text: Option<String>,
 }
 
 /// Application-level keyboard commands, read from events no widget captured (and Escape from
