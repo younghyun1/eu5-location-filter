@@ -14,6 +14,7 @@ mod keys;
 mod narrow;
 mod overlays;
 mod panes;
+mod perf;
 mod screens;
 mod search;
 mod selectors;
