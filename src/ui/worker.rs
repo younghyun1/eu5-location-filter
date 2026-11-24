@@ -76,7 +76,7 @@ pub(super) fn start_load(
                 &weak,
                 ImportProgress {
                     stage: if index.is_some() {
-                        "Loading EU5 1.3.11 data"
+                        "Loading EU5 data"
                     } else {
                         "Preparing external data"
                     },

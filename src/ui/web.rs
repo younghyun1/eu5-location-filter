@@ -31,7 +31,9 @@ pub(super) fn run() -> Result<(), AppError> {
     Timer::single_shot(Duration::ZERO, move || {
         let Some(app) = weak.upgrade() else { return };
         let result = embedded::load().and_then(|(dataset, index)| {
-            app.set_progress_stage("Preparing EU5 1.3.11 data".into());
+            app.set_progress_stage(
+                format!("Preparing EU5 {} data", crate::model::EU5_GAME_VERSION).into(),
+            );
             state::prepare(dataset, Some(index))
         });
         match result {

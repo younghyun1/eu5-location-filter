@@ -1,6 +1,9 @@
 //! Vanilla raw-material classifications used by filters and row presentation.
 
 /// Returns whether the vanilla good contributes food when produced by an RGO.
+///
+/// The set mirrors the goods carrying a `food` value in the game's
+/// `common/goods/03_food.txt`; EU5 1.4 includes horses there.
 pub(crate) fn is_food_producing(key: &str) -> bool {
     matches!(
         key,
@@ -15,6 +18,7 @@ pub(crate) fn is_food_producing(key: &str) -> bool {
             | "legumes"
             | "potato"
             | "livestock"
+            | "horses"
             | "olives"
             | "fruit"
             | "beeswax"
@@ -44,6 +48,7 @@ mod tests {
             "legumes",
             "potato",
             "livestock",
+            "horses",
             "olives",
             "fruit",
             "beeswax",

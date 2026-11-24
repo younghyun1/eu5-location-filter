@@ -19,14 +19,14 @@ pub const FORMAT_VERSION: u16 = 3;
 /// Steam application identifier for Europa Universalis V.
 pub const EU5_APP_ID: u32 = 3_450_310;
 /// Europa Universalis V version represented by the committed bundles.
-pub const EU5_GAME_VERSION: &str = "1.3.11";
+pub const EU5_GAME_VERSION: &str = "1.4.8";
 /// Upper bound that prevents hostile blobs from growing startup memory without limit.
 pub const MAX_SYMBOLS: usize = 200_000;
 /// Upper bound for dictionary text in bytes.
 pub const MAX_DICTIONARY_BYTES: usize = 32 * 1024 * 1024;
 /// Upper bound for imported locations.
 pub const MAX_LOCATIONS: usize = 100_000;
-/// Highest gameplay river tier defined by EU5 1.3.11.
+/// Highest gameplay river tier defined by EU5.
 pub const MAX_RIVER_LEVEL: u8 = 5;
 
 /// Index into the dataset-wide string dictionary.

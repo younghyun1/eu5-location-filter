@@ -4,7 +4,9 @@
 
 - Bundle adaptive facet bitmaps, numeric range indexes, substring postings, and inverse sort ranks; add offline reindexing and scan-equivalence timing tests.
 - Add the initial EU5 location importer, versioned data blob, filters, command-line interface, and desktop UI.
-- Embed level-22 location and filter-index bundles for EU5 1.3.11 build 24187685.
+- Embed level-22 location and filter-index bundles for EU5 1.4.8 build 26547371, replacing the 1.3.11 data: 5,739 locations change climate under the reworked climate set, 4,582 static capacities follow, 261 names and 126 raw materials change, and horses count as food-producing.
+- Accept scalar attributes inside area and province blocks of `definitions.txt`, which EU5 1.4 introduces.
+- Add a `diff` subcommand that compares two location bundles field by field.
 - Add bounded searchable checkbox filters, configurable resizable columns, pane splitters, ASCII-folded search, and resolved localization references.
 - Precompute five-tier gameplay river bonuses and static population capacity, including the location's closeness-to-equator contribution.
 - Include EU5's explicit impassable-location list, exclude those locations from static capacity, and correct filter and column resizing geometry.

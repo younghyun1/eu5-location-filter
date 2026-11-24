@@ -13,6 +13,8 @@ mod compression;
 
 #[cfg(any(feature = "desktop", all(feature = "web", target_family = "wasm")))]
 pub mod app;
+#[cfg(feature = "desktop")]
+pub mod bundle_diff;
 pub mod embedded;
 pub mod error;
 pub mod filter;
