@@ -5,9 +5,9 @@ use crate::lang_pack::GameLanguage;
 /// How an output is produced.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(super) enum Plan {
-    /// An embedded IBM Plex face: a fixed Latin, Cyrillic and punctuation set. Sans faces also
-    /// cover every codepoint of the catalogs and packs of locales that use the embedded font, so a
-    /// translated string never falls back to a missing glyph.
+    /// An embedded IBM Plex face, copied unmodified so it may keep its reserved family name. A
+    /// fixed Latin, Cyrillic and punctuation set is required of it; text it lacks is carried by
+    /// the Latin fallback face.
     Embedded {
         /// Whether catalog and pack text of the embedded-font locales is required as well.
         with_text: bool,
@@ -45,6 +45,10 @@ pub(super) struct OutputSpec {
     pub(super) locales: &'static [&'static str],
     /// Game languages whose pack text this output needs.
     pub(super) languages: &'static [GameLanguage],
+    /// Family name written into a subset. IBM Plex is licensed with the reserved font name
+    /// "Plex", which a modified font may not carry, so every subset is renamed; unmodified
+    /// copies keep their names.
+    pub(super) rename: Option<&'static str>,
 }
 
 /// Locales that render with the embedded Plex faces.
@@ -71,6 +75,7 @@ const fn embedded(name: &'static str, source: &'static str, with_text: bool) -> 
         plan: Plan::Embedded { with_text },
         locales: if with_text { EMBEDDED_LOCALES } else { &[] },
         languages: if with_text { EMBEDDED_LANGUAGES } else { &[] },
+        rename: None,
     }
 }
 
@@ -80,6 +85,7 @@ const fn pack(
     plan: Plan,
     locales: &'static [&'static str],
     languages: &'static [GameLanguage],
+    rename: Option<&'static str>,
 ) -> OutputSpec {
     OutputSpec {
         name,
@@ -87,6 +93,7 @@ const fn pack(
         plan,
         locales,
         languages,
+        rename,
     }
 }
 
@@ -103,6 +110,7 @@ pub(super) const OUTPUTS: [OutputSpec; 14] = [
         plan: Plan::LatinFallback,
         locales: EMBEDDED_LOCALES,
         languages: EMBEDDED_LANGUAGES,
+        rename: Some("EU5 Sans Fallback"),
     },
     pack(
         "plex-sans-kr.ttf",
@@ -110,6 +118,7 @@ pub(super) const OUTPUTS: [OutputSpec; 14] = [
         Plan::Subset,
         &["ko-KR"],
         &[GameLanguage::Korean],
+        Some("EU5 Sans KR"),
     ),
     pack(
         "plex-sans-jp.ttf",
@@ -117,6 +126,7 @@ pub(super) const OUTPUTS: [OutputSpec; 14] = [
         Plan::Subset,
         &["ja-JP"],
         &[GameLanguage::Japanese],
+        Some("EU5 Sans JP"),
     ),
     pack(
         "sans-sc.ttf",
@@ -124,6 +134,7 @@ pub(super) const OUTPUTS: [OutputSpec; 14] = [
         Plan::Subset,
         &["zh-Hans"],
         &[GameLanguage::SimplifiedChinese],
+        Some("EU5 Sans SC"),
     ),
     // Traditional Chinese has no game-language pack; its game text stays English.
     pack(
@@ -132,6 +143,7 @@ pub(super) const OUTPUTS: [OutputSpec; 14] = [
         Plan::Subset,
         &["zh-Hant"],
         &[],
+        Some("EU5 Sans TC"),
     ),
     pack(
         "noto-sans-arabic.ttf",
@@ -139,6 +151,7 @@ pub(super) const OUTPUTS: [OutputSpec; 14] = [
         Plan::Whole,
         &["ar", "fa-IR", "ur-PK"],
         &[],
+        None,
     ),
     pack(
         "noto-sans-devanagari.ttf",
@@ -146,6 +159,7 @@ pub(super) const OUTPUTS: [OutputSpec; 14] = [
         Plan::Whole,
         &["hi-IN"],
         &[],
+        None,
     ),
     pack(
         "noto-sans-bengali.ttf",
@@ -153,6 +167,7 @@ pub(super) const OUTPUTS: [OutputSpec; 14] = [
         Plan::Whole,
         &["bn-BD"],
         &[],
+        None,
     ),
     pack(
         "noto-sans-telugu.ttf",
@@ -160,6 +175,7 @@ pub(super) const OUTPUTS: [OutputSpec; 14] = [
         Plan::Whole,
         &["te-IN"],
         &[],
+        None,
     ),
 ];
 

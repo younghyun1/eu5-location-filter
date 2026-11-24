@@ -80,10 +80,10 @@ impl FontPack {
     #[must_use]
     pub(crate) const fn family(self) -> &'static str {
         match self {
-            Self::PlexSansKr => "IBM Plex Sans KR",
-            Self::PlexSansJp => "IBM Plex Sans JP",
-            Self::SansSc => "IBM Plex Sans SC",
-            Self::SansTc => "IBM Plex Sans TC",
+            Self::PlexSansKr => "EU5 Sans KR",
+            Self::PlexSansJp => "EU5 Sans JP",
+            Self::SansSc => "EU5 Sans SC",
+            Self::SansTc => "EU5 Sans TC",
             Self::NotoSansArabic => "Noto Sans Arabic",
             Self::NotoSansDevanagari => "Noto Sans Devanagari",
             Self::NotoSansBengali => "Noto Sans Bengali",

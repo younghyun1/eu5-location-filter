@@ -87,10 +87,11 @@ fn build_one(
     let source_sha256 = sha256_hex(&source);
     let source_version = font_version(&source);
     let (bytes, copied_whole) = match spec.plan {
-        Plan::Whole => (source, true),
-        Plan::Embedded { .. } | Plan::LatinFallback | Plan::Subset => {
-            (subset_font(&source, &wanted.keep(), spec.name)?, false)
-        }
+        Plan::Whole | Plan::Embedded { .. } => (source, true),
+        Plan::LatinFallback | Plan::Subset => (
+            subset_font(&source, &wanted.keep(), spec.name, spec.rename)?,
+            false,
+        ),
     };
     if !spec.plan.is_embedded()
         && u64::try_from(bytes.len()).map_or(true, |size| size > MAX_PACK_COMPRESSED_SIZE)
