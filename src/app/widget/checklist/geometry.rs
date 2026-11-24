@@ -1,53 +1,23 @@
 //! Pure geometry and decisions of the checklist: row and checkbox rectangles in screen space,
 //! the scrollbar lane and thumb, key navigation and the tap test. Everything here is free of
 //! renderer and shell types so it can be unit tested; screen positions go through
-//! `window::mirror` so right-to-left layouts reflect the same inline geometry.
+//! `window::mirror` so right-to-left layouts reflect the same inline geometry. Key navigation,
+//! the tap test and right-to-left label detection live in the `rules` child module; row height
+//! helpers live in `metrics`.
 
 use iced::{Point, Rectangle};
 
 use crate::app::layout::{
-    CHECK_LABEL_GAP, CHECKBOX_SIZE, CHECKLIST_PADDING_INLINE, CHECKLIST_ROW_HEIGHT,
-    SCROLLBAR_MIN_THUMB, SCROLLBAR_THUMB_WIDTH, SCROLLBAR_THUMB_WIDTH_TOUCH, SCROLLBAR_WIDTH,
-    TOUCH_SLOP,
+    CHECK_LABEL_GAP, CHECKBOX_SIZE, CHECKLIST_PADDING_INLINE, SCROLLBAR_MIN_THUMB,
+    SCROLLBAR_THUMB_WIDTH, SCROLLBAR_THUMB_WIDTH_TOUCH, SCROLLBAR_WIDTH,
 };
 use crate::app::widget::window::{self, Thumb, VisibleRange};
 
-/// Height a checklist asks for: `min(rows, max_visible_rows) * row_height`, and one row when
-/// the list is empty but has an empty-state text to show.
-#[must_use]
-pub(super) fn list_height(
-    rows: usize,
-    max_visible_rows: usize,
-    row_height: f32,
-    has_empty_text: bool,
-) -> f32 {
-    let shown = rows.min(max_visible_rows);
-    let shown = if shown == 0 && has_empty_text {
-        1
-    } else {
-        shown
-    };
-    rows_to_pixels(shown, sane_row_height(row_height))
-}
+mod metrics;
+mod rules;
 
-/// A row height safe to divide by; a non-finite or non-positive value falls back to the wide
-/// layout height.
-#[must_use]
-pub(super) fn sane_row_height(row_height: f32) -> f32 {
-    if row_height.is_finite() && row_height > 0.0 {
-        row_height
-    } else {
-        CHECKLIST_ROW_HEIGHT
-    }
-}
-
-/// Pixel length of a number of rows. Row counts stay far below the range where `f32` loses
-/// integer precision, so the conversion is exact in practice.
-#[must_use]
-pub(super) fn rows_to_pixels(rows: usize, row_height: f32) -> f32 {
-    let rows = rows as f32;
-    rows * row_height
-}
+pub(super) use metrics::{list_height, rows_to_pixels, sane_row_height};
+pub(super) use rules::{Nav, has_rtl_script, is_tap, navigate};
 
 /// Geometry of one checklist for one frame or event.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -292,55 +262,4 @@ impl Geometry {
     pub(super) fn page(&self) -> usize {
         window::page_rows(self.bounds.height, self.row_height).max(1)
     }
-}
-
-/// A keyboard move of the active option.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(super) enum Nav {
-    /// ArrowUp.
-    Previous,
-    /// ArrowDown.
-    Next,
-    /// PageUp.
-    PageUp,
-    /// PageDown.
-    PageDown,
-    /// Home.
-    First,
-    /// End.
-    Last,
-}
-
-/// New active row after a move from `current`, clamped to the rows; `None` without rows.
-/// The caller passes the row it draws as active, so a move after a Tab focus starts from the
-/// outlined row.
-#[must_use]
-pub(super) fn navigate(current: usize, nav: Nav, count: usize, page: usize) -> Option<usize> {
-    let last = count.checked_sub(1)?;
-    let target = match nav {
-        Nav::First => 0,
-        Nav::Last => last,
-        Nav::Previous => current.saturating_sub(1),
-        Nav::Next => current.saturating_add(1),
-        Nav::PageUp => current.saturating_sub(page),
-        Nav::PageDown => current.saturating_add(page),
-    };
-    Some(target.min(last))
-}
-
-/// Whether a touch that moved from `start` to `now` is still a tap.
-#[must_use]
-pub(super) fn is_tap(start: Point, now: Point) -> bool {
-    let dx = now.x - start.x;
-    let dy = now.y - start.y;
-    dx.hypot(dy) <= TOUCH_SLOP
-}
-
-/// Whether a label holds right-to-left script (Hebrew, Arabic, Syriac, Thaana, N'Ko and their
-/// presentation forms). Such labels need a measured width to end at the checkbox, because
-/// iced positions right-aligned single-line right-to-left text incorrectly against an infinite
-/// width.
-#[must_use]
-pub(super) fn has_rtl_script(label: &str) -> bool {
-    label.chars().any(|c| matches!(c, '\u{0590}'..='\u{08FF}' | '\u{FB1D}'..='\u{FDFF}' | '\u{FE70}'..='\u{FEFF}'))
 }

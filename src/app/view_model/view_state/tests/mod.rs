@@ -6,4 +6,5 @@ mod encode_tests;
 mod fixture;
 mod hostile_tests;
 mod resolve_tests;
+mod spec_tests;
 mod text_tests;

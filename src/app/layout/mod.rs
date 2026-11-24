@@ -4,6 +4,8 @@ mod constants;
 mod direction;
 mod panes;
 #[cfg(test)]
+mod resolve_tests;
+#[cfg(test)]
 mod tests;
 
 pub(crate) use constants::*;

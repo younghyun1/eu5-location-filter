@@ -10,13 +10,15 @@
 
 use iced::advanced::Shell;
 use iced::keyboard::{self, Key, key::Named};
-use iced::{Event, Point, Rectangle, mouse, touch};
+use iced::{Event, Point, Rectangle, mouse};
 
-use super::geometry::{Geometry, Nav, is_tap, navigate};
+use super::geometry::{Geometry, Nav, navigate};
 use super::list::Checklist;
 use super::model::ChecklistModel;
 use super::state::ChecklistState;
 use crate::app::widget::window;
+
+mod touch;
 
 impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
     /// Handles one event for a list laid out in `bounds`.
@@ -112,89 +114,6 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
         } else if let Some(row) = geometry.row_at(point, state.offset) {
             state.active = Some(row);
             self.toggle(row, shell);
-        }
-    }
-
-    /// Touch: drag past `TOUCH_SLOP` scrolls, a shorter touch is a tap that toggles the row
-    /// under the press.
-    fn handle_touch(
-        &self,
-        state: &mut ChecklistState,
-        geometry: &Geometry,
-        event: touch::Event,
-        cursor: mouse::Cursor,
-        shell: &mut Shell<'_, Message>,
-    ) {
-        match event {
-            touch::Event::FingerPressed { id, position } => {
-                let point = match cursor {
-                    mouse::Cursor::Available(point) => point,
-                    mouse::Cursor::Levitating(_) => return,
-                    mouse::Cursor::Unavailable => position,
-                };
-                if !geometry.bounds.contains(point) {
-                    if state.focused {
-                        state.focused = false;
-                        shell.request_redraw();
-                    }
-                    return;
-                }
-                state.touch = Some((id, position, position));
-                state.touch_row = geometry.row_at(point, state.offset);
-                state.touch_scrolling = false;
-                if geometry.is_scrollable() {
-                    shell.capture_event();
-                }
-            }
-            touch::Event::FingerMoved { id, position } => {
-                let Some((finger, start, last)) = state.touch else {
-                    return;
-                };
-                if finger != id {
-                    return;
-                }
-                if !state.touch_scrolling && !is_tap(start, position) {
-                    state.touch_scrolling = true;
-                }
-                if state.touch_scrolling
-                    && geometry.is_scrollable()
-                    && set_offset(
-                        state,
-                        geometry.clamp(state.offset + (last.y - position.y)),
-                        shell,
-                    )
-                {
-                    refresh_hover(state, geometry, cursor, shell);
-                }
-                state.touch = Some((finger, start, position));
-                if geometry.is_scrollable() {
-                    shell.capture_event();
-                }
-            }
-            touch::Event::FingerLifted { id, .. } => {
-                let Some((finger, _, _)) = state.touch else {
-                    return;
-                };
-                if finger != id {
-                    return;
-                }
-                let tapped = state.touch_row.take().filter(|_| !state.touch_scrolling);
-                state.touch = None;
-                state.touch_scrolling = false;
-                if let Some(row) = tapped.filter(|row| *row < geometry.count) {
-                    state.active = Some(row);
-                    self.toggle(row, shell);
-                    shell.capture_event();
-                    shell.request_redraw();
-                }
-            }
-            touch::Event::FingerLost { id, .. } => {
-                if state.touch.is_some_and(|(finger, _, _)| finger == id) {
-                    state.touch = None;
-                    state.touch_row = None;
-                    state.touch_scrolling = false;
-                }
-            }
         }
     }
 

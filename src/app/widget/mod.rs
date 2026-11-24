@@ -8,6 +8,8 @@ pub(crate) mod result_grid;
 mod splitter;
 pub(crate) mod window;
 #[cfg(test)]
+mod window_span_tests;
+#[cfg(test)]
 mod window_tests;
 
 pub(crate) use anchor::anchor;

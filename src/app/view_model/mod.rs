@@ -9,6 +9,8 @@ mod detail;
 mod facet_ui;
 mod facets;
 #[cfg(test)]
+mod facets_meta_tests;
+#[cfg(test)]
 mod facets_tests;
 mod options;
 #[cfg(test)]
