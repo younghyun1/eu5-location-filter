@@ -6,8 +6,10 @@ pub(crate) const DESKTOP_DEFAULT_WIDTH: f32 = 1440.0;
 /// Desktop window height at first start.
 pub(crate) const DESKTOP_DEFAULT_HEIGHT: f32 = 900.0;
 /// Desktop minimum window width; the browser build sets no minimum.
+#[cfg(feature = "desktop")]
 pub(crate) const DESKTOP_MIN_WIDTH: f32 = 1050.0;
 /// Desktop minimum window height.
+#[cfg(feature = "desktop")]
 pub(crate) const DESKTOP_MIN_HEIGHT: f32 = 680.0;
 /// Viewport widths below this use the narrow layout; matches the site's mobile limit of 767 px.
 pub(crate) const NARROW_BREAKPOINT: f32 = 768.0;
@@ -89,8 +91,6 @@ pub(crate) const RAIL_SECTION_GAP: f32 = 16.0;
 pub(crate) const RAIL_GROUP_GAP: f32 = 8.0;
 /// Rail section title row height.
 pub(crate) const SECTION_TITLE_HEIGHT: f32 = 24.0;
-/// Facet group header row height in the wide layout.
-pub(crate) const FACET_HEADER_HEIGHT: f32 = 32.0;
 /// Lists with more options than this show a search field; 0 keeps search on every list.
 pub(crate) const CHECKLIST_SEARCH_THRESHOLD: usize = 0;
 /// Checklist option row height in the wide layout.

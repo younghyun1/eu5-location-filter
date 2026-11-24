@@ -20,4 +20,3 @@ mod touch;
 mod widget_impl;
 
 pub(crate) use grid::ResultGrid;
-pub(crate) use state::{Axis, GridDrag, GridState, TouchPan};

@@ -212,7 +212,7 @@ fn active_count_follows_the_badge_rules() {
     filters.search = "   ".to_owned();
     assert_eq!(active_filter_count(&filters), 2);
     let mut filters = FilterSet::land_only();
-    filters.rgb = Some(crate::model::MapColor(0x0102_03));
+    filters.rgb = Some(crate::model::MapColor(0x0001_0203));
     filters.show_impassable = false;
     filters.food_producing_only = true;
     assert_eq!(active_filter_count(&filters), 3);

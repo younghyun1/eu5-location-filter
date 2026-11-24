@@ -167,7 +167,7 @@ pub(super) const OUTPUTS: [OutputSpec; 14] = [
 mod tests {
     use std::collections::BTreeSet;
 
-    use super::{OUTPUTS, Plan};
+    use super::OUTPUTS;
 
     #[test]
     fn names_are_unique_and_valid_asset_paths() {

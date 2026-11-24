@@ -29,32 +29,32 @@ pub(super) fn sha256_hex(data: &[u8]) -> String {
 
 fn digest(data: &[u8]) -> [u8; 32] {
     let mut state = INITIAL;
-    let mut blocks = data.chunks_exact(64);
-    for block in blocks.by_ref() {
+    let (blocks, remainder) = data.as_chunks::<64>();
+    for block in blocks {
         compress(&mut state, block);
     }
     // Padding: a one bit, zeros up to 56 mod 64, then the message length in bits, big endian.
-    let mut tail = blocks.remainder().to_vec();
+    let mut tail = remainder.to_vec();
     tail.push(0x80);
     while tail.len() % 64 != 56 {
         tail.push(0);
     }
     let bits = (data.len() as u64).wrapping_mul(8);
     tail.extend_from_slice(&bits.to_be_bytes());
-    for block in tail.chunks_exact(64) {
+    for block in tail.as_chunks::<64>().0 {
         compress(&mut state, block);
     }
     let mut out = [0_u8; 32];
-    for (slot, word) in out.chunks_exact_mut(4).zip(state) {
+    for (slot, word) in out.as_chunks_mut::<4>().0.iter_mut().zip(state) {
         slot.copy_from_slice(&word.to_be_bytes());
     }
     out
 }
 
-fn compress(state: &mut [u32; 8], block: &[u8]) {
+fn compress(state: &mut [u32; 8], block: &[u8; 64]) {
     let mut schedule = [0_u32; 64];
-    for (word, bytes) in schedule.iter_mut().zip(block.chunks_exact(4)) {
-        *word = u32::from_be_bytes([bytes[0], bytes[1], bytes[2], bytes[3]]);
+    for (word, bytes) in schedule.iter_mut().zip(block.as_chunks::<4>().0) {
+        *word = u32::from_be_bytes(*bytes);
     }
     for index in 16..64 {
         let w15 = schedule[index - 15];

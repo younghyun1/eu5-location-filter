@@ -17,6 +17,7 @@ pub(crate) enum Mode {
 
 impl Mode {
     /// Parses the host protocol value `"light"` or `"dark"`.
+    #[cfg(any(test, all(feature = "web", target_family = "wasm")))]
     #[must_use]
     pub(crate) fn from_host(value: &str) -> Option<Self> {
         match value {
@@ -133,6 +134,7 @@ impl Palette {
 
     /// Validates host input: a known mode and exactly 12 values, each at most `0xFFFFFF`, in
     /// protocol order. Returns `None` for anything else.
+    #[cfg(any(test, all(feature = "web", target_family = "wasm")))]
     #[must_use]
     pub(crate) fn from_host(mode: &str, colours: &[u32]) -> Option<Self> {
         let mode = Mode::from_host(mode)?;

@@ -41,7 +41,6 @@ fn direction_helpers_mirror_alignment_and_deltas() {
     assert_eq!(Direction::Ltr.to_inline(5.0), 5.0);
     assert_eq!(Direction::Rtl.to_inline(5.0), -5.0);
     assert_ne!(Direction::Ltr.text_start(), Direction::Rtl.text_start());
-    assert_eq!(Direction::Ltr.text_start(), Direction::Rtl.text_end());
 }
 
 #[test]

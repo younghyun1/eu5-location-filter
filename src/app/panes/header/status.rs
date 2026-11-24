@@ -1,7 +1,7 @@
 //! Status values of the header and the text built from them.
 
 use iced::alignment::Horizontal;
-use iced::widget::text::{Alignment, Wrapping};
+use iced::widget::text::Wrapping;
 use iced::widget::{Column, text};
 use iced::{Color, Element, Length};
 

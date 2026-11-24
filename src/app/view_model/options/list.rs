@@ -78,6 +78,7 @@ impl OptionList {
     }
 
     /// Whether the list is empty.
+    #[cfg(test)]
     #[must_use]
     pub(crate) fn is_empty(&self) -> bool {
         self.options.is_empty()
@@ -104,6 +105,7 @@ impl OptionList {
     }
 
     /// Index of a value.
+    #[cfg(test)]
     #[must_use]
     pub(crate) fn position(&self, value: OptionValue) -> Option<u32> {
         self.options

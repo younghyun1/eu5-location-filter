@@ -53,15 +53,6 @@ impl Direction {
         }
     }
 
-    /// Text alignment of the inline end, for numbers in stock widgets.
-    #[must_use]
-    pub(crate) const fn text_end(self) -> TextAlignment {
-        match self {
-            Self::Ltr => TextAlignment::Right,
-            Self::Rtl => TextAlignment::Left,
-        }
-    }
-
     /// Converts a screen x delta into an inline delta (positive toward the inline end).
     #[must_use]
     pub(crate) const fn to_inline(self, screen_dx: f32) -> f32 {
@@ -106,6 +97,7 @@ pub(crate) fn inline_row<'a, Message: 'a>(
 
 /// Screen x of a span `[x, x + width)` given in inline coordinates from the inline start of
 /// `bounds_x..bounds_x + bounds_width`.
+#[cfg(test)]
 #[must_use]
 pub(crate) fn mirror_x(
     direction: Direction,

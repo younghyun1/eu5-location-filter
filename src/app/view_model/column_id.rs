@@ -102,6 +102,7 @@ impl ColumnId {
     }
 
     /// Stable key, shared with sort tokens in the view-state string.
+    #[cfg(test)]
     #[must_use]
     pub(crate) const fn key(self) -> &'static str {
         match self {
@@ -135,6 +136,7 @@ impl ColumnId {
     }
 
     /// Column for a stable key.
+    #[cfg(test)]
     #[must_use]
     pub(crate) fn from_key(key: &str) -> Option<Self> {
         Self::ALL.into_iter().find(|column| column.key() == key)

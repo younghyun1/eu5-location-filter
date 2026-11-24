@@ -22,6 +22,7 @@ impl RangeField {
     pub(crate) const ALL: [Self; Self::COUNT] = [Self::Harbor, Self::MovementX, Self::MovementY];
 
     /// Position in `ALL`.
+    #[cfg(test)]
     #[must_use]
     pub(crate) const fn index(self) -> usize {
         self as usize
@@ -78,6 +79,7 @@ pub(crate) enum Bound {
 
 impl Bound {
     /// Position in a `[min, max]` pair.
+    #[cfg(test)]
     #[must_use]
     pub(crate) const fn index(self) -> usize {
         self as usize

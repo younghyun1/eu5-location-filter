@@ -2,10 +2,12 @@
 //! call it from a widget's `.style(..)` builder:
 //! `.style(move |_theme, status| theme::button(palette, ButtonKind::Primary, status))`.
 
+#[cfg(test)]
+use iced::widget::text as text_widget;
 use iced::widget::{
     button as button_widget, checkbox as checkbox_widget, container,
     progress_bar as progress_widget, rule as rule_widget, scrollable as scrollable_widget,
-    text as text_widget, text_input as input_widget,
+    text_input as input_widget,
 };
 use iced::{Background, Border, Color, Shadow};
 
@@ -247,6 +249,7 @@ pub(crate) fn rule(palette: Palette, strong: bool) -> rule_widget::Style {
 
 /// Text style with an explicit colour.
 #[must_use]
+#[cfg(test)]
 pub(crate) fn text_color(color: Color) -> text_widget::Style {
     text_widget::Style { color: Some(color) }
 }

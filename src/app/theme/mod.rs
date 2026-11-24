@@ -15,17 +15,17 @@ mod tests;
 pub(crate) use accent::AccentPreset;
 pub(crate) use constants::*;
 pub(crate) use derived::ThumbState;
-pub(crate) use fonts::{
-    MONO, MONO_MEDIUM, SANS, SANS_MEDIUM, SANS_SEMIBOLD, font_for_text, sans_for,
-};
+pub(crate) use fonts::{MONO, MONO_MEDIUM, SANS, font_for_text, sans_for};
 pub(crate) use glyphs::Icon;
-pub(crate) use motion::{
-    PaletteFade, chrome_curve, drawer_duration, palette_duration, palette_easing,
-};
-pub(crate) use palette::{Mode, PALETTE_DARK, PALETTE_LIGHT, Palette, mix};
-pub(crate) use styles::{
-    ButtonKind, button, checkbox, progress_bar, rule, scrollable, text_color, text_input,
-};
+pub(crate) use motion::{PaletteFade, drawer_duration};
+#[cfg(test)]
+pub(crate) use motion::{chrome_curve, palette_duration};
+pub(crate) use palette::{Mode, PALETTE_DARK, Palette};
+#[cfg(test)]
+pub(crate) use palette::{PALETTE_LIGHT, mix};
+#[cfg(test)]
+pub(crate) use styles::text_color;
+pub(crate) use styles::{ButtonKind, button, checkbox, progress_bar, rule, scrollable, text_input};
 pub(crate) use surfaces::{
     Veil, badge, card, detail_block, header, menu, notice, scrim, surface, swatch, toolbar,
     tooltip, veil,

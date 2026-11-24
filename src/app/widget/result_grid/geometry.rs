@@ -199,7 +199,7 @@ impl Frame {
     }
 
     /// Screen delta to inline delta (positive toward the inline end).
-    pub(super) const fn to_inline(&self, screen_dx: f32) -> f32 {
+    pub(super) const fn to_inline(self, screen_dx: f32) -> f32 {
         if self.rtl { -screen_dx } else { screen_dx }
     }
 

@@ -15,18 +15,6 @@ pub(crate) const SANS: Font = Font {
     family: Family::Name(FONT_SANS_FAMILY),
     ..Font::DEFAULT
 };
-/// IBM Plex Sans Medium.
-pub(crate) const SANS_MEDIUM: Font = Font {
-    family: Family::Name(FONT_SANS_FAMILY),
-    weight: Weight::Medium,
-    ..Font::DEFAULT
-};
-/// IBM Plex Sans SemiBold.
-pub(crate) const SANS_SEMIBOLD: Font = Font {
-    family: Family::Name(FONT_SANS_FAMILY),
-    weight: Weight::Semibold,
-    ..Font::DEFAULT
-};
 /// IBM Plex Mono Regular.
 pub(crate) const MONO: Font = Font {
     family: Family::Name(FONT_MONO_FAMILY),

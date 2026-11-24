@@ -2,7 +2,9 @@
 
 use super::column_id::ColumnId;
 use crate::app::i18n::{Locale, t};
-use crate::app::layout::{COLUMN_MAX_WIDTH, COLUMN_MIN_WIDTH, GRID_INLINE_INSET};
+#[cfg(test)]
+use crate::app::layout::GRID_INLINE_INSET;
+use crate::app::layout::{COLUMN_MAX_WIDTH, COLUMN_MIN_WIDTH};
 use crate::app::widget::ChecklistModel;
 
 /// Width and visibility of one column.
@@ -36,6 +38,7 @@ impl Default for Columns {
 
 impl Columns {
     /// Every column in display order.
+    #[cfg(test)]
     #[must_use]
     pub(crate) const fn all(&self) -> &[Column; ColumnId::COUNT] {
         &self.columns
@@ -84,6 +87,7 @@ impl Columns {
     }
 
     /// Content width: `GRID_INLINE_INSET` plus every visible width.
+    #[cfg(test)]
     #[must_use]
     pub(crate) fn total_width(&self) -> f32 {
         GRID_INLINE_INSET + self.visible().map(|column| column.width).sum::<f32>()

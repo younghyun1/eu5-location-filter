@@ -17,6 +17,7 @@ pub(crate) struct VisibleRange {
 
 impl VisibleRange {
     /// Number of rows in the range.
+    #[cfg(test)]
     #[must_use]
     pub(crate) const fn len(self) -> usize {
         self.end.saturating_sub(self.start)

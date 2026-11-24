@@ -41,6 +41,7 @@ pub(crate) enum CellTone {
     #[default]
     Ink,
     /// Secondary text.
+    #[cfg_attr(not(test), allow(dead_code))]
     Muted,
     /// Food-producing raw material.
     Food,

@@ -97,7 +97,7 @@ fn fixed(value: f32, decimals: usize) -> String {
 #[test]
 fn fixed_decimals_use_a_dot() {
     assert_eq!(fixed(1.0, 2), "1.00");
-    assert_eq!(fixed(3.14159, 2), "3.14");
+    assert_eq!(fixed(7.14159, 2), "7.14");
     assert_eq!(fixed(0.126, 2), "0.13");
     assert_eq!(fixed(12.4, 0), "12");
     assert_eq!(fixed(2.0, 1), "2.0");

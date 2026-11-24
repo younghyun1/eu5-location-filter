@@ -12,10 +12,6 @@ use wasm_bindgen_futures::JsFuture;
 
 use crate::AppError;
 
-/// Host protocol version.
-pub(crate) const PROTOCOL_VERSION: u8 = 2;
-/// Longest accepted locale tag.
-pub(crate) const MAX_LOCALE_TAG_LEN: usize = 35;
 /// Byte limit passed to the host fetch for language and font packs; equals
 /// `lang_pack::MAX_PACK_COMPRESSED_SIZE`.
 pub(crate) const PACK_MAX_BYTES: u32 = 16 * 1024 * 1024;

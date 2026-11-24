@@ -44,7 +44,7 @@ impl<Message> ResultGrid<'_, Message> {
         if !width.is_finite() {
             return;
         }
-        let clamped = width.max(COLUMN_MIN_WIDTH).min(COLUMN_MAX_WIDTH);
+        let clamped = width.clamp(COLUMN_MIN_WIDTH, COLUMN_MAX_WIDTH);
         if (clamped - slot.width).abs() < 0.01 {
             return;
         }

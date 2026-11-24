@@ -70,11 +70,9 @@ impl<Message, M: ChecklistModel> Checklist<'_, Message, M> {
                 self.handle_touch(state, &geometry, *touch_event, cursor, shell)
             }
             Event::Keyboard(keyboard::Event::KeyPressed { key, modifiers, .. })
-                if state.focused =>
+                if state.focused && !modifiers.command() && !modifiers.alt() =>
             {
-                if !modifiers.command() && !modifiers.alt() {
-                    self.key(state, &geometry, key, cursor, shell);
-                }
+                self.key(state, &geometry, key, cursor, shell);
             }
             _ => {}
         }

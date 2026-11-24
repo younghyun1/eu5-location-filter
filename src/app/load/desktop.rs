@@ -248,13 +248,13 @@ mod tests {
         });
         let mut seen_done = false;
         for _ in 0..2_000 {
-            match receiver.try_next() {
-                Ok(Some(LoadEvent::Done(_))) => {
+            match receiver.try_recv() {
+                Ok(LoadEvent::Done(_)) => {
                     seen_done = true;
                     break;
                 }
-                Ok(Some(LoadEvent::Progress { .. })) => {}
-                Ok(None) => break,
+                Ok(LoadEvent::Progress { .. }) => {}
+                Err(error) if error.is_closed() => break,
                 Err(_empty) => std::thread::sleep(std::time::Duration::from_millis(1)),
             }
         }

@@ -4,6 +4,9 @@ use crate::app::i18n::Locale;
 use crate::app::theme::Palette;
 
 /// Host values drained from the browser inbox in one wake.
+// A snapshot arrives at most once per host message and is moved, never copied, so boxing it
+// would only add an allocation.
+#[allow(clippy::large_enum_variant)]
 #[derive(Clone, Debug)]
 pub(crate) enum HostMessage {
     /// Latest value of every slot that changed since the previous drain.

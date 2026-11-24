@@ -14,6 +14,9 @@ use crate::app::view_model::{Bound, ColumnId, FacetId, OptionValue, RangeField};
 use crate::model::LocationId;
 
 /// Top-level message; each variant is handled by one helper in `update/`.
+// Messages are moved once from the event to `update`; boxing the larger payloads would add an
+// allocation per pointer or host event for no saving.
+#[allow(clippy::large_enum_variant)]
 #[derive(Clone, Debug)]
 pub(crate) enum Message {
     /// Search, facet selections, rail toggles and rail text fields.

@@ -11,8 +11,8 @@ mod inbox;
 #[cfg(feature = "web-benchmark")]
 pub(crate) use benchmark::benchmark_filter_work;
 pub(crate) use bridge::{
-    MAX_LOCALE_TAG_LEN, PACK_MAX_BYTES, PROTOCOL_VERSION, SearchOverlay, fetch_asset_bytes,
-    focus_search_overlay, open_url, report, sync_search_overlay,
+    PACK_MAX_BYTES, SearchOverlay, fetch_asset_bytes, focus_search_overlay, open_url, report,
+    sync_search_overlay,
 };
 pub(crate) use exports::{
     apply_view_state, set_locale, set_palette, set_reduced_motion, set_search_text,

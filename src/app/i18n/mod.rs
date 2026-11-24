@@ -12,6 +12,7 @@ mod tests;
 
 pub(crate) use catalog::{Text, t, tp};
 pub(crate) use fonts::FontPack;
-pub(crate) use format::{Arg, format, format_into, push_fixed, push_grouped};
+pub(crate) use format::{format, format_into, push_fixed, push_grouped};
 pub(crate) use locale::Locale;
+#[cfg(test)]
 pub(crate) use plural::{PluralCategory, category};

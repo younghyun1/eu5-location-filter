@@ -87,10 +87,12 @@ fn geography_terrain_and_society_hold_only_facets() {
 fn rail_builds_in_every_mode_state_and_direction() {
     let filters = FilterSet::land_only();
     let facets = FacetId::ALL.map(FacetUi::new);
-    let mut fields = TextFields::default();
-    fields.rgb = FieldBuffer {
-        text: "zz".to_owned(),
-        error: Some(Text::ValidationRgb),
+    let mut fields = TextFields {
+        rgb: FieldBuffer {
+            text: "zz".to_owned(),
+            error: Some(Text::ValidationRgb),
+        },
+        ..TextFields::default()
     };
     fields.range_mut(RangeField::Harbor, Bound::Max).error = Some(Text::ValidationNumber);
     for direction in [Direction::Ltr, Direction::Rtl] {

@@ -13,5 +13,7 @@ pub(in crate::app::view_model) mod test_data;
 mod texts;
 
 pub(crate) use facet_options::FacetOptions;
-pub(crate) use list::{FacetOption, OptionList, OptionValue};
+#[cfg(test)]
+pub(crate) use list::FacetOption;
+pub(crate) use list::{OptionList, OptionValue};
 pub(super) use texts::{kind_text, river_tier_text};

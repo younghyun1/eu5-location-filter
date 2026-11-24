@@ -12,6 +12,5 @@ mod state;
 mod tests;
 mod widget_impl;
 
-pub(crate) use list::{Checklist, OnToggle};
+pub(crate) use list::Checklist;
 pub(crate) use model::ChecklistModel;
-pub(crate) use state::ChecklistState;

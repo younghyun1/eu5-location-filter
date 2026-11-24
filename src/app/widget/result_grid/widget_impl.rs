@@ -63,7 +63,7 @@ impl<Message> Widget<Message, iced::Theme, iced::Renderer> for ResultGrid<'_, Me
         // The buffer is only borrowed here and in operate, which never overlap; skipping the
         // cells for one frame is the fallback if that ever changes.
         if let Ok(mut buffer) = state.buffer.try_borrow_mut() {
-            draw_body::cells(self, &metrics, renderer, clip, &mut *buffer);
+            draw_body::cells(self, &metrics, renderer, clip, &mut buffer);
         }
         draw_header::labels(self, &metrics, renderer, clip);
         renderer.with_layer(clip, |renderer| {

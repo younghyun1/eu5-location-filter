@@ -1,6 +1,5 @@
 //! Desktop Language and Appearance menus; the browser build never shows them.
 
-use iced::alignment::Vertical;
 use iced::font::Weight;
 use iced::widget::text::Wrapping;
 use iced::widget::{Column, button, container, space, text};

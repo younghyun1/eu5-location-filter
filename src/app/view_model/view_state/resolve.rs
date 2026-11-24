@@ -41,13 +41,10 @@ impl LocationKeys {
 
 /// Key text of a location; empty for an ID outside the dataset, which `build` never stores.
 fn key_of(dataset: &Dataset, id: LocationId) -> &str {
-    match dataset
+    dataset
         .location(id)
         .and_then(|record| dataset.symbol(record.key))
-    {
-        Some(key) => key,
-        None => "",
-    }
+        .unwrap_or_default()
 }
 
 /// A view state ready to replace the application's filter, sort and selection state.

@@ -18,14 +18,6 @@ pub(super) enum Cap {
     Or,
 }
 
-impl Cap {
-    /// Whether this entry is drawn as a key cap; the separators are plain text.
-    #[must_use]
-    pub(super) const fn is_key(self) -> bool {
-        !matches!(self, Self::Plus | Self::Or)
-    }
-}
-
 /// One keyboard shortcut: what it does and the keys that do it.
 #[derive(Clone, Copy, Debug)]
 pub(super) struct KeyRow {
@@ -116,6 +108,13 @@ pub(super) fn command_key(platform: Platform) -> Text {
 #[cfg(test)]
 mod tests {
     use super::{Cap, ROWS, command_key};
+
+    impl Cap {
+        /// Whether this entry is a key cap; the separators are plain text.
+        const fn is_key(self) -> bool {
+            !matches!(self, Self::Plus | Self::Or)
+        }
+    }
     use crate::app::context::Platform;
     use crate::app::i18n::Text;
 

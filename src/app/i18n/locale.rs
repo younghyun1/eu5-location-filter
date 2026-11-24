@@ -108,6 +108,7 @@ impl Locale {
     }
 
     /// Site tag, exactly as the site writes it.
+    #[cfg(any(test, all(feature = "web", target_family = "wasm")))]
     #[must_use]
     pub(crate) const fn tag(self) -> &'static str {
         match self {
@@ -143,6 +144,7 @@ impl Locale {
 
     /// Exact, case-sensitive tag lookup; host input that is not one of the 27 tags maps to
     /// `None` and the caller applies `EnUs`.
+    #[cfg(all(feature = "web", target_family = "wasm"))]
     #[must_use]
     pub(crate) fn from_tag(tag: &str) -> Option<Self> {
         Self::ALL.into_iter().find(|locale| locale.tag() == tag)

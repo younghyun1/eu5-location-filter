@@ -22,13 +22,21 @@ mod sort;
 pub(crate) mod view_state;
 
 pub(crate) use column_id::ColumnId;
-pub(crate) use columns::{Column, ColumnRows, Columns};
+#[cfg(test)]
+pub(crate) use columns::Column;
+pub(crate) use columns::{ColumnRows, Columns};
 pub(crate) use detail::{DetailField, DetailGroup, LocationDetail, build as build_detail};
 pub(crate) use facet_ui::{FacetRows, FacetUi};
 pub(crate) use facets::{FacetId, RailSection};
-pub(crate) use options::{FacetOption, FacetOptions, OptionList, OptionValue};
+#[cfg(test)]
+pub(crate) use options::FacetOption;
+pub(crate) use options::{FacetOptions, OptionList, OptionValue};
 pub(crate) use ranges::{Bound, RangeField};
-pub(crate) use row::{CellAlign, CellFont, CellTone, RowContext, tone_color, write_cell};
-pub(crate) use selection::{active_filter_count, clear, is_selected, selected_count, set_selected};
+#[cfg(test)]
+pub(crate) use row::CellTone;
+pub(crate) use row::{CellAlign, CellFont, RowContext, tone_color, write_cell};
+#[cfg(test)]
+pub(crate) use selection::is_selected;
+pub(crate) use selection::{active_filter_count, clear, selected_count, set_selected};
 pub(crate) use sort::{SortState, column_for_sort, sort_from_token, sort_token};
 pub(crate) use view_state::LocationKeys;

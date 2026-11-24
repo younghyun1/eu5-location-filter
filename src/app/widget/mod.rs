@@ -10,7 +10,7 @@ pub(crate) mod window;
 #[cfg(test)]
 mod window_tests;
 
-pub(crate) use anchor::{Anchor, anchor};
+pub(crate) use anchor::anchor;
 pub(crate) use checklist::{Checklist, ChecklistModel};
 pub(crate) use focus_ring::{FocusRing, focus_ring};
 pub(crate) use result_grid::ResultGrid;

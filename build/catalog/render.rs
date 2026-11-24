@@ -37,6 +37,7 @@ fn render_enum(out: &mut String, english: &Catalog) {
         "/// One interface string, identified by its catalog key; generated from `en-US.txt` in\n\
          /// file order.\n\
          #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]\n\
+         #[allow(dead_code)]\n\
          pub enum Text {\n",
     );
     for item in &english.items {
@@ -46,7 +47,7 @@ fn render_enum(out: &mut String, english: &Catalog) {
             variant_name(&item.key)
         ));
     }
-    out.push_str("}\n\nimpl Text {\n");
+    out.push_str("}\n\n#[allow(dead_code)]\nimpl Text {\n");
     out.push_str(&format!(
         "    /// Number of keys.\n    pub const COUNT: usize = {count};\n\n"
     ));

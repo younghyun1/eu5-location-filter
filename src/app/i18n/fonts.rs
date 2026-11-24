@@ -27,6 +27,7 @@ impl FontPack {
     pub(crate) const COUNT: usize = 8;
 
     /// Every pack, in `index` order.
+    #[cfg(test)]
     pub(crate) const ALL: [Self; Self::COUNT] = [
         Self::PlexSansKr,
         Self::PlexSansJp,
@@ -60,6 +61,7 @@ impl FontPack {
     }
 
     /// Path relative to the frame document, as passed to the host fetch.
+    #[cfg(all(feature = "web", target_family = "wasm"))]
     #[must_use]
     pub(crate) const fn fetch_path(self) -> &'static str {
         match self {
