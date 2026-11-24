@@ -2,7 +2,8 @@
 
 ## 0.1.0 - Unreleased
 
-- Measure the optimized browser package at 9.1 MB raw and 5.3 MB gzip, against 14.3 MB and 8.3 MB for the previous interface on the same data.
+- Measure the optimized browser package at 9.4 MB raw and 5.5 MB gzip, against 14.3 MB and 8.3 MB for the previous interface on the same data.
+- Ship the IBM Plex Sans and Mono faces unmodified and give every subset font its own family name, because the IBM Plex licence reserves the name for unmodified fonts.
 - Replace the Slint interface with iced 0.14 on desktop and in the browser (wgpu with a WebGL 2 fallback). The result grid and the checklists are custom widgets that draw only visible rows. Slint and its royalty-free licence attribution are removed; the About dialog lists iced, IBM Plex and Noto licences.
 - Redesign the interface after the cyhdev site: twelve host palette colours with a short palette transition, five accent presets on desktop, reduced motion, and keyboard operation of every control. iced 0.14 has no screen-reader tree, which is a documented limit.
 - Add interface catalogs for the site's 27 locales and right-to-left layout for Arabic, Persian and Urdu. Only English and Korean are written directly; the other catalogs are drafts that need native review.
