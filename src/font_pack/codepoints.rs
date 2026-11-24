@@ -210,7 +210,12 @@ mod tests {
     fn embedded_sans_adds_locale_text_but_mono_does_not() {
         let text = BTreeSet::from([0x15E, 0x1F600, 0x20]);
         let sans = wanted_for(Plan::Embedded { with_text: true }, &text);
-        assert!(sans.required.contains(&0x1F600));
+        // Locale text is kept when the source has it; what it lacks goes to the fallback face.
+        assert!(sans.optional.contains(&0x1F600));
+        assert!(!sans.required.contains(&0x1F600));
+        let fallback = wanted_for(Plan::LatinFallback, &text);
+        assert!(fallback.required.contains(&0x1F600));
+        assert!(!fallback.required.contains(&0x20));
         let mono = wanted_for(Plan::Embedded { with_text: false }, &text);
         assert!(!mono.required.contains(&0x1F600));
         assert!(mono.required.contains(&0xD7));
