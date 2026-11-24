@@ -1,0 +1,305 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = Search name or identifier
+header.search.tooltip = Search location names and identifiers
+header.result_count[one] = {count} location
+header.result_count[other] = {count} locations
+header.build = EU5 {version} | Build {build}
+header.build.pending = Loading data
+header.about = About
+header.language = Language
+header.appearance = Appearance
+header.filters = Filters
+header.details = Details
+
+# Appearance menu (desktop only)
+appearance.title = Appearance
+appearance.mode = Mode
+appearance.mode.light = Light
+appearance.mode.dark = Dark
+appearance.accent = Accent
+appearance.accent.amber = Amber
+appearance.accent.lagoon = Lagoon
+appearance.accent.cobalt = Cobalt
+appearance.accent.orchid = Orchid
+appearance.accent.graphite = Graphite
+appearance.motion = Animations
+appearance.motion.on = On
+appearance.motion.off = Off
+appearance.close = Close
+
+# Language menu (desktop only)
+language.title = Language
+language.game_text_note = Location names use English where the game has no translation for this language.
+language.close = Close
+
+# Filter rail
+rail.title = Filters
+rail.clear_all = Clear all
+rail.collapse = Hide filters
+rail.expand = Show filters
+rail.resize = Resize the filter pane
+rail.active_count[one] = {count} filter active
+rail.active_count[other] = {count} filters active
+rail.show_impassable = Show impassable
+rail.food_only = Food-producing only
+rail.section.location = Location
+rail.section.geography = Geography
+rail.section.terrain = Terrain
+rail.section.society = Society
+rail.section.economy = Economy
+rail.section.map_data = Map data
+
+# Facet titles
+facet.kind = Type
+facet.continent = Continent
+facet.subcontinent = Subcontinent
+facet.region = Region
+facet.area = Area
+facet.province = Province
+facet.topography = Topography
+facet.vegetation = Vegetation
+facet.climate = Climate
+facet.religion = Religion
+facet.culture = Culture
+facet.raw_material = Raw material
+facet.modifier = Modifier
+facet.coastal = Coastal
+facet.river_presence = River
+facet.river_level_min = Minimum river bonus
+facet.river_level_max = Maximum river bonus
+facet.harbor_presence = Harbor suitability
+facet.movement_presence = Movement assistance
+
+# Checklist controls
+checklist.search.placeholder = Filter options
+checklist.expand = Expand list
+checklist.collapse = Collapse list
+checklist.clear = Clear selection
+checklist.selected_count[one] = {count} selected
+checklist.selected_count[other] = {count} selected
+checklist.empty = No matching options
+
+# Static option labels
+option.kind.land = Land
+option.kind.sea = Sea
+option.kind.lake = Lake
+option.kind.impassable = Impassable
+option.kind.unknown = Unknown
+option.yes = Yes
+option.no = No
+option.present = Present
+option.missing = Missing
+option.no_value = Missing
+option.symbol_with_key = {label} [{key}]
+option.river_tier = Level {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = Brook
+river.tier.stream = Stream
+river.tier.river = River
+river.tier.large_river = Large river
+river.tier.major_river = Major river
+river.tier.unknown = Unknown
+
+# Exact color and numeric ranges
+rgb.label = Exact color
+rgb.placeholder = #RRGGBB
+rgb.tooltip = Enter one to six hexadecimal digits; leading zeroes may be omitted.
+range.harbor = Harbor value
+range.movement_x = Movement X
+range.movement_y = Movement Y
+range.min.placeholder = Minimum
+range.max.placeholder = Maximum
+validation.rgb = Enter one to six hexadecimal digits, such as #1A2B3C.
+validation.number = Enter a number, such as 0.5.
+validation.number_finite = Enter a finite number.
+
+# Result grid
+grid.legend.food = Food-producing
+grid.legend.precious = Gold or silver
+grid.columns = Columns
+grid.show_details = Show details
+grid.sort.ascending = Sorted ascending
+grid.sort.descending = Sorted descending
+grid.sort.hint = Select to sort; select again to reverse
+grid.resize.hint = Drag the edge to resize
+grid.empty.title = No locations match
+grid.empty.body = Change or clear the filters to see more locations.
+
+# Column headers
+column.color = Color
+column.name = Name
+column.identifier = Identifier
+column.kind = Type
+column.topography = Topography
+column.vegetation = Vegetation
+column.climate = Climate
+column.continent = Continent
+column.subcontinent = Subcontinent
+column.region = Region
+column.area = Area
+column.province = Province
+column.religion = Religion
+column.culture = Culture
+column.raw_material = Raw material
+column.modifier = Modifier
+column.rgb = RGB
+column.coastal = Coastal
+column.river_presence = River
+column.river_level = River bonus
+column.harbor = Harbor
+column.movement_presence = Movement
+column.movement_x = Movement X
+column.movement_y = Movement Y
+column.static_capacity = Static capacity
+column.equator_capacity = Equator capacity
+
+# Column menu
+column_menu.title = Visible columns
+column_menu.close = Close
+column_menu.keep_one = At least one column stays visible.
+
+# Detail pane
+detail.title = Location details
+detail.hide = Hide details
+detail.close = Close
+detail.resize = Resize the detail pane
+detail.empty.title = Select a location
+detail.empty.body = Location details, hierarchy, color, and river data appear here.
+detail.breadcrumb = Hierarchy
+detail.group.classification = Classification
+detail.group.society = Society
+detail.group.economy = Economy
+detail.group.coast = Coast and movement
+detail.group.river = River
+detail.group.capacity = Static population capacity
+detail.field.type = Type
+detail.field.topography = Topography
+detail.field.vegetation = Vegetation
+detail.field.climate = Climate
+detail.field.religion = Religion
+detail.field.culture = Culture
+detail.field.raw_material = Raw material
+detail.field.modifier = Modifier
+detail.field.coastal = Coastal
+detail.field.connected_sea = Connected sea
+detail.field.harbor = Harbor suitability
+detail.field.movement = Movement assistance
+detail.field.river = River
+detail.field.river_bonus = Capacity bonus
+detail.field.river_source = River source
+detail.field.river_confluence = River confluence
+detail.field.capacity_total = Total capacity
+detail.field.capacity_vegetation = Vegetation capacity
+detail.field.capacity_equator = Closeness to equator
+detail.field.capacity_modifier = Static capacity modifier
+detail.capacity.note = Derived only from immutable map data; development, buildings, laws, and other campaign state are excluded.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}, level {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = Starting
+load.embedded = Loading embedded data
+load.loading_data = Loading EU5 {version} data
+load.preparing = Preparing EU5 {version} data
+load.external = Preparing external data
+load.rebuild = Preparing rebuild
+load.fonts = Loading fonts
+load.names = Loading location names
+import.templates = Reading location templates
+import.hierarchy = Reading hierarchy
+import.colors = Reading map colors
+import.ports = Reading ports
+import.river_settings = Reading river settings
+import.map_factors = Reading static map factors
+import.localization = Reading localization
+import.rivers = Scanning map and rivers
+import.capacity = Calculating static population capacity
+import.complete = Import complete
+
+# Load errors
+error.title = Could not load EU5 locations
+error.detail = Technical detail
+error.io = A file operation failed for {path}.
+error.parse = The game file {source} could not be parsed near byte {offset}.
+error.installation = The Europa Universalis V installation was not found.
+error.missing_file = A required game file is missing: {path}
+error.invalid_data = The location data is invalid.
+error.encoding = The location data could not be decoded.
+error.compression = The location data could not be decompressed.
+error.png = A map image could not be decoded: {path}
+error.ui = The interface failed.
+error.worker = The background loader stopped unexpectedly.
+error.hint.retryable = Check the installation directory, then retry or rebuild the data.
+error.hint.rebuild = Retrying will not help with this error; rebuild the data from the game files.
+error.hint.web = Reload the page to try again.
+error.install_path.label = Installation directory
+error.install_path.placeholder = Europa Universalis V installation directory
+error.retry = Retry
+error.rebuild = Rebuild data
+
+# Notices shown over a loaded interface
+notice.language_pack = Location names for this language could not be loaded, so English names are shown.
+notice.language_pack_mismatch = The downloaded location names belong to a different data build and were not used.
+notice.font_pack = A font for this language could not be loaded, so some text may not display.
+notice.dismiss = Dismiss
+
+# Drawers
+drawer.close = Close
+
+# About dialog
+about.title = EU5 Location DB
+about.version = Version {version}
+about.data = Location data from Europa Universalis V {version}, Steam build {build}.
+about.author = Created by Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = An unofficial static map-data browser. Not affiliated with or endorsed by Paradox Interactive.
+about.trademark = Europa Universalis and Paradox Interactive are trademarks of their respective owners.
+about.license.source = Source license: MIT OR Apache-2.0
+about.license.ui = Interface toolkit: iced, MIT License
+about.license.fonts = Fonts: IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP, and Noto Sans families, SIL Open Font License 1.1
+about.licenses.show = Show license texts
+about.licenses.hide = Hide license texts
+about.keys.title = Keyboard
+about.keys.search = Focus search
+about.keys.regions = Move between header, filters, results, and details
+about.keys.focus = Move between controls
+about.keys.rows = Move the selected row
+about.keys.columns = Move the active column
+about.keys.sort = Sort by the active column
+about.keys.resize = Resize the active column
+about.keys.details = Show details for the selected row
+about.keys.toggle = Toggle the active option
+about.keys.close = Close a menu, dialog, or drawer
+about.close = Close
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Space
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = Arrow keys
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

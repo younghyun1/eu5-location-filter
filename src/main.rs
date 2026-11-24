@@ -6,7 +6,7 @@ use std::process::ExitCode;
 use clap::{Parser, Subcommand};
 use eu5_location_filter::filter::FilterEngine;
 use eu5_location_filter::import::import_game;
-use eu5_location_filter::{index_storage, steam, storage, ui};
+use eu5_location_filter::{app, index_storage, steam, storage};
 
 #[derive(Debug, Parser)]
 #[command(
@@ -59,7 +59,7 @@ fn main() -> ExitCode {
             cli.game_dir.as_deref(),
             force,
         ),
-        None => ui::run(cli.data_file, cli.index_file, cli.game_dir),
+        None => app::run(cli.data_file, cli.index_file, cli.game_dir),
     };
     match result {
         Ok(()) => ExitCode::SUCCESS,

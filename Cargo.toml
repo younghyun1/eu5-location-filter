@@ -10,7 +10,7 @@ homepage = "https://github.com/younghyun1/eu5-location-filter"
 repository = "https://github.com/younghyun1/eu5-location-filter"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
-keywords = ["eu5", "map", "paradox", "slint"]
+keywords = ["eu5", "map", "paradox", "iced"]
 categories = ["games", "visualization"]
 include = ["/assets/**", "/build.rs", "/src/**", "/tests/**", "/ui/**", "/web/**", "/docs/**", "/README.md", "/CHANGELOG.md", "/LICENSE-MIT", "/LICENSE-APACHE", "/rust-toolchain.toml"]
 
@@ -24,34 +24,44 @@ required-features = ["desktop"]
 
 [features]
 default = ["desktop"]
-desktop = [
-    "dep:clap",
-    "dep:png",
-    "slint/accessibility",
-    "slint/backend-winit",
-    "slint/renderer-femtovg",
-    "slint/renderer-software",
-]
-web = ["slint/backend-winit", "slint/renderer-femtovg"]
+# Native window, importer and command line. Native iced features (executor, software renderer,
+# X11 and Wayland) come from the non-wasm target table below, so no native feature combination
+# can miss them.
+desktop = ["dep:clap", "dep:iced", "dep:png"]
+# Browser build; meaningful only on wasm32, where the wasm target table adds WebGL.
+web = ["dep:iced"]
 web-benchmark = ["web"]
 
 [dependencies]
 bitcode = { version = "0.6.9", default-features = false, features = ["derive", "std"] }
 clap = { version = "4.6.6", default-features = false, features = ["derive", "error-context", "help", "std", "suggestions", "usage"], optional = true }
+# Shared iced features: custom widgets, shaped text for every script, pixel-snapped quads, browser
+# colour blending (host colours must match the site), and the wgpu renderer.
+iced = { version = "=0.14.0", default-features = false, features = ["advanced", "advanced-shaping", "crisp", "web-colors", "wgpu"], optional = true }
 memchr = { version = "2.8.3", default-features = false, features = ["std"] }
 png = { version = "0.18.1", default-features = false, optional = true }
-slint = { version = "1.17.1", default-features = false, features = ["compat-1-2", "std"] }
 thiserror = "2.0.20"
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
+# Native iced needs an executor and, on Linux, a windowing backend; tiny-skia is the software
+# fallback when no GPU adapter is available.
+iced = { version = "=0.14.0", default-features = false, features = ["thread-pool", "tiny-skia", "wayland", "x11"], optional = true }
 zstd = { version = "0.13.3", default-features = false }
 
 [target.'cfg(target_family = "wasm")'.dependencies]
+# WebGPU first, WebGL 2 when the browser has no WebGPU adapter.
+iced = { version = "=0.14.0", default-features = false, features = ["webgl"], optional = true }
+# Promise and Uint8Array for the host-provided asset fetch.
+js-sys = "0.3.80"
 ruzstd = { version = "0.9.0", default-features = false, features = ["std"] }
 wasm-bindgen = "0.2.103"
+# Awaits the host fetch promise.
+wasm-bindgen-futures = "0.4.53"
+# Window only: About links open through window.open, which the frame sandbox allows as a popup.
+web-sys = { version = "0.3.80", default-features = false, features = ["Window"] }
 
-[build-dependencies]
-slint-build = "1.17.1"
+[target.'cfg(not(target_family = "wasm"))'.dev-dependencies]
+iced_test = "=0.14.0"
 
 [profile.release]
 opt-level = 3
