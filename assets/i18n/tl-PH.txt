@@ -1,0 +1,305 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = Maghanap ng pangalan o identifier
+header.search.tooltip = Maghanap ng pangalan at identifier ng lokasyon
+header.result_count[one] = {count} lokasyon
+header.result_count[other] = {count} na lokasyon
+header.build = EU5 {version} | Build {build}
+header.build.pending = Naglo-load ng datos
+header.about = Tungkol
+header.language = Wika
+header.appearance = Hitsura
+header.filters = Mga filter
+header.details = Mga detalye
+
+# Appearance menu (desktop only)
+appearance.title = Hitsura
+appearance.mode = Mode
+appearance.mode.light = Maliwanag
+appearance.mode.dark = Madilim
+appearance.accent = Accent
+appearance.accent.amber = Amber
+appearance.accent.lagoon = Lagoon
+appearance.accent.cobalt = Cobalt
+appearance.accent.orchid = Orchid
+appearance.accent.graphite = Graphite
+appearance.motion = Mga animasyon
+appearance.motion.on = Naka-on
+appearance.motion.off = Naka-off
+appearance.close = Isara
+
+# Language menu (desktop only)
+language.title = Wika
+language.game_text_note = Gumagamit ng Ingles ang mga pangalan ng lokasyon kapag walang salin ang laro para sa wikang ito.
+language.close = Isara
+
+# Filter rail
+rail.title = Mga filter
+rail.clear_all = I-clear lahat
+rail.collapse = Itago ang mga filter
+rail.expand = Ipakita ang mga filter
+rail.resize = Baguhin ang laki ng filter pane
+rail.active_count[one] = {count} aktibong filter
+rail.active_count[other] = {count} na aktibong filter
+rail.show_impassable = Ipakita ang hindi madaanan
+rail.food_only = Pagkukunan lamang ng pagkain
+rail.section.location = Lokasyon
+rail.section.geography = Heograpiya
+rail.section.terrain = Lupain
+rail.section.society = Lipunan
+rail.section.economy = Ekonomiya
+rail.section.map_data = Datos ng mapa
+
+# Facet titles
+facet.kind = Uri
+facet.continent = Kontinente
+facet.subcontinent = Subkontinente
+facet.region = Rehiyon
+facet.area = Lugar
+facet.province = Lalawigan
+facet.topography = Topograpiya
+facet.vegetation = Halaman
+facet.climate = Klima
+facet.religion = Relihiyon
+facet.culture = Kultura
+facet.raw_material = Hilaw na materyales
+facet.modifier = Modifier
+facet.coastal = Baybayin
+facet.river_presence = Ilog
+facet.river_level_min = Pinakamababang bonus sa ilog
+facet.river_level_max = Pinakamataas na bonus sa ilog
+facet.harbor_presence = Angkop bilang daungan
+facet.movement_presence = Tulong sa paggalaw
+
+# Checklist controls
+checklist.search.placeholder = I-filter ang mga opsyon
+checklist.expand = Palawakin ang listahan
+checklist.collapse = I-collapse ang listahan
+checklist.clear = I-clear ang pinili
+checklist.selected_count[one] = {count} napili
+checklist.selected_count[other] = {count} na napili
+checklist.empty = Walang tugmang opsyon
+
+# Static option labels
+option.kind.land = Lupa
+option.kind.sea = Dagat
+option.kind.lake = Lawa
+option.kind.impassable = Hindi madaanan
+option.kind.unknown = Hindi alam
+option.yes = Oo
+option.no = Hindi
+option.present = Mayroon
+option.missing = Wala
+option.no_value = Wala
+option.symbol_with_key = {label} [{key}]
+option.river_tier = Antas {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = Sapa
+river.tier.stream = Batis
+river.tier.river = Ilog
+river.tier.large_river = Malaking ilog
+river.tier.major_river = Pangunahing ilog
+river.tier.unknown = Hindi alam
+
+# Exact color and numeric ranges
+rgb.label = Eksaktong kulay
+rgb.placeholder = #RRGGBB
+rgb.tooltip = Maglagay ng isa hanggang anim na hexadecimal na digit; maaaring alisin ang mga nangungunang zero.
+range.harbor = Halaga ng daungan
+range.movement_x = Paggalaw X
+range.movement_y = Paggalaw Y
+range.min.placeholder = Pinakamababa
+range.max.placeholder = Pinakamataas
+validation.rgb = Maglagay ng isa hanggang anim na hexadecimal na digit, gaya ng #1A2B3C.
+validation.number = Maglagay ng numero, gaya ng 0.5.
+validation.number_finite = Maglagay ng may hangganang numero.
+
+# Result grid
+grid.legend.food = Pagkukunan ng pagkain
+grid.legend.precious = Ginto o pilak
+grid.columns = Mga column
+grid.show_details = Ipakita ang mga detalye
+grid.sort.ascending = Nakaayos pataas
+grid.sort.descending = Nakaayos pababa
+grid.sort.hint = Piliin para mag-ayos; piliin muli para baligtarin
+grid.resize.hint = I-drag ang gilid para baguhin ang laki
+grid.empty.title = Walang tugmang lokasyon
+grid.empty.body = Baguhin o i-clear ang mga filter para makita ang higit pang lokasyon.
+
+# Column headers
+column.color = Kulay
+column.name = Pangalan
+column.identifier = Identifier
+column.kind = Uri
+column.topography = Topograpiya
+column.vegetation = Halaman
+column.climate = Klima
+column.continent = Kontinente
+column.subcontinent = Subkontinente
+column.region = Rehiyon
+column.area = Lugar
+column.province = Lalawigan
+column.religion = Relihiyon
+column.culture = Kultura
+column.raw_material = Hilaw na materyales
+column.modifier = Modifier
+column.rgb = RGB
+column.coastal = Baybayin
+column.river_presence = Ilog
+column.river_level = Bonus sa ilog
+column.harbor = Daungan
+column.movement_presence = Paggalaw
+column.movement_x = Paggalaw X
+column.movement_y = Paggalaw Y
+column.static_capacity = Static na kapasidad
+column.equator_capacity = Kapasidad sa ekwador
+
+# Column menu
+column_menu.title = Mga nakikitang column
+column_menu.close = Isara
+column_menu.keep_one = Kahit isang column ay mananatiling nakikita.
+
+# Detail pane
+detail.title = Mga detalye ng lokasyon
+detail.hide = Itago ang mga detalye
+detail.close = Isara
+detail.resize = Baguhin ang laki ng detail pane
+detail.empty.title = Pumili ng lokasyon
+detail.empty.body = Lalabas dito ang mga detalye, hierarchy, kulay, at datos ng ilog ng lokasyon.
+detail.breadcrumb = Hierarchy
+detail.group.classification = Klasipikasyon
+detail.group.society = Lipunan
+detail.group.economy = Ekonomiya
+detail.group.coast = Baybayin at paggalaw
+detail.group.river = Ilog
+detail.group.capacity = Static na kapasidad ng populasyon
+detail.field.type = Uri
+detail.field.topography = Topograpiya
+detail.field.vegetation = Halaman
+detail.field.climate = Klima
+detail.field.religion = Relihiyon
+detail.field.culture = Kultura
+detail.field.raw_material = Hilaw na materyales
+detail.field.modifier = Modifier
+detail.field.coastal = Baybayin
+detail.field.connected_sea = Kaugnay na dagat
+detail.field.harbor = Angkop bilang daungan
+detail.field.movement = Tulong sa paggalaw
+detail.field.river = Ilog
+detail.field.river_bonus = Bonus sa kapasidad
+detail.field.river_source = Pinagmulan ng ilog
+detail.field.river_confluence = Pagtatagpo ng ilog
+detail.field.capacity_total = Kabuuang kapasidad
+detail.field.capacity_vegetation = Kapasidad ng halaman
+detail.field.capacity_equator = Lapit sa ekwador
+detail.field.capacity_modifier = Modifier ng static na kapasidad
+detail.capacity.note = Galing lamang sa hindi nagbabagong datos ng mapa; hindi kasama ang pag-unlad, mga gusali, batas, at iba pang estado ng kampanya.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}, antas {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = Sinisimulan
+load.embedded = Naglo-load ng naka-embed na datos
+load.loading_data = Naglo-load ng datos ng EU5 {version}
+load.preparing = Inihahanda ang datos ng EU5 {version}
+load.external = Inihahanda ang external na datos
+load.rebuild = Inihahanda ang rebuild
+load.fonts = Naglo-load ng mga font
+load.names = Naglo-load ng mga pangalan ng lokasyon
+import.templates = Binabasa ang mga template ng lokasyon
+import.hierarchy = Binabasa ang hierarchy
+import.colors = Binabasa ang mga kulay ng mapa
+import.ports = Binabasa ang mga daungan
+import.river_settings = Binabasa ang mga setting ng ilog
+import.map_factors = Binabasa ang static na factor ng mapa
+import.localization = Binabasa ang localization
+import.rivers = Ini-scan ang mapa at mga ilog
+import.capacity = Kinakalkula ang static na kapasidad ng populasyon
+import.complete = Kumpleto na ang import
+
+# Load errors
+error.title = Hindi ma-load ang mga lokasyon ng EU5
+error.detail = Teknikal na detalye
+error.io = Nabigo ang operasyon sa file para sa {path}.
+error.parse = Hindi ma-parse ang game file na {source} malapit sa byte {offset}.
+error.installation = Hindi nahanap ang installation ng Europa Universalis V.
+error.missing_file = Nawawala ang kinakailangang game file: {path}
+error.invalid_data = Hindi wasto ang datos ng lokasyon.
+error.encoding = Hindi ma-decode ang datos ng lokasyon.
+error.compression = Hindi ma-decompress ang datos ng lokasyon.
+error.png = Hindi ma-decode ang image ng mapa: {path}
+error.ui = Nabigo ang interface.
+error.worker = Biglang huminto ang background loader.
+error.hint.retryable = Suriin ang installation directory, pagkatapos ay subukan muli o i-rebuild ang datos.
+error.hint.rebuild = Hindi makakatulong ang pag-ulit sa error na ito; i-rebuild ang datos mula sa mga game file.
+error.hint.web = I-reload ang page para subukan muli.
+error.install_path.label = Installation directory
+error.install_path.placeholder = Installation directory ng Europa Universalis V
+error.retry = Subukan muli
+error.rebuild = I-rebuild ang datos
+
+# Notices shown over a loaded interface
+notice.language_pack = Hindi ma-load ang mga pangalan ng lokasyon para sa wikang ito, kaya ipinapakita ang mga pangalang Ingles.
+notice.language_pack_mismatch = Ang na-download na mga pangalan ng lokasyon ay para sa ibang data build, kaya hindi ito ginamit.
+notice.font_pack = Hindi ma-load ang font para sa wikang ito, kaya maaaring hindi lumabas ang ilang teksto.
+notice.dismiss = I-dismiss
+
+# Drawers
+drawer.close = Isara
+
+# About dialog
+about.title = EU5 Location DB
+about.version = Bersyon {version}
+about.data = Datos ng lokasyon mula sa Europa Universalis V {version}, Steam build {build}.
+about.author = Ginawa ni Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = Isang hindi opisyal na browser ng static na datos ng mapa. Walang kaugnayan sa o pag-endorso mula sa Paradox Interactive.
+about.trademark = Ang Europa Universalis at Paradox Interactive ay mga trademark ng kani-kanilang may-ari.
+about.license.source = Lisensya ng source: MIT OR Apache-2.0
+about.license.ui = Interface toolkit: iced, MIT License
+about.license.fonts = Mga font: pamilya ng IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP, at Noto Sans, SIL Open Font License 1.1
+about.licenses.show = Ipakita ang mga teksto ng lisensya
+about.licenses.hide = Itago ang mga teksto ng lisensya
+about.keys.title = Keyboard
+about.keys.search = I-focus ang search
+about.keys.regions = Lumipat sa pagitan ng header, filter, resulta, at detalye
+about.keys.focus = Lumipat sa pagitan ng mga control
+about.keys.rows = Ilipat ang napiling row
+about.keys.columns = Ilipat ang aktibong column
+about.keys.sort = Mag-ayos ayon sa aktibong column
+about.keys.resize = Baguhin ang laki ng aktibong column
+about.keys.details = Ipakita ang detalye ng napiling row
+about.keys.toggle = I-toggle ang aktibong opsyon
+about.keys.close = Isara ang menu, dialog, o drawer
+about.close = Isara
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Space
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = Mga arrow key
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

@@ -2,9 +2,14 @@
 //! provinces, areas and cultures) and the column menu. Focusable: arrows, page keys, Home and
 //! End move the active option and Space toggles it.
 
+mod draw;
+mod geometry;
+mod input;
 mod list;
 mod model;
 mod state;
+#[cfg(test)]
+mod tests;
 mod widget_impl;
 
 pub(crate) use list::{Checklist, OnToggle};

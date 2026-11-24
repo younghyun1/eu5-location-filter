@@ -3,6 +3,7 @@
 use super::{FilterEngine, FilterSet, FloatRange, SortField};
 use crate::{
     AppError,
+    lang_pack::{GameLanguage, decode_pack},
     model::{LocationId, SymbolId},
 };
 use std::{
@@ -139,11 +140,12 @@ fn compares_sparse_sort_strategy() -> Result<(), AppError> {
     let engine = FilterEngine::from_stored_index(Arc::new(dataset), index)?;
     let total = engine.dataset.stored.locations.len();
     assert!(total > 0);
-    let Some(order) = engine.sort_orders.get(SortField::Name, true) else {
+    let Some(stored) = engine.order(SortField::Name) else {
         return Err(AppError::InvalidData(
             "name sort order is missing".to_owned(),
         ));
     };
+    let order = &stored.ascending;
     for count in [1, 16, 64, 256, 512, 1024, 4096, 16384, total] {
         let mut mask = super::bitmap::Bitmap::empty(total);
         // Spread IDs across the dataset instead of accidentally benchmarking already
@@ -153,7 +155,7 @@ fn compares_sparse_sort_strategy() -> Result<(), AppError> {
                 mask.insert(LocationId(id));
             }
         }
-        let indexed = || engine.sort_orders.select(&mask, SortField::Name, true);
+        let indexed = || super::sort::select(stored, &mask, true);
         let scanned = || {
             order
                 .iter()
@@ -195,5 +197,47 @@ fn verifies_committed_index_regeneration() -> Result<(), AppError> {
         bitcode::encode(&rebuilt).len(),
         encoded.len()
     );
+    Ok(())
+}
+
+#[test]
+#[ignore = "local timing comparison with the embedded Korean pack active"]
+fn compares_korean_queries_to_scan() -> Result<(), AppError> {
+    let (dataset, index) = crate::embedded::load()?;
+    let mut engine = FilterEngine::from_stored_index(Arc::new(dataset), index)?;
+    let Some(bytes) = crate::embedded::language_pack(GameLanguage::Korean) else {
+        return Err(AppError::InvalidData(
+            "the Korean pack is not embedded in this build".to_owned(),
+        ));
+    };
+    let started = Instant::now();
+    let pack = engine.validate_language_pack(decode_pack(bytes)?, GameLanguage::Korean)?;
+    eprintln!("Korean decode and validate: {:?}", started.elapsed());
+    engine.install_language_pack(pack)?;
+    for (name, search) in [
+        ("ko all", ""),
+        ("ko short search", "스"),
+        ("ko substring", "스톡"),
+        ("ko English substring", "stock"),
+        ("ko absent search", "zzzzzzzzzz"),
+    ] {
+        let filters = FilterSet {
+            search: search.to_owned(),
+            ..FilterSet::default()
+        };
+        for field in SortField::ALL {
+            for ascending in [true, false] {
+                assert_eq!(
+                    engine.apply(&filters, field, ascending),
+                    engine.apply_scan(&filters, field, ascending)
+                );
+            }
+        }
+        measure(
+            name,
+            || engine.apply(&filters, SortField::Name, true),
+            || engine.apply_scan(&filters, SortField::Name, true),
+        );
+    }
     Ok(())
 }

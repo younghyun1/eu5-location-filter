@@ -1,11 +1,23 @@
-//! Pack envelope, file naming, pairing digest, and validation entry points.
+//! Pack envelope, file naming, and the pairing digest.
+//!
+//! The envelope mirrors the location and index bundles: `PACK_MAGIC`, the payload length as a
+//! little-endian `u64`, then the bitcode payload, all inside one zstd frame.
 
-#[cfg(feature = "desktop")]
-use std::path::Path;
-
-use super::{GameLanguage, StoredLanguagePack, ValidatedLanguagePack};
+use super::{
+    GameLanguage, MAX_PACK_COMPRESSED_SIZE, MAX_PACK_DECOMPRESSED_SIZE, PACK_MAGIC,
+    StoredLanguagePack,
+};
 use crate::AppError;
-use crate::model::Dataset;
+use crate::compression::decode_limited;
+
+// Validation and desktop file access live in sibling modules to keep each file small; these
+// re-exports keep the frozen `codec::` paths working for code that imports them from here.
+#[cfg(feature = "desktop")]
+pub use super::files::{load_pack, write_pack};
+pub use super::validate::validate_pack;
+
+/// Magic plus the length field.
+const HEADER_LEN: usize = 16;
 
 /// File name of a pack for one dataset build; `None` for English, which has no pack file.
 #[must_use]
@@ -41,67 +53,83 @@ pub fn dictionary_digest(dictionary: &[String]) -> u64 {
 /// `MAX_PACK_DECOMPRESSED_SIZE`, a wrong magic, and a length header that disagrees with the
 /// payload, before bitcode decoding runs.
 pub fn decode_pack(compressed: &[u8]) -> Result<StoredLanguagePack, AppError> {
-    let _ = compressed;
-    Err(not_implemented("decoding"))
+    if u64::try_from(compressed.len()).map_or(true, |length| length > MAX_PACK_COMPRESSED_SIZE) {
+        return Err(AppError::InvalidData(
+            "compressed language pack exceeds its size limit".to_owned(),
+        ));
+    }
+    let expanded = decode_limited(compressed, MAX_PACK_DECOMPRESSED_SIZE)?;
+    let payload = envelope_payload(&expanded)?;
+    bitcode::decode::<StoredLanguagePack>(payload)
+        .map_err(|error| AppError::Encoding(format!("language pack payload: {error}")))
 }
 
-/// Checks pairing, bounds, permutations, ranks, and postings against `dataset`.
-///
-/// Runs in linear time over the pack; the desktop loader calls it off the UI thread.
-pub fn validate_pack(
-    stored: StoredLanguagePack,
-    dataset: &Dataset,
-    expected: GameLanguage,
-) -> Result<ValidatedLanguagePack, AppError> {
-    let _ = (stored, dataset, expected);
-    Err(not_implemented("validation"))
+/// Returns the payload after checking the magic and the declared length.
+fn envelope_payload(expanded: &[u8]) -> Result<&[u8], AppError> {
+    if expanded.get(..PACK_MAGIC.len()) != Some(PACK_MAGIC.as_slice()) {
+        return Err(AppError::InvalidData(
+            "language pack magic or envelope version is unsupported".to_owned(),
+        ));
+    }
+    let length_bytes: Option<[u8; 8]> = expanded
+        .get(PACK_MAGIC.len()..HEADER_LEN)
+        .and_then(|bytes| bytes.try_into().ok());
+    let Some(length_bytes) = length_bytes else {
+        return Err(AppError::InvalidData(
+            "language pack header is truncated".to_owned(),
+        ));
+    };
+    let declared = u64::from_le_bytes(length_bytes);
+    let Some(payload) = expanded.get(HEADER_LEN..) else {
+        return Err(AppError::InvalidData(
+            "language pack payload is truncated".to_owned(),
+        ));
+    };
+    if u64::try_from(payload.len()).ok() != Some(declared) {
+        return Err(AppError::InvalidData(
+            "language pack payload length does not match its header".to_owned(),
+        ));
+    }
+    Ok(payload)
 }
 
 /// Encodes a pack as one level-22 zstd frame inside the `PACK_MAGIC` envelope.
 #[cfg(feature = "desktop")]
 pub fn encode_pack(pack: &StoredLanguagePack) -> Result<Vec<u8>, AppError> {
-    let _ = pack;
-    Err(not_implemented("encoding"))
+    let payload = bitcode::encode(pack);
+    let length = u64::try_from(payload.len())
+        .map_err(|error| AppError::Encoding(format!("language pack length overflow: {error}")))?;
+    if length > MAX_PACK_DECOMPRESSED_SIZE.saturating_sub(HEADER_LEN as u64) {
+        return Err(AppError::InvalidData(
+            "language pack exceeds the decompressed size limit".to_owned(),
+        ));
+    }
+    let mut expanded = Vec::with_capacity(payload.len().saturating_add(HEADER_LEN));
+    expanded.extend_from_slice(PACK_MAGIC);
+    expanded.extend_from_slice(&length.to_le_bytes());
+    expanded.extend_from_slice(&payload);
+    // One-shot compression records the content size in the frame header, so the frame's window
+    // never exceeds the payload. The browser decoder caps the window at the decompressed limit;
+    // a streamed level-22 frame, as the index bundle uses, declares a 128 MiB window and would
+    // be rejected at this smaller limit.
+    let compressed = zstd::bulk::compress(&expanded, 22)
+        .map_err(|error| AppError::Compression(error.to_string()))?;
+    if u64::try_from(compressed.len()).map_or(true, |size| size > MAX_PACK_COMPRESSED_SIZE) {
+        return Err(AppError::InvalidData(
+            "compressed language pack exceeds its size limit".to_owned(),
+        ));
+    }
+    Ok(compressed)
 }
 
-/// Reads a pack file after enforcing `MAX_PACK_COMPRESSED_SIZE` on its metadata.
+/// Error for builder entry points that are not filled in yet.
 #[cfg(feature = "desktop")]
-pub fn load_pack(path: &Path) -> Result<StoredLanguagePack, AppError> {
-    let _ = path;
-    Err(not_implemented("loading"))
-}
-
-/// Writes through a verified temporary file, then removes same-language packs of other builds
-/// so the build script finds exactly one file per language.
-#[cfg(feature = "desktop")]
-pub fn write_pack(path: &Path, pack: &StoredLanguagePack, force: bool) -> Result<(), AppError> {
-    let _ = (path, pack, force);
-    Err(not_implemented("writing"))
-}
-
-/// Error returned by entry points whose bodies are not filled in yet.
+#[allow(
+    dead_code,
+    reason = "kept for builder bodies that may still return it; remove once none do"
+)]
 pub(super) fn not_implemented(stage: &str) -> AppError {
     AppError::InvalidData(format!(
         "language pack {stage} is not implemented in this build"
     ))
-}
-
-#[cfg(test)]
-mod tests {
-    use super::{dictionary_digest, pack_file_name};
-    use crate::lang_pack::GameLanguage;
-
-    #[test]
-    fn english_has_no_pack_file_and_others_carry_the_build() {
-        assert_eq!(pack_file_name(GameLanguage::English, 7), None);
-        let korean = pack_file_name(GameLanguage::Korean, 26_547_371);
-        assert_eq!(korean.as_deref(), Some("ko.26547371.bitcode.zst"));
-    }
-
-    #[test]
-    fn digest_separates_entry_boundaries() {
-        let joined = dictionary_digest(&["ab".to_owned(), "c".to_owned()]);
-        let split = dictionary_digest(&["a".to_owned(), "bc".to_owned()]);
-        assert_ne!(joined, split);
-    }
 }

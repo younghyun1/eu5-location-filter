@@ -3,6 +3,7 @@
 use std::path::{Path, PathBuf};
 
 use crate::AppError;
+use crate::lang_pack::GameLanguage;
 use crate::model::EU5_APP_ID;
 use crate::parser::{VdfEntry, VdfValue, parse_vdf, read_limited};
 
@@ -33,9 +34,13 @@ impl GameInstallation {
         self.root.join("game").join("in_game").join("map_data")
     }
 
-    /// Returns English localization roots used by the loading and main-menu scopes.
+    /// Returns one language's localization roots in the loading-screen and main-menu scopes.
+    ///
+    /// Only existing directories are returned, so an install without a language yields an
+    /// empty list. The `in_game` scope holds only the shared `jomini` directory and no label
+    /// used here.
     #[must_use]
-    pub fn localization_roots(&self) -> Vec<PathBuf> {
+    pub fn localization_roots(&self, language: GameLanguage) -> Vec<PathBuf> {
         ["loading_screen", "main_menu"]
             .into_iter()
             .map(|scope| {
@@ -43,7 +48,7 @@ impl GameInstallation {
                     .join("game")
                     .join(scope)
                     .join("localization")
-                    .join("english")
+                    .join(language.directory())
             })
             .filter(|path| path.is_dir())
             .collect()
@@ -264,21 +269,4 @@ fn atom_at<'a>(entries: &'a [VdfEntry], key: &str) -> Option<&'a str> {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::{atom_at, object_at};
-    use crate::parser::{VdfEntry, VdfValue};
-
-    #[test]
-    fn finds_values_case_insensitively() {
-        let entries = vec![VdfEntry {
-            key: "Root".to_owned(),
-            value: VdfValue::Object(vec![VdfEntry {
-                key: "BuildID".to_owned(),
-                value: VdfValue::Atom("42".to_owned()),
-            }]),
-        }];
-        let root = object_at(&entries, "root");
-        assert!(root.is_some());
-        assert_eq!(root.and_then(|value| atom_at(value, "buildid")), Some("42"));
-    }
-}
+mod tests;

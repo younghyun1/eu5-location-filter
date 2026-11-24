@@ -146,6 +146,18 @@ Language and font packs live next to `index.html` and are addressed relative to 
 - **Request.** `fetch(url, { mode: "cors", credentials: "omit" })`. The opaque-origin document fetches in CORS mode and the server answers with `Access-Control-Allow-Origin: *`.
 - **Bounds.** Rejects a non-2xx status, a `Content-Length` above `maxBytes`, or a body above `maxBytes` after reading. `maxBytes` is at most 33,554,432; the application passes 16,777,216 for both pack kinds, which is `MAX_PACK_COMPRESSED_SIZE` for language packs.
 
+### Search field
+
+The canvas receives no input-method composition and no clipboard in the browser (winit's web backend emits no IME events and its clipboard is a placeholder), so Korean, Japanese and Chinese text could not be typed or pasted into an iced text field. The global search in the browser build is therefore a real `<input id="eu5-search" type="search" autocomplete="off" spellcheck="false">` placed over the header's search slot. This is internal to the frame: the parent page never sees it, and it adds no message to the protocol. Facet option searches and numeric fields stay iced text fields, and the desktop build keeps an iced text field for the global search.
+
+- **Placement.** The application measures the header slot and calls `cyhdevEu5SearchOverlay(visible, x, y, width, height, text, placeholder, rtl)` with CSS pixels of the frame document, which equal iced logical pixels because the canvas fills the document. It calls with `visible` false while the dataset is loading or failed, while a modal surface (About, a drawer with a scrim, the loading or error veil) covers the header, and before the slot has been laid out. It skips the call when nothing changed since the previous one.
+- **Content.** The host script sets position, size, placeholder, accessible label and direction on every visible call, and sets `value` only when it differs and no composition is in progress, so the application never overwrites text the viewer is composing.
+- **Input.** Every `input` event, and the end of a composition, truncates the value to 256 UTF-8 bytes on a code point boundary and calls the export `set_search_text(text) -> bool`, which stores the text in its own inbox slot. The application applies it exactly like typing into the desktop field, so search results update while the viewer types.
+- **Focus.** Ctrl+F or Cmd+F in the browser calls `cyhdevEu5FocusSearch()`, which focuses the field and selects its text after the current call returns. Escape in the field blurs it and returns focus to the canvas.
+- **Look.** The field starts hidden and is styled from the last valid host message: surface background, ink text, line border and an accent focus outline, with the built-in dark values before any message, in `14px system-ui`.
+
+Both globals are defined before `init()`, never throw, and never call back into WebAssembly synchronously; `set_search_text` is called only from DOM events, outside any application update.
+
 ## WebAssembly interface
 
 Exports are `#[wasm_bindgen]` functions compiled only for `feature = "web"` on `target_family = "wasm"`; their JavaScript names equal the Rust names. None returns a `Result`, so none throws into the host script.

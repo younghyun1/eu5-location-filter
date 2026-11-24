@@ -3,8 +3,10 @@
 
 use super::constants::{
     DETAIL_DEFAULT_WIDTH, DETAIL_MAX_WIDTH, DETAIL_MIN_WIDTH, DRAWER_DETAIL_WIDTH,
-    DRAWER_EDGE_GAP, DRAWER_RAIL_WIDTH, HEADER_BRAND_MIN_WIDTH, NARROW_BREAKPOINT,
-    RAIL_DEFAULT_WIDTH, RAIL_MAX_WIDTH, RAIL_MIN_WIDTH,
+    DRAWER_EDGE_GAP, DRAWER_RAIL_WIDTH, GRID_MIN_WIDTH, HEADER_BRAND_MIN_WIDTH,
+    HEADER_BUTTON_WIDTH, HEADER_GAP, HEADER_PADDING_INLINE, HEADER_STATUS_WIDTH,
+    NARROW_BREAKPOINT, RAIL_COLLAPSED_WIDTH, RAIL_DEFAULT_WIDTH, RAIL_MAX_WIDTH, RAIL_MIN_WIDTH,
+    SEARCH_MIN_WIDTH, SPLITTER_HIT_WIDTH,
 };
 use super::direction::Direction;
 
@@ -114,18 +116,149 @@ pub(crate) fn clamp_detail(width: f32) -> f32 {
     width.clamp(DETAIL_MIN_WIDTH, DETAIL_MAX_WIDTH)
 }
 
+/// Header buttons at the inline end: Language, Appearance and About on desktop, only About in
+/// the browser build, whose host page owns language and appearance.
+const HEADER_BUTTON_COUNT: f32 = if cfg!(all(feature = "web", target_family = "wasm")) {
+    1.0
+} else {
+    3.0
+};
+
+/// Header width at the brand and search minimums: inline padding, brand, search, status slot,
+/// the header buttons and one gap between each pair of items.
+pub(super) const HEADER_MIN_WIDTH: f32 = 2.0 * HEADER_PADDING_INLINE
+    + HEADER_BRAND_MIN_WIDTH
+    + SEARCH_MIN_WIDTH
+    + HEADER_STATUS_WIDTH
+    + HEADER_BUTTON_COUNT * HEADER_BUTTON_WIDTH
+    + (HEADER_BUTTON_COUNT + 2.0) * HEADER_GAP;
+
 /// Resolves docked widths, detail first, so the grid keeps `GRID_MIN_WIDTH` in the wide
 /// layout; in the narrow layout panes are hidden or shown as the open drawer.
+///
+/// Wide layout: a docked pane takes its clamped stored width plus `SPLITTER_HIT_WIDTH`, a
+/// collapsed rail takes `RAIL_COLLAPSED_WIDTH` without a splitter, and a hidden detail pane
+/// takes nothing. When the grid lacks room the detail pane shrinks toward its minimum, then the
+/// rail; when both minimums still leave the grid too narrow the detail pane is hidden and
+/// `detail_forced_hidden` is set, and the rail is fitted again without it. Stored widths are
+/// never changed here, so a wider window restores them.
+///
+/// Narrow layout: the grid takes the whole width and a pane appears only as the drawer named by
+/// `PaneState::drawer`, which update keeps set while a closing drawer slides out.
 #[must_use]
 pub(crate) fn resolve(viewport_width: f32, panes: &PaneState, mode: LayoutMode) -> PaneLayout {
-    let _ = mode;
+    let viewport = if viewport_width.is_finite() {
+        viewport_width.max(0.0)
+    } else {
+        0.0
+    };
+    match mode {
+        LayoutMode::Narrow => resolve_narrow(viewport, panes),
+        LayoutMode::Wide => resolve_wide(viewport, panes),
+    }
+}
+
+/// Narrow placement: the open drawer, if any; everything else hidden.
+fn resolve_narrow(viewport: f32, panes: &PaneState) -> PaneLayout {
+    let slot = |drawer: Drawer| match panes.drawer {
+        Some(open) if open == drawer => PaneSlot::Drawer(drawer_width(drawer, viewport)),
+        Some(_) | None => PaneSlot::Hidden,
+    };
     PaneLayout {
-        rail: PaneSlot::Docked(panes.rail_width),
-        detail: PaneSlot::Docked(panes.detail_width),
-        grid_width: (viewport_width - panes.rail_width - panes.detail_width).max(0.0),
+        rail: slot(Drawer::Filters),
+        detail: slot(Drawer::Details),
+        grid_width: viewport,
+        // The narrow header omits the brand; the minimum keeps the value meaningful.
         brand_width: HEADER_BRAND_MIN_WIDTH,
         detail_forced_hidden: false,
     }
+}
+
+/// Wide placement with the shrink order of the layout document.
+fn resolve_wide(viewport: f32, panes: &PaneState) -> PaneLayout {
+    // Room the panes and their splitters may take while the grid keeps its minimum.
+    let room = viewport - GRID_MIN_WIDTH;
+    let rail_stored = clamp_rail(finite_or(panes.rail_width, RAIL_DEFAULT_WIDTH));
+    let detail_stored = clamp_detail(finite_or(panes.detail_width, DETAIL_DEFAULT_WIDTH));
+    let collapsed_extent = if panes.rail_collapsed {
+        RAIL_COLLAPSED_WIDTH
+    } else {
+        0.0
+    };
+
+    let mut rail = (!panes.rail_collapsed).then_some(rail_stored);
+    let mut detail = (!panes.detail_hidden).then_some(detail_stored);
+    let mut detail_forced_hidden = false;
+
+    if let Some(detail_width) = detail {
+        let rail_extent = extent(rail) + collapsed_extent;
+        let shrunk = fit(detail_width, DETAIL_MIN_WIDTH, room - rail_extent);
+        detail = Some(shrunk);
+        if let Some(rail_width) = rail {
+            rail = Some(fit(rail_width, RAIL_MIN_WIDTH, room - extent(detail)));
+        }
+        if extent(rail) + collapsed_extent + extent(detail) > room {
+            detail = None;
+            detail_forced_hidden = true;
+            rail = rail.map(|_| fit(rail_stored, RAIL_MIN_WIDTH, room));
+        }
+    } else if let Some(rail_width) = rail {
+        rail = Some(fit(rail_width, RAIL_MIN_WIDTH, room));
+    }
+
+    let rail_slot = match rail {
+        Some(width) => PaneSlot::Docked(width),
+        None => PaneSlot::Collapsed,
+    };
+    let detail_slot = match detail {
+        Some(width) => PaneSlot::Docked(width),
+        None => PaneSlot::Hidden,
+    };
+    let used = extent(rail) + collapsed_extent + extent(detail);
+    PaneLayout {
+        rail: rail_slot,
+        detail: detail_slot,
+        grid_width: (viewport - used).max(0.0),
+        brand_width: brand_width(viewport, rail),
+        detail_forced_hidden,
+    }
+}
+
+/// Header brand slot: aligned with the grid start while the rail is docked, unless the header
+/// would then lack room for the search field at its minimum, in which case the brand yields
+/// first.
+fn brand_width(viewport: f32, rail: Option<f32>) -> f32 {
+    match rail {
+        Some(width) => {
+            let aligned = (width + SPLITTER_HIT_WIDTH - HEADER_PADDING_INLINE - HEADER_GAP)
+                .max(HEADER_BRAND_MIN_WIDTH);
+            if viewport >= HEADER_MIN_WIDTH + aligned - HEADER_BRAND_MIN_WIDTH {
+                aligned
+            } else {
+                HEADER_BRAND_MIN_WIDTH
+            }
+        }
+        None => HEADER_BRAND_MIN_WIDTH,
+    }
+}
+
+/// Layout width of a docked pane including its splitter; nothing for an absent pane.
+fn extent(width: Option<f32>) -> f32 {
+    match width {
+        Some(width) => width + SPLITTER_HIT_WIDTH,
+        None => 0.0,
+    }
+}
+
+/// Largest pane width not above `preferred` and not below `minimum` whose width plus splitter
+/// fits in `room`.
+fn fit(preferred: f32, minimum: f32, room: f32) -> f32 {
+    preferred.min(room - SPLITTER_HIT_WIDTH).max(minimum)
+}
+
+/// `value` when finite, otherwise `fallback`; `f32::clamp` would pass NaN through.
+fn finite_or(value: f32, fallback: f32) -> f32 {
+    if value.is_finite() { value } else { fallback }
 }
 
 /// Drawer width, limited to the viewport minus `DRAWER_EDGE_GAP`.

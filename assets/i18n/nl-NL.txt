@@ -1,0 +1,305 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = Zoek op naam of identificatie
+header.search.tooltip = Zoek op locatienamen en identificaties
+header.result_count[one] = {count} locatie
+header.result_count[other] = {count} locaties
+header.build = EU5 {version} | Build {build}
+header.build.pending = Gegevens laden
+header.about = Over
+header.language = Taal
+header.appearance = Weergave
+header.filters = Filters
+header.details = Details
+
+# Appearance menu (desktop only)
+appearance.title = Weergave
+appearance.mode = Modus
+appearance.mode.light = Licht
+appearance.mode.dark = Donker
+appearance.accent = Accent
+appearance.accent.amber = Amber
+appearance.accent.lagoon = Lagune
+appearance.accent.cobalt = Kobalt
+appearance.accent.orchid = Orchidee
+appearance.accent.graphite = Grafiet
+appearance.motion = Animaties
+appearance.motion.on = Aan
+appearance.motion.off = Uit
+appearance.close = Sluiten
+
+# Language menu (desktop only)
+language.title = Taal
+language.game_text_note = Locatienamen zijn in het Engels waar het spel geen vertaling voor deze taal heeft.
+language.close = Sluiten
+
+# Filter rail
+rail.title = Filters
+rail.clear_all = Alles wissen
+rail.collapse = Filters verbergen
+rail.expand = Filters tonen
+rail.resize = Breedte van het filterpaneel aanpassen
+rail.active_count[one] = {count} filter actief
+rail.active_count[other] = {count} filters actief
+rail.show_impassable = Onbegaanbare tonen
+rail.food_only = Alleen voedselproducerend
+rail.section.location = Locatie
+rail.section.geography = Geografie
+rail.section.terrain = Terrein
+rail.section.society = Samenleving
+rail.section.economy = Economie
+rail.section.map_data = Kaartgegevens
+
+# Facet titles
+facet.kind = Type
+facet.continent = Continent
+facet.subcontinent = Subcontinent
+facet.region = Regio
+facet.area = Gebied
+facet.province = Provincie
+facet.topography = Topografie
+facet.vegetation = Vegetatie
+facet.climate = Klimaat
+facet.religion = Religie
+facet.culture = Cultuur
+facet.raw_material = Grondstof
+facet.modifier = Modifier
+facet.coastal = Kust
+facet.river_presence = Rivier
+facet.river_level_min = Minimale rivierbonus
+facet.river_level_max = Maximale rivierbonus
+facet.harbor_presence = Geschiktheid als haven
+facet.movement_presence = Verplaatsingshulp
+
+# Checklist controls
+checklist.search.placeholder = Opties filteren
+checklist.expand = Lijst uitklappen
+checklist.collapse = Lijst inklappen
+checklist.clear = Selectie wissen
+checklist.selected_count[one] = {count} geselecteerd
+checklist.selected_count[other] = {count} geselecteerd
+checklist.empty = Geen passende opties
+
+# Static option labels
+option.kind.land = Land
+option.kind.sea = Zee
+option.kind.lake = Meer
+option.kind.impassable = Onbegaanbaar
+option.kind.unknown = Onbekend
+option.yes = Ja
+option.no = Nee
+option.present = Aanwezig
+option.missing = Ontbreekt
+option.no_value = Ontbreekt
+option.symbol_with_key = {label} [{key}]
+option.river_tier = Niveau {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = Beek
+river.tier.stream = Stroom
+river.tier.river = Rivier
+river.tier.large_river = Grote rivier
+river.tier.major_river = Hoofdrivier
+river.tier.unknown = Onbekend
+
+# Exact color and numeric ranges
+rgb.label = Exacte kleur
+rgb.placeholder = #RRGGBB
+rgb.tooltip = Voer één tot zes hexadecimale cijfers in; voorloopnullen mogen worden weggelaten.
+range.harbor = Havenwaarde
+range.movement_x = Verplaatsing X
+range.movement_y = Verplaatsing Y
+range.min.placeholder = Minimum
+range.max.placeholder = Maximum
+validation.rgb = Voer één tot zes hexadecimale cijfers in, zoals #1A2B3C.
+validation.number = Voer een getal in, zoals 0,5.
+validation.number_finite = Voer een eindig getal in.
+
+# Result grid
+grid.legend.food = Voedselproducerend
+grid.legend.precious = Goud of zilver
+grid.columns = Kolommen
+grid.show_details = Details tonen
+grid.sort.ascending = Oplopend gesorteerd
+grid.sort.descending = Aflopend gesorteerd
+grid.sort.hint = Selecteer om te sorteren; selecteer opnieuw om om te keren
+grid.resize.hint = Sleep de rand om het formaat te wijzigen
+grid.empty.title = Geen locaties gevonden
+grid.empty.body = Wijzig of wis de filters om meer locaties te zien.
+
+# Column headers
+column.color = Kleur
+column.name = Naam
+column.identifier = Identificatie
+column.kind = Type
+column.topography = Topografie
+column.vegetation = Vegetatie
+column.climate = Klimaat
+column.continent = Continent
+column.subcontinent = Subcontinent
+column.region = Regio
+column.area = Gebied
+column.province = Provincie
+column.religion = Religie
+column.culture = Cultuur
+column.raw_material = Grondstof
+column.modifier = Modifier
+column.rgb = RGB
+column.coastal = Kust
+column.river_presence = Rivier
+column.river_level = Rivierbonus
+column.harbor = Haven
+column.movement_presence = Verplaatsing
+column.movement_x = Verplaatsing X
+column.movement_y = Verplaatsing Y
+column.static_capacity = Statische capaciteit
+column.equator_capacity = Evenaarcapaciteit
+
+# Column menu
+column_menu.title = Zichtbare kolommen
+column_menu.close = Sluiten
+column_menu.keep_one = Minstens één kolom blijft zichtbaar.
+
+# Detail pane
+detail.title = Locatiedetails
+detail.hide = Details verbergen
+detail.close = Sluiten
+detail.resize = Breedte van het detailpaneel aanpassen
+detail.empty.title = Selecteer een locatie
+detail.empty.body = Locatiedetails, hiërarchie, kleur en riviergegevens verschijnen hier.
+detail.breadcrumb = Hiërarchie
+detail.group.classification = Classificatie
+detail.group.society = Samenleving
+detail.group.economy = Economie
+detail.group.coast = Kust en verplaatsing
+detail.group.river = Rivier
+detail.group.capacity = Statische bevolkingscapaciteit
+detail.field.type = Type
+detail.field.topography = Topografie
+detail.field.vegetation = Vegetatie
+detail.field.climate = Klimaat
+detail.field.religion = Religie
+detail.field.culture = Cultuur
+detail.field.raw_material = Grondstof
+detail.field.modifier = Modifier
+detail.field.coastal = Kust
+detail.field.connected_sea = Verbonden zee
+detail.field.harbor = Geschiktheid als haven
+detail.field.movement = Verplaatsingshulp
+detail.field.river = Rivier
+detail.field.river_bonus = Capaciteitsbonus
+detail.field.river_source = Rivierbron
+detail.field.river_confluence = Riviersamenvloeiing
+detail.field.capacity_total = Totale capaciteit
+detail.field.capacity_vegetation = Vegetatiecapaciteit
+detail.field.capacity_equator = Nabijheid van de evenaar
+detail.field.capacity_modifier = Statische capaciteitsmodifier
+detail.capacity.note = Alleen afgeleid van onveranderlijke kaartgegevens; ontwikkeling, gebouwen, wetten en andere campagnestatus zijn uitgesloten.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = N{level} +{percent}%
+format.river_detail = {tier}, niveau {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = Starten
+load.embedded = Ingebedde gegevens laden
+load.loading_data = EU5 {version}-gegevens laden
+load.preparing = EU5 {version}-gegevens voorbereiden
+load.external = Externe gegevens voorbereiden
+load.rebuild = Opnieuw opbouwen voorbereiden
+load.fonts = Lettertypen laden
+load.names = Locatienamen laden
+import.templates = Locatiesjablonen lezen
+import.hierarchy = Hiërarchie lezen
+import.colors = Kaartkleuren lezen
+import.ports = Havens lezen
+import.river_settings = Instellingen van rivieren lezen
+import.map_factors = Statische kaartfactoren lezen
+import.localization = Lokalisatie lezen
+import.rivers = Kaart en rivieren scannen
+import.capacity = Statische bevolkingscapaciteit berekenen
+import.complete = Import voltooid
+
+# Load errors
+error.title = Locaties van EU5 konden niet worden geladen
+error.detail = Technische details
+error.io = Een bestandsbewerking is mislukt voor {path}.
+error.parse = Het spelbestand {source} kon niet worden verwerkt bij byte {offset}.
+error.installation = De installatie van Europa Universalis V is niet gevonden.
+error.missing_file = Een vereist spelbestand ontbreekt: {path}
+error.invalid_data = De locatiegegevens zijn ongeldig.
+error.encoding = De locatiegegevens konden niet worden gedecodeerd.
+error.compression = De locatiegegevens konden niet worden gedecomprimeerd.
+error.png = Een kaartafbeelding kon niet worden gedecodeerd: {path}
+error.ui = De interface is mislukt.
+error.worker = De achtergrondlader is onverwacht gestopt.
+error.hint.retryable = Controleer de installatiemap en probeer het opnieuw of bouw de gegevens opnieuw op.
+error.hint.rebuild = Opnieuw proberen helpt niet bij deze fout; bouw de gegevens opnieuw op uit de spelbestanden.
+error.hint.web = Laad de pagina opnieuw om het opnieuw te proberen.
+error.install_path.label = Installatiemap
+error.install_path.placeholder = Installatiemap van Europa Universalis V
+error.retry = Opnieuw proberen
+error.rebuild = Gegevens opnieuw opbouwen
+
+# Notices shown over a loaded interface
+notice.language_pack = Locatienamen voor deze taal konden niet worden geladen, daarom worden Engelse namen getoond.
+notice.language_pack_mismatch = De gedownloade locatienamen horen bij een andere gegevensbuild en zijn niet gebruikt.
+notice.font_pack = Een lettertype voor deze taal kon niet worden geladen, daarom kan sommige tekst onleesbaar zijn.
+notice.dismiss = Sluiten
+
+# Drawers
+drawer.close = Sluiten
+
+# About dialog
+about.title = EU5 Location DB
+about.version = Versie {version}
+about.data = Locatiegegevens van Europa Universalis V {version}, Steam-build {build}.
+about.author = Gemaakt door Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = Een onofficiële browser voor statische kaartgegevens. Niet gelieerd aan of goedgekeurd door Paradox Interactive.
+about.trademark = Europa Universalis en Paradox Interactive zijn handelsmerken van hun respectieve eigenaars.
+about.license.source = Broncodelicentie: MIT OR Apache-2.0
+about.license.ui = Interfacetoolkit: iced, MIT-licentie
+about.license.fonts = Lettertypen: IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP en Noto Sans-families, SIL Open Font License 1.1
+about.licenses.show = Licentieteksten tonen
+about.licenses.hide = Licentieteksten verbergen
+about.keys.title = Toetsenbord
+about.keys.search = Zoekveld activeren
+about.keys.regions = Schakelen tussen koptekst, filters, resultaten en details
+about.keys.focus = Schakelen tussen bedieningselementen
+about.keys.rows = De geselecteerde rij verplaatsen
+about.keys.columns = De actieve kolom verplaatsen
+about.keys.sort = Sorteren op de actieve kolom
+about.keys.resize = De actieve kolom van formaat wijzigen
+about.keys.details = Details tonen voor de geselecteerde rij
+about.keys.toggle = De actieve optie wisselen
+about.keys.close = Een menu, dialoogvenster of paneel sluiten
+about.close = Sluiten
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Spatie
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = Pijltjestoetsen
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

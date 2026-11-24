@@ -1,0 +1,302 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = 搜尋名稱或識別碼
+header.search.tooltip = 搜尋地點名稱和識別碼
+header.result_count[other] = {count} 個地點
+header.build = EU5 {version} | 建置 {build}
+header.build.pending = 正在載入資料
+header.about = 關於
+header.language = 語言
+header.appearance = 外觀
+header.filters = 篩選
+header.details = 詳情
+
+# Appearance menu (desktop only)
+appearance.title = 外觀
+appearance.mode = 模式
+appearance.mode.light = 淺色
+appearance.mode.dark = 深色
+appearance.accent = 強調色
+appearance.accent.amber = 琥珀
+appearance.accent.lagoon = 潟湖
+appearance.accent.cobalt = 鈷藍
+appearance.accent.orchid = 蘭紫
+appearance.accent.graphite = 石墨
+appearance.motion = 動畫
+appearance.motion.on = 開
+appearance.motion.off = 關
+appearance.close = 關閉
+
+# Language menu (desktop only)
+language.title = 語言
+language.game_text_note = 遊戲中沒有該語言翻譯的地點名稱將顯示英文。
+language.close = 關閉
+
+# Filter rail
+rail.title = 篩選
+rail.clear_all = 全部清除
+rail.collapse = 隱藏篩選
+rail.expand = 顯示篩選
+rail.resize = 調整篩選面板大小
+rail.active_count[other] = 已啟用 {count} 個篩選
+rail.show_impassable = 顯示不可通行
+rail.food_only = 僅顯示產糧地點
+rail.section.location = 地點
+rail.section.geography = 地理
+rail.section.terrain = 地貌
+rail.section.society = 社會
+rail.section.economy = 經濟
+rail.section.map_data = 地圖資料
+
+# Facet titles
+facet.kind = 類型
+facet.continent = 大陸
+facet.subcontinent = 次大陸
+facet.region = 區域
+facet.area = 地區
+facet.province = 省份
+facet.topography = 地形
+facet.vegetation = 植被
+facet.climate = 氣候
+facet.religion = 宗教
+facet.culture = 文化
+facet.raw_material = 原材料
+facet.modifier = 修正
+facet.coastal = 沿海
+facet.river_presence = 河流
+facet.river_level_min = 最小河流加成
+facet.river_level_max = 最大河流加成
+facet.harbor_presence = 港口適宜度
+facet.movement_presence = 移動輔助
+
+# Checklist controls
+checklist.search.placeholder = 篩選選項
+checklist.expand = 展開清單
+checklist.collapse = 摺疊清單
+checklist.clear = 清除選擇
+checklist.selected_count[other] = 已選擇 {count} 項
+checklist.empty = 沒有相符的選項
+
+# Static option labels
+option.kind.land = 陸地
+option.kind.sea = 海洋
+option.kind.lake = 湖泊
+option.kind.impassable = 不可通行
+option.kind.unknown = 未知
+option.yes = 是
+option.no = 否
+option.present = 有
+option.missing = 無
+option.no_value = 無
+option.symbol_with_key = {label} [{key}]
+option.river_tier = {level} 級：{tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = 溪流
+river.tier.stream = 小溪
+river.tier.river = 河流
+river.tier.large_river = 大河
+river.tier.major_river = 主要河流
+river.tier.unknown = 未知
+
+# Exact color and numeric ranges
+rgb.label = 精確顏色
+rgb.placeholder = #RRGGBB
+rgb.tooltip = 請輸入 1 至 6 位十六進位數字，可省略前導零。
+range.harbor = 港口值
+range.movement_x = 移動 X
+range.movement_y = 移動 Y
+range.min.placeholder = 最小值
+range.max.placeholder = 最大值
+validation.rgb = 請輸入 1 至 6 位十六進位數字，例如 #1A2B3C。
+validation.number = 請輸入數字，例如 0.5。
+validation.number_finite = 請輸入有限數字。
+
+# Result grid
+grid.legend.food = 產糧
+grid.legend.precious = 金或銀
+grid.columns = 欄位
+grid.show_details = 顯示詳情
+grid.sort.ascending = 已升序排序
+grid.sort.descending = 已降序排序
+grid.sort.hint = 點擊排序，再次點擊反向排序
+grid.resize.hint = 拖曳邊緣調整大小
+grid.empty.title = 沒有相符的地點
+grid.empty.body = 變更或清除篩選條件以檢視更多地點。
+
+# Column headers
+column.color = 顏色
+column.name = 名稱
+column.identifier = 識別碼
+column.kind = 類型
+column.topography = 地形
+column.vegetation = 植被
+column.climate = 氣候
+column.continent = 大陸
+column.subcontinent = 次大陸
+column.region = 區域
+column.area = 地區
+column.province = 省份
+column.religion = 宗教
+column.culture = 文化
+column.raw_material = 原材料
+column.modifier = 修正
+column.rgb = RGB
+column.coastal = 沿海
+column.river_presence = 河流
+column.river_level = 河流加成
+column.harbor = 港口
+column.movement_presence = 移動
+column.movement_x = 移動 X
+column.movement_y = 移動 Y
+column.static_capacity = 固定容量
+column.equator_capacity = 赤道容量
+
+# Column menu
+column_menu.title = 可見欄位
+column_menu.close = 關閉
+column_menu.keep_one = 至少保留一個欄位可見。
+
+# Detail pane
+detail.title = 地點詳情
+detail.hide = 隱藏詳情
+detail.close = 關閉
+detail.resize = 調整詳情面板大小
+detail.empty.title = 請選擇地點
+detail.empty.body = 地點詳情、層級、顏色和河流資料將顯示於此。
+detail.breadcrumb = 層級
+detail.group.classification = 分類
+detail.group.society = 社會
+detail.group.economy = 經濟
+detail.group.coast = 沿海與移動
+detail.group.river = 河流
+detail.group.capacity = 固定人口容量
+detail.field.type = 類型
+detail.field.topography = 地形
+detail.field.vegetation = 植被
+detail.field.climate = 氣候
+detail.field.religion = 宗教
+detail.field.culture = 文化
+detail.field.raw_material = 原材料
+detail.field.modifier = 修正
+detail.field.coastal = 沿海
+detail.field.connected_sea = 相連海域
+detail.field.harbor = 港口適宜度
+detail.field.movement = 移動輔助
+detail.field.river = 河流
+detail.field.river_bonus = 容量加成
+detail.field.river_source = 河流源頭
+detail.field.river_confluence = 河流匯合處
+detail.field.capacity_total = 總容量
+detail.field.capacity_vegetation = 植被容量
+detail.field.capacity_equator = 赤道接近度
+detail.field.capacity_modifier = 固定容量修正
+detail.capacity.note = 僅根據不可變的地圖資料推算，不含發展度、建築、法律等戰役狀態。
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}，{level} 級
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = 正在啟動
+load.embedded = 正在載入內建資料
+load.loading_data = 正在載入 EU5 {version} 資料
+load.preparing = 正在準備 EU5 {version} 資料
+load.external = 正在準備外部資料
+load.rebuild = 正在準備重建
+load.fonts = 正在載入字型
+load.names = 正在載入地點名稱
+import.templates = 正在讀取地點範本
+import.hierarchy = 正在讀取層級
+import.colors = 正在讀取地圖顏色
+import.ports = 正在讀取港口
+import.river_settings = 正在讀取河流設定
+import.map_factors = 正在讀取固定地圖係數
+import.localization = 正在讀取在地化文字
+import.rivers = 正在掃描地圖和河流
+import.capacity = 正在計算固定人口容量
+import.complete = 匯入完成
+
+# Load errors
+error.title = 無法載入 EU5 地點
+error.detail = 技術詳情
+error.io = 對 {path} 的檔案操作失敗。
+error.parse = 無法解析遊戲檔案 {source}（位於位元組 {offset} 附近）。
+error.installation = 找不到 Europa Universalis V 的安裝目錄。
+error.missing_file = 缺少所需的遊戲檔案：{path}
+error.invalid_data = 地點資料無效。
+error.encoding = 無法解碼地點資料。
+error.compression = 無法解壓縮地點資料。
+error.png = 無法解碼地圖影像：{path}
+error.ui = 介面發生故障。
+error.worker = 背景載入器意外停止。
+error.hint.retryable = 請檢查安裝目錄，然後重試或重建資料。
+error.hint.rebuild = 重試無法解決此錯誤，請從遊戲檔案重建資料。
+error.hint.web = 請重新整理頁面後再試。
+error.install_path.label = 安裝目錄
+error.install_path.placeholder = Europa Universalis V 安裝目錄
+error.retry = 重試
+error.rebuild = 重建資料
+
+# Notices shown over a loaded interface
+notice.language_pack = 無法載入該語言的地點名稱，因此顯示英文名稱。
+notice.language_pack_mismatch = 下載的地點名稱屬於其他資料建置，未被使用。
+notice.font_pack = 無法載入該語言的字型，部分文字可能無法顯示。
+notice.dismiss = 關閉
+
+# Drawers
+drawer.close = 關閉
+
+# About dialog
+about.title = EU5 Location DB
+about.version = 版本 {version}
+about.data = 地點資料來自 Europa Universalis V {version}，Steam 建置 {build}。
+about.author = 作者：Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = 這是非官方的靜態地圖資料瀏覽器，與 Paradox Interactive 無關聯，也未獲其認可。
+about.trademark = Europa Universalis 和 Paradox Interactive 是其各自所有者的商標。
+about.license.source = 原始碼授權：MIT OR Apache-2.0
+about.license.ui = 介面工具包：iced，MIT License
+about.license.fonts = 字型：IBM Plex Sans、IBM Plex Mono、IBM Plex Sans KR、IBM Plex Sans JP 及 Noto Sans 系列，SIL Open Font License 1.1
+about.licenses.show = 顯示授權全文
+about.licenses.hide = 隱藏授權全文
+about.keys.title = 鍵盤
+about.keys.search = 聚焦搜尋框
+about.keys.regions = 在頁首、篩選、結果和詳情之間移動
+about.keys.focus = 在控制項之間移動
+about.keys.rows = 移動所選列
+about.keys.columns = 移動目前欄位
+about.keys.sort = 依目前欄位排序
+about.keys.resize = 調整目前欄位寬度
+about.keys.details = 顯示所選列的詳情
+about.keys.toggle = 切換目前選項
+about.keys.close = 關閉選單、對話方塊或抽屜
+about.close = 關閉
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Space
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = 方向鍵
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

@@ -10,10 +10,17 @@
 #[cfg(feature = "desktop")]
 mod builder;
 mod codec;
+#[cfg(all(test, not(target_family = "wasm")))]
+mod codec_tests;
 mod fields;
+#[cfg(feature = "desktop")]
+mod files;
 mod language;
 mod lookup;
 mod schema;
+mod validate;
+#[cfg(test)]
+mod validate_tests;
 
 #[cfg(feature = "desktop")]
 pub use builder::{build_pack, import_pack, rebuild_pack, requested_keys};
@@ -30,3 +37,4 @@ pub use schema::{
     PACK_FORMAT_VERSION, PACK_MAGIC, PackLabel, PackStringId, StoredLanguagePack,
     StoredLanguageSection, StoredOrder, TrigramPosting,
 };
+pub(crate) use validate::validate_paired;

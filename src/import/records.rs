@@ -1,10 +1,11 @@
 //! Deterministic interning and final record assembly.
 
-use std::collections::{BTreeSet, HashMap};
+use std::collections::{BTreeMap, HashMap};
 
 use super::hierarchy::RawHierarchy;
 use super::templates::RawTemplate;
 use crate::AppError;
+use crate::lang_pack::LabelField;
 use crate::model::{
     EU5_APP_ID, FORMAT_VERSION, Hierarchy, LocalizedValue, LocationId, LocationKind,
     LocationRecord, MapColor, RiverWidthMetadata, StoredDataset, StringInterner, SymbolId,
@@ -25,7 +26,7 @@ pub(super) fn build_records(
     colors: &mut HashMap<String, MapColor>,
     ports: &HashMap<String, String>,
     impassable: &std::collections::HashSet<String>,
-    requested: &BTreeSet<String>,
+    labelled: &BTreeMap<String, LabelField>,
     localization: &HashMap<String, String>,
 ) -> Result<RecordBuild, AppError> {
     let mut interner = StringInterner::new();
@@ -79,15 +80,16 @@ pub(super) fn build_records(
         color_ids.insert(color, id);
         records.push(record);
     }
-    let mut localizations = Vec::new();
-    for key in requested {
-        // Each location record already carries its English-name symbol.
-        if key_ids.contains_key(key) {
-            continue;
-        }
-        if let Some(value) = localization.get(key) {
+    // One label per labelled identifier, in identifier order so the dictionary stays
+    // deterministic. Identifiers that are also location keys keep their label: localization
+    // keys are global, and the location's own name lives separately in `record.name`.
+    // Identifiers used only as location keys are absent from `labelled`.
+    let mut localizations = Vec::with_capacity(labelled.len());
+    for (identifier, field) in labelled {
+        let key = field.localization_key(identifier);
+        if let Some(value) = localization.get(key.as_ref()) {
             localizations.push(LocalizedValue {
-                key: interner.intern(key)?,
+                key: interner.intern(identifier)?,
                 value: interner.intern(value)?,
             });
         }
@@ -174,7 +176,98 @@ pub(super) fn count_u32(value: usize, label: &str) -> Result<u32, AppError> {
 
 #[cfg(test)]
 mod tests {
-    use super::title_case_identifier;
+    use std::collections::{HashMap, HashSet};
+
+    use super::{build_records, title_case_identifier};
+    use crate::import::hierarchy::RawHierarchy;
+    use crate::import::labels::labelled_identifiers;
+    use crate::import::templates::RawTemplate;
+    use crate::model::{MapColor, RiverWidthMetadata};
+
+    fn template(key: &str, culture: &str, modifier: Option<&str>) -> RawTemplate {
+        RawTemplate {
+            key: key.to_owned(),
+            topography: "flatland".to_owned(),
+            vegetation: None,
+            climate: None,
+            religion: None,
+            culture: Some(culture.to_owned()),
+            raw_material: None,
+            modifier: modifier.map(str::to_owned),
+            harbor_suitability: None,
+            movement_assistance: None,
+        }
+    }
+
+    #[test]
+    fn labels_location_key_collisions_and_modifiers() {
+        let templates = vec![
+            template("pende", "teke", Some("potosi_base")),
+            template("teke", "pende", None),
+        ];
+        let mut hierarchy: HashMap<String, RawHierarchy> = ["pende", "teke"]
+            .into_iter()
+            .map(|key| {
+                let value = RawHierarchy {
+                    continent: "africa".to_owned(),
+                    subcontinent: "central_africa".to_owned(),
+                    region: "kongo_region".to_owned(),
+                    area: "kongo_area".to_owned(),
+                    province: "kongo_province".to_owned(),
+                };
+                (key.to_owned(), value)
+            })
+            .collect();
+        let mut colors = HashMap::from([
+            ("pende".to_owned(), MapColor(1)),
+            ("teke".to_owned(), MapColor(2)),
+        ]);
+        let localization = HashMap::from([
+            ("pende".to_owned(), "Pende".to_owned()),
+            ("teke".to_owned(), "Teke".to_owned()),
+            ("potosi_base".to_owned(), "Wrong key".to_owned()),
+            (
+                "STATIC_MODIFIER_NAME_potosi_base".to_owned(),
+                "Cerro Rico".to_owned(),
+            ),
+        ]);
+        let labelled = labelled_identifiers(&templates, &hierarchy);
+        assert!(labelled.is_ok());
+        let Ok(labelled) = labelled else { return };
+        let widths = RiverWidthMetadata {
+            level_count: 1,
+            width_min: 1.0,
+            width_max: 1.0,
+        };
+        let built = build_records(
+            7,
+            widths,
+            templates,
+            &mut hierarchy,
+            &mut colors,
+            &HashMap::new(),
+            &HashSet::new(),
+            &labelled,
+            &localization,
+        );
+        assert!(built.is_ok());
+        let Ok((stored, _, _)) = built else { return };
+        let label = |identifier: &str| {
+            let key = stored.dictionary.iter().position(|value| value == identifier)?;
+            let entry = stored
+                .localizations
+                .iter()
+                .find(|entry| usize::try_from(entry.key.0).ok() == Some(key))?;
+            stored
+                .dictionary
+                .get(usize::try_from(entry.value.0).ok()?)
+                .cloned()
+        };
+        assert_eq!(label("pende").as_deref(), Some("Pende"));
+        assert_eq!(label("teke").as_deref(), Some("Teke"));
+        assert_eq!(label("potosi_base").as_deref(), Some("Cerro Rico"));
+        assert_eq!(stored.localizations.len(), 3);
+    }
 
     #[test]
     fn fallback_name_is_title_cased() {

@@ -8,8 +8,16 @@ use super::theme::Palette;
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum Platform {
     /// Native window with in-app language, appearance, retry and rebuild controls.
+    #[cfg_attr(
+        not(feature = "desktop"),
+        allow(dead_code, reason = "only the desktop entry point builds this")
+    )]
     Desktop,
     /// Sandboxed browser frame driven by the host page.
+    #[cfg_attr(
+        not(all(feature = "web", target_family = "wasm")),
+        allow(dead_code, reason = "only the browser entry point builds this")
+    )]
     Browser,
 }
 

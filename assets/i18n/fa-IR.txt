@@ -1,0 +1,305 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = جست‌وجوی نام یا شناسه
+header.search.tooltip = جست‌وجوی نام و شناسه مکان‌ها
+header.result_count[one] = {count} مکان
+header.result_count[other] = {count} مکان
+header.build = EU5 {version} | ساخت {build}
+header.build.pending = در حال بارگذاری داده‌ها
+header.about = درباره
+header.language = زبان
+header.appearance = ظاهر
+header.filters = فیلترها
+header.details = جزئیات
+
+# Appearance menu (desktop only)
+appearance.title = ظاهر
+appearance.mode = حالت
+appearance.mode.light = روشن
+appearance.mode.dark = تیره
+appearance.accent = رنگ تأکید
+appearance.accent.amber = کهربایی
+appearance.accent.lagoon = تالابی
+appearance.accent.cobalt = کبالتی
+appearance.accent.orchid = ارکیده‌ای
+appearance.accent.graphite = گرافیتی
+appearance.motion = پویانمایی
+appearance.motion.on = روشن
+appearance.motion.off = خاموش
+appearance.close = بستن
+
+# Language menu (desktop only)
+language.title = زبان
+language.game_text_note = در جایی که بازی ترجمه‌ای برای این زبان ندارد، نام مکان‌ها به انگلیسی نمایش داده می‌شود.
+language.close = بستن
+
+# Filter rail
+rail.title = فیلترها
+rail.clear_all = پاک کردن همه
+rail.collapse = پنهان کردن فیلترها
+rail.expand = نمایش فیلترها
+rail.resize = تغییر اندازه پنل فیلتر
+rail.active_count[one] = {count} فیلتر فعال
+rail.active_count[other] = {count} فیلتر فعال
+rail.show_impassable = نمایش مکان‌های غیرقابل عبور
+rail.food_only = فقط تولیدکنندگان غذا
+rail.section.location = مکان
+rail.section.geography = جغرافیا
+rail.section.terrain = زمین
+rail.section.society = جامعه
+rail.section.economy = اقتصاد
+rail.section.map_data = داده‌های نقشه
+
+# Facet titles
+facet.kind = نوع
+facet.continent = قاره
+facet.subcontinent = شبه‌قاره
+facet.region = منطقه
+facet.area = ناحیه
+facet.province = استان
+facet.topography = پستی و بلندی
+facet.vegetation = پوشش گیاهی
+facet.climate = اقلیم
+facet.religion = دین
+facet.culture = فرهنگ
+facet.raw_material = ماده خام
+facet.modifier = اصلاح‌کننده
+facet.coastal = ساحلی
+facet.river_presence = رودخانه
+facet.river_level_min = حداقل پاداش رودخانه
+facet.river_level_max = حداکثر پاداش رودخانه
+facet.harbor_presence = مناسب بودن بندر
+facet.movement_presence = کمک حرکتی
+
+# Checklist controls
+checklist.search.placeholder = فیلتر گزینه‌ها
+checklist.expand = گسترش فهرست
+checklist.collapse = جمع کردن فهرست
+checklist.clear = پاک کردن انتخاب
+checklist.selected_count[one] = {count} مورد انتخاب‌شده
+checklist.selected_count[other] = {count} مورد انتخاب‌شده
+checklist.empty = گزینه منطبقی وجود ندارد
+
+# Static option labels
+option.kind.land = خشکی
+option.kind.sea = دریا
+option.kind.lake = دریاچه
+option.kind.impassable = غیرقابل عبور
+option.kind.unknown = نامشخص
+option.yes = بله
+option.no = خیر
+option.present = موجود
+option.missing = ناموجود
+option.no_value = ناموجود
+option.symbol_with_key = {label} [{key}]
+option.river_tier = سطح {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = جویبار
+river.tier.stream = نهر
+river.tier.river = رودخانه
+river.tier.large_river = رودخانه بزرگ
+river.tier.major_river = رودخانه اصلی
+river.tier.unknown = نامشخص
+
+# Exact color and numeric ranges
+rgb.label = رنگ دقیق
+rgb.placeholder = #RRGGBB
+rgb.tooltip = یک تا شش رقم شانزدهی وارد کنید؛ صفرهای ابتدایی را می‌توان حذف کرد.
+range.harbor = مقدار بندر
+range.movement_x = حرکت X
+range.movement_y = حرکت Y
+range.min.placeholder = حداقل
+range.max.placeholder = حداکثر
+validation.rgb = یک تا شش رقم شانزدهی وارد کنید، مانند #1A2B3C.
+validation.number = یک عدد وارد کنید، مانند 0.5.
+validation.number_finite = یک عدد متناهی وارد کنید.
+
+# Result grid
+grid.legend.food = تولیدکننده غذا
+grid.legend.precious = طلا یا نقره
+grid.columns = ستون‌ها
+grid.show_details = نمایش جزئیات
+grid.sort.ascending = مرتب‌شده صعودی
+grid.sort.descending = مرتب‌شده نزولی
+grid.sort.hint = برای مرتب‌سازی انتخاب کنید؛ برای معکوس کردن دوباره انتخاب کنید
+grid.resize.hint = برای تغییر اندازه، لبه را بکشید
+grid.empty.title = مکانی منطبق نیست
+grid.empty.body = برای دیدن مکان‌های بیشتر، فیلترها را تغییر دهید یا پاک کنید.
+
+# Column headers
+column.color = رنگ
+column.name = نام
+column.identifier = شناسه
+column.kind = نوع
+column.topography = پستی و بلندی
+column.vegetation = پوشش گیاهی
+column.climate = اقلیم
+column.continent = قاره
+column.subcontinent = شبه‌قاره
+column.region = منطقه
+column.area = ناحیه
+column.province = استان
+column.religion = دین
+column.culture = فرهنگ
+column.raw_material = ماده خام
+column.modifier = اصلاح‌کننده
+column.rgb = RGB
+column.coastal = ساحلی
+column.river_presence = رودخانه
+column.river_level = پاداش رودخانه
+column.harbor = بندر
+column.movement_presence = حرکت
+column.movement_x = حرکت X
+column.movement_y = حرکت Y
+column.static_capacity = ظرفیت ایستا
+column.equator_capacity = ظرفیت استوایی
+
+# Column menu
+column_menu.title = ستون‌های نمایان
+column_menu.close = بستن
+column_menu.keep_one = دست‌کم یک ستون نمایان می‌ماند.
+
+# Detail pane
+detail.title = جزئیات مکان
+detail.hide = پنهان کردن جزئیات
+detail.close = بستن
+detail.resize = تغییر اندازه پنل جزئیات
+detail.empty.title = یک مکان انتخاب کنید
+detail.empty.body = جزئیات مکان، سلسله‌مراتب، رنگ و داده‌های رودخانه در اینجا نمایش داده می‌شود.
+detail.breadcrumb = سلسله‌مراتب
+detail.group.classification = دسته‌بندی
+detail.group.society = جامعه
+detail.group.economy = اقتصاد
+detail.group.coast = ساحل و حرکت
+detail.group.river = رودخانه
+detail.group.capacity = ظرفیت جمعیتی ایستا
+detail.field.type = نوع
+detail.field.topography = پستی و بلندی
+detail.field.vegetation = پوشش گیاهی
+detail.field.climate = اقلیم
+detail.field.religion = دین
+detail.field.culture = فرهنگ
+detail.field.raw_material = ماده خام
+detail.field.modifier = اصلاح‌کننده
+detail.field.coastal = ساحلی
+detail.field.connected_sea = دریای متصل
+detail.field.harbor = مناسب بودن بندر
+detail.field.movement = کمک حرکتی
+detail.field.river = رودخانه
+detail.field.river_bonus = پاداش ظرفیت
+detail.field.river_source = سرچشمه رودخانه
+detail.field.river_confluence = تلاقی رودخانه
+detail.field.capacity_total = ظرفیت کل
+detail.field.capacity_vegetation = ظرفیت پوشش گیاهی
+detail.field.capacity_equator = نزدیکی به استوا
+detail.field.capacity_modifier = اصلاح‌کننده ظرفیت ایستا
+detail.capacity.note = فقط از داده‌های تغییرناپذیر نقشه به دست آمده است؛ توسعه، ساختمان‌ها، قوانین و سایر وضعیت‌های بازی در نظر گرفته نمی‌شوند.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = س{level} +{percent}%
+format.river_detail = {tier}، سطح {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = در حال شروع
+load.embedded = در حال بارگذاری داده‌های داخلی
+load.loading_data = در حال بارگذاری داده‌های EU5 {version}
+load.preparing = در حال آماده‌سازی داده‌های EU5 {version}
+load.external = در حال آماده‌سازی داده‌های خارجی
+load.rebuild = در حال آماده‌سازی بازسازی
+load.fonts = در حال بارگذاری قلم‌ها
+load.names = در حال بارگذاری نام مکان‌ها
+import.templates = در حال خواندن الگوهای مکان
+import.hierarchy = در حال خواندن سلسله‌مراتب
+import.colors = در حال خواندن رنگ‌های نقشه
+import.ports = در حال خواندن بنادر
+import.river_settings = در حال خواندن تنظیمات رودخانه
+import.map_factors = در حال خواندن ضرایب ایستای نقشه
+import.localization = در حال خواندن بومی‌سازی
+import.rivers = در حال پویش نقشه و رودخانه‌ها
+import.capacity = در حال محاسبه ظرفیت جمعیتی ایستا
+import.complete = درون‌ریزی کامل شد
+
+# Load errors
+error.title = بارگذاری مکان‌های EU5 ممکن نشد
+error.detail = جزئیات فنی
+error.io = عملیات فایل برای {path} ناموفق بود.
+error.parse = فایل بازی {source} نزدیک بایت {offset} قابل تجزیه نبود.
+error.installation = نصب Europa Universalis V پیدا نشد.
+error.missing_file = یک فایل لازم بازی وجود ندارد: {path}
+error.invalid_data = داده‌های مکان نامعتبر است.
+error.encoding = رمزگشایی داده‌های مکان ممکن نشد.
+error.compression = از حالت فشرده درآوردن داده‌های مکان ممکن نشد.
+error.png = رمزگشایی تصویر نقشه ممکن نشد: {path}
+error.ui = رابط کاربری با خطا مواجه شد.
+error.worker = بارگذار پس‌زمینه به طور غیرمنتظره متوقف شد.
+error.hint.retryable = پوشه نصب را بررسی کنید، سپس دوباره تلاش کنید یا داده‌ها را بازسازی کنید.
+error.hint.rebuild = تلاش دوباره برای این خطا مفید نیست؛ داده‌ها را از فایل‌های بازی بازسازی کنید.
+error.hint.web = برای تلاش دوباره، صفحه را بازآوری کنید.
+error.install_path.label = پوشه نصب
+error.install_path.placeholder = پوشه نصب Europa Universalis V
+error.retry = تلاش دوباره
+error.rebuild = بازسازی داده‌ها
+
+# Notices shown over a loaded interface
+notice.language_pack = نام مکان‌ها برای این زبان بارگذاری نشد، بنابراین نام‌های انگلیسی نمایش داده می‌شود.
+notice.language_pack_mismatch = نام مکان‌های دانلودشده به ساخت دیگری از داده‌ها تعلق دارد و استفاده نشد.
+notice.font_pack = قلمی برای این زبان بارگذاری نشد، بنابراین ممکن است برخی متن‌ها نمایش داده نشود.
+notice.dismiss = بستن اعلان
+
+# Drawers
+drawer.close = بستن
+
+# About dialog
+about.title = EU5 Location DB
+about.version = نسخه {version}
+about.data = داده‌های مکان از Europa Universalis V {version}، ساخت Steam {build}.
+about.author = ساخته Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = مرورگر غیررسمی داده‌های ایستای نقشه. وابسته به Paradox Interactive نیست و تأیید آن را ندارد.
+about.trademark = Europa Universalis و Paradox Interactive علائم تجاری مالکان مربوط به خود هستند.
+about.license.source = مجوز کد منبع: MIT OR Apache-2.0
+about.license.ui = جعبه‌ابزار رابط کاربری: iced، مجوز MIT
+about.license.fonts = قلم‌ها: خانواده‌های IBM Plex Sans، IBM Plex Mono، IBM Plex Sans KR، IBM Plex Sans JP و Noto Sans، مجوز SIL Open Font License 1.1
+about.licenses.show = نمایش متن مجوزها
+about.licenses.hide = پنهان کردن متن مجوزها
+about.keys.title = صفحه‌کلید
+about.keys.search = تمرکز بر جست‌وجو
+about.keys.regions = جابه‌جایی میان سربرگ، فیلترها، نتایج و جزئیات
+about.keys.focus = جابه‌جایی میان کنترل‌ها
+about.keys.rows = جابه‌جایی ردیف انتخاب‌شده
+about.keys.columns = جابه‌جایی ستون فعال
+about.keys.sort = مرتب‌سازی بر اساس ستون فعال
+about.keys.resize = تغییر اندازه ستون فعال
+about.keys.details = نمایش جزئیات ردیف انتخاب‌شده
+about.keys.toggle = تغییر وضعیت گزینه فعال
+about.keys.close = بستن منو، پنجره گفت‌وگو یا کشو
+about.close = بستن
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Space
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = کلیدهای جهت‌دار
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

@@ -3,14 +3,21 @@
 //! `Operation::focusable` (so `focus_next` and `focus_previous` reach it), publishes its
 //! activation message on Enter or Space while focused, and draws a `FOCUS_RING_WIDTH` `accent`
 //! border with `RADIUS` corners around the child without changing layout.
+//!
+//! A pointer press focuses the ring the way it focuses a text input, so Tab continues from the
+//! pressed control, and a press elsewhere unfocuses it. The outline follows the site's
+//! focus-visible rule: it is drawn only when focus arrived through a focus operation (Tab, F6,
+//! focus return), not after a pointer press.
 
 use iced::advanced::layout::{self, Layout};
 use iced::advanced::widget::operation::Focusable;
 use iced::advanced::widget::{self, Tree, tree};
-use iced::advanced::{Clipboard, Shell, Widget, overlay, renderer};
+use iced::advanced::{Clipboard, Renderer as _, Shell, Widget, overlay, renderer};
+use iced::keyboard::{self, key::Named};
 use iced::widget::Id;
-use iced::{Element, Event, Length, Rectangle, Size, Vector, mouse};
+use iced::{Border, Color, Element, Event, Length, Rectangle, Size, Vector, mouse, touch};
 
+use crate::app::layout::{FOCUS_RING_WIDTH, RADIUS};
 use crate::app::theme::{PALETTE_DARK, Palette};
 
 /// Focusable wrapper around one child element. Layout, drawing and events pass through to the
@@ -70,6 +77,8 @@ impl<Message> FocusRing<'_, Message> {
 pub(crate) struct RingState {
     /// Keyboard focus.
     pub(crate) focused: bool,
+    /// Focus came from a focus operation rather than a pointer press, so the outline is drawn.
+    pub(crate) visible: bool,
 }
 
 impl Focusable for RingState {
@@ -79,11 +88,20 @@ impl Focusable for RingState {
 
     fn focus(&mut self) {
         self.focused = true;
+        self.visible = true;
     }
 
     fn unfocus(&mut self) {
         self.focused = false;
+        self.visible = false;
     }
+}
+
+/// Whether a key press activates a focused control: Enter or Space without Ctrl, Alt or the
+/// logo key, and not an auto-repeat, so holding the key does not fire the action repeatedly.
+fn is_activation(pressed: &keyboard::Key, modifiers: keyboard::Modifiers, repeat: bool) -> bool {
+    let plain = !(modifiers.control() || modifiers.alt() || modifiers.logo());
+    plain && !repeat && matches!(pressed, keyboard::Key::Named(Named::Enter | Named::Space))
 }
 
 impl<Message: Clone> Widget<Message, iced::Theme, iced::Renderer> for FocusRing<'_, Message> {
@@ -138,6 +156,26 @@ impl<Message: Clone> Widget<Message, iced::Theme, iced::Renderer> for FocusRing<
                 .as_widget()
                 .draw(child, renderer, theme, style, layout, cursor, viewport);
         }
+        let state = tree.state.downcast_ref::<RingState>();
+        if state.focused && state.visible {
+            let bounds = layout.bounds();
+            // A layer of its own keeps the outline above the child's text, which the renderer
+            // otherwise draws after every quad of the same layer.
+            renderer.with_layer(bounds, |renderer| {
+                renderer.fill_quad(
+                    renderer::Quad {
+                        bounds,
+                        border: Border {
+                            color: self.palette.accent,
+                            width: FOCUS_RING_WIDTH,
+                            radius: RADIUS.into(),
+                        },
+                        ..renderer::Quad::default()
+                    },
+                    Color::TRANSPARENT,
+                );
+            });
+        }
     }
 
     fn operate(
@@ -171,6 +209,34 @@ impl<Message: Clone> Widget<Message, iced::Theme, iced::Renderer> for FocusRing<
             self.content.as_widget_mut().update(
                 child, event, layout, cursor, renderer, clipboard, shell, viewport,
             );
+        }
+        let state = tree.state.downcast_mut::<RingState>();
+        match event {
+            // Focus follows the press whether or not the child captured it, as text inputs do.
+            Event::Mouse(mouse::Event::ButtonPressed(mouse::Button::Left))
+            | Event::Touch(touch::Event::FingerPressed { .. }) => {
+                let pressed = cursor.is_over(layout.bounds());
+                if pressed != state.focused || (pressed && state.visible) {
+                    state.focused = pressed;
+                    state.visible = false;
+                    shell.request_redraw();
+                }
+            }
+            Event::Keyboard(keyboard::Event::KeyPressed {
+                key,
+                modifiers,
+                repeat,
+                ..
+            }) if state.focused
+                && !shell.is_event_captured()
+                && is_activation(key, *modifiers, *repeat) =>
+            {
+                if let Some(message) = self.on_activate.as_ref() {
+                    shell.publish(message.clone());
+                    shell.capture_event();
+                }
+            }
+            _ => {}
         }
     }
 

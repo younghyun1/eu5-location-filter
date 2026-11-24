@@ -1,0 +1,305 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = नाम या पहचानकर्ता खोजें
+header.search.tooltip = स्थानों के नाम और पहचानकर्ता खोजें
+header.result_count[one] = {count} स्थान
+header.result_count[other] = {count} स्थान
+header.build = EU5 {version} | बिल्ड {build}
+header.build.pending = डेटा लोड हो रहा है
+header.about = परिचय
+header.language = भाषा
+header.appearance = रूप-रंग
+header.filters = फ़िल्टर
+header.details = विवरण
+
+# Appearance menu (desktop only)
+appearance.title = रूप-रंग
+appearance.mode = मोड
+appearance.mode.light = हल्का
+appearance.mode.dark = गहरा
+appearance.accent = एक्सेंट रंग
+appearance.accent.amber = एम्बर
+appearance.accent.lagoon = लैगून
+appearance.accent.cobalt = कोबाल्ट
+appearance.accent.orchid = ऑर्किड
+appearance.accent.graphite = ग्रेफ़ाइट
+appearance.motion = एनिमेशन
+appearance.motion.on = चालू
+appearance.motion.off = बंद
+appearance.close = बंद करें
+
+# Language menu (desktop only)
+language.title = भाषा
+language.game_text_note = जिन स्थानों के नाम का इस भाषा में गेम अनुवाद नहीं देता, वे अंग्रेज़ी में दिखाए जाते हैं।
+language.close = बंद करें
+
+# Filter rail
+rail.title = फ़िल्टर
+rail.clear_all = सभी साफ़ करें
+rail.collapse = फ़िल्टर छिपाएँ
+rail.expand = फ़िल्टर दिखाएँ
+rail.resize = फ़िल्टर पैनल का आकार बदलें
+rail.active_count[one] = {count} फ़िल्टर सक्रिय
+rail.active_count[other] = {count} फ़िल्टर सक्रिय
+rail.show_impassable = अगम्य दिखाएँ
+rail.food_only = केवल खाद्य उत्पादक
+rail.section.location = स्थान
+rail.section.geography = भूगोल
+rail.section.terrain = भू-भाग
+rail.section.society = समाज
+rail.section.economy = अर्थव्यवस्था
+rail.section.map_data = मानचित्र डेटा
+
+# Facet titles
+facet.kind = प्रकार
+facet.continent = महाद्वीप
+facet.subcontinent = उपमहाद्वीप
+facet.region = क्षेत्र
+facet.area = इलाका
+facet.province = प्रांत
+facet.topography = स्थलाकृति
+facet.vegetation = वनस्पति
+facet.climate = जलवायु
+facet.religion = धर्म
+facet.culture = संस्कृति
+facet.raw_material = कच्चा माल
+facet.modifier = संशोधक
+facet.coastal = तटीय
+facet.river_presence = नदी
+facet.river_level_min = न्यूनतम नदी बोनस
+facet.river_level_max = अधिकतम नदी बोनस
+facet.harbor_presence = बंदरगाह उपयुक्तता
+facet.movement_presence = आवागमन सहायता
+
+# Checklist controls
+checklist.search.placeholder = विकल्प फ़िल्टर करें
+checklist.expand = सूची फैलाएँ
+checklist.collapse = सूची समेटें
+checklist.clear = चयन साफ़ करें
+checklist.selected_count[one] = {count} चयनित
+checklist.selected_count[other] = {count} चयनित
+checklist.empty = कोई मेल खाता विकल्प नहीं
+
+# Static option labels
+option.kind.land = स्थल
+option.kind.sea = समुद्र
+option.kind.lake = झील
+option.kind.impassable = अगम्य
+option.kind.unknown = अज्ञात
+option.yes = हाँ
+option.no = नहीं
+option.present = मौजूद
+option.missing = अनुपस्थित
+option.no_value = अनुपस्थित
+option.symbol_with_key = {label} [{key}]
+option.river_tier = स्तर {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = छोटा नाला
+river.tier.stream = धारा
+river.tier.river = नदी
+river.tier.large_river = बड़ी नदी
+river.tier.major_river = प्रमुख नदी
+river.tier.unknown = अज्ञात
+
+# Exact color and numeric ranges
+rgb.label = सटीक रंग
+rgb.placeholder = #RRGGBB
+rgb.tooltip = एक से छह हेक्साडेसिमल अंक दर्ज करें; शुरुआती शून्य छोड़े जा सकते हैं।
+range.harbor = बंदरगाह मान
+range.movement_x = आवागमन X
+range.movement_y = आवागमन Y
+range.min.placeholder = न्यूनतम
+range.max.placeholder = अधिकतम
+validation.rgb = एक से छह हेक्साडेसिमल अंक दर्ज करें, जैसे #1A2B3C।
+validation.number = कोई संख्या दर्ज करें, जैसे 0.5।
+validation.number_finite = कोई परिमित संख्या दर्ज करें।
+
+# Result grid
+grid.legend.food = खाद्य उत्पादक
+grid.legend.precious = सोना या चाँदी
+grid.columns = कॉलम
+grid.show_details = विवरण दिखाएँ
+grid.sort.ascending = आरोही क्रम में
+grid.sort.descending = अवरोही क्रम में
+grid.sort.hint = क्रमबद्ध करने के लिए चुनें; उलटने के लिए फिर चुनें
+grid.resize.hint = आकार बदलने के लिए किनारा खींचें
+grid.empty.title = कोई स्थान मेल नहीं खाता
+grid.empty.body = और स्थान देखने के लिए फ़िल्टर बदलें या साफ़ करें।
+
+# Column headers
+column.color = रंग
+column.name = नाम
+column.identifier = पहचानकर्ता
+column.kind = प्रकार
+column.topography = स्थलाकृति
+column.vegetation = वनस्पति
+column.climate = जलवायु
+column.continent = महाद्वीप
+column.subcontinent = उपमहाद्वीप
+column.region = क्षेत्र
+column.area = इलाका
+column.province = प्रांत
+column.religion = धर्म
+column.culture = संस्कृति
+column.raw_material = कच्चा माल
+column.modifier = संशोधक
+column.rgb = RGB
+column.coastal = तटीय
+column.river_presence = नदी
+column.river_level = नदी बोनस
+column.harbor = बंदरगाह
+column.movement_presence = आवागमन
+column.movement_x = आवागमन X
+column.movement_y = आवागमन Y
+column.static_capacity = स्थिर क्षमता
+column.equator_capacity = भूमध्य रेखा क्षमता
+
+# Column menu
+column_menu.title = दिखने वाले कॉलम
+column_menu.close = बंद करें
+column_menu.keep_one = कम से कम एक कॉलम दिखता रहेगा।
+
+# Detail pane
+detail.title = स्थान का विवरण
+detail.hide = विवरण छिपाएँ
+detail.close = बंद करें
+detail.resize = विवरण पैनल का आकार बदलें
+detail.empty.title = कोई स्थान चुनें
+detail.empty.body = स्थान का विवरण, पदानुक्रम, रंग और नदी का डेटा यहाँ दिखाई देता है।
+detail.breadcrumb = पदानुक्रम
+detail.group.classification = वर्गीकरण
+detail.group.society = समाज
+detail.group.economy = अर्थव्यवस्था
+detail.group.coast = तट और आवागमन
+detail.group.river = नदी
+detail.group.capacity = स्थिर जनसंख्या क्षमता
+detail.field.type = प्रकार
+detail.field.topography = स्थलाकृति
+detail.field.vegetation = वनस्पति
+detail.field.climate = जलवायु
+detail.field.religion = धर्म
+detail.field.culture = संस्कृति
+detail.field.raw_material = कच्चा माल
+detail.field.modifier = संशोधक
+detail.field.coastal = तटीय
+detail.field.connected_sea = जुड़ा हुआ समुद्र
+detail.field.harbor = बंदरगाह उपयुक्तता
+detail.field.movement = आवागमन सहायता
+detail.field.river = नदी
+detail.field.river_bonus = क्षमता बोनस
+detail.field.river_source = नदी का स्रोत
+detail.field.river_confluence = नदी संगम
+detail.field.capacity_total = कुल क्षमता
+detail.field.capacity_vegetation = वनस्पति क्षमता
+detail.field.capacity_equator = भूमध्य रेखा से निकटता
+detail.field.capacity_modifier = स्थिर क्षमता संशोधक
+detail.capacity.note = केवल अपरिवर्तनीय मानचित्र डेटा से निकाली गई; विकास, इमारतें, कानून और अभियान की अन्य स्थिति शामिल नहीं हैं।
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}, स्तर {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = शुरू हो रहा है
+load.embedded = अंतर्निहित डेटा लोड हो रहा है
+load.loading_data = EU5 {version} का डेटा लोड हो रहा है
+load.preparing = EU5 {version} का डेटा तैयार हो रहा है
+load.external = बाहरी डेटा तैयार हो रहा है
+load.rebuild = पुनर्निर्माण की तैयारी हो रही है
+load.fonts = फ़ॉन्ट लोड हो रहे हैं
+load.names = स्थानों के नाम लोड हो रहे हैं
+import.templates = स्थान टेम्पलेट पढ़े जा रहे हैं
+import.hierarchy = पदानुक्रम पढ़ा जा रहा है
+import.colors = मानचित्र के रंग पढ़े जा रहे हैं
+import.ports = बंदरगाह पढ़े जा रहे हैं
+import.river_settings = नदी सेटिंग पढ़ी जा रही हैं
+import.map_factors = स्थिर मानचित्र कारक पढ़े जा रहे हैं
+import.localization = स्थानीयकरण पढ़ा जा रहा है
+import.rivers = मानचित्र और नदियाँ स्कैन हो रही हैं
+import.capacity = स्थिर जनसंख्या क्षमता की गणना हो रही है
+import.complete = आयात पूरा हुआ
+
+# Load errors
+error.title = EU5 स्थान लोड नहीं हो सके
+error.detail = तकनीकी विवरण
+error.io = {path} पर फ़ाइल संचालन विफल रहा।
+error.parse = गेम फ़ाइल {source} को बाइट {offset} के पास पार्स नहीं किया जा सका।
+error.installation = Europa Universalis V की स्थापना नहीं मिली।
+error.missing_file = गेम की एक आवश्यक फ़ाइल गायब है: {path}
+error.invalid_data = स्थान डेटा अमान्य है।
+error.encoding = स्थान डेटा को डिकोड नहीं किया जा सका।
+error.compression = स्थान डेटा को अनकंप्रेस नहीं किया जा सका।
+error.png = मानचित्र की छवि डिकोड नहीं की जा सकी: {path}
+error.ui = इंटरफ़ेस विफल हो गया।
+error.worker = बैकग्राउंड लोडर अनपेक्षित रूप से रुक गया।
+error.hint.retryable = स्थापना निर्देशिका जाँचें, फिर पुनः प्रयास करें या डेटा फिर से बनाएँ।
+error.hint.rebuild = इस त्रुटि में पुनः प्रयास से मदद नहीं मिलेगी; डेटा को गेम फ़ाइलों से फिर से बनाएँ।
+error.hint.web = फिर से प्रयास करने के लिए पेज रीलोड करें।
+error.install_path.label = स्थापना निर्देशिका
+error.install_path.placeholder = Europa Universalis V की स्थापना निर्देशिका
+error.retry = पुनः प्रयास करें
+error.rebuild = डेटा फिर से बनाएँ
+
+# Notices shown over a loaded interface
+notice.language_pack = इस भाषा के स्थान नाम लोड नहीं हो सके, इसलिए अंग्रेज़ी नाम दिखाए जा रहे हैं।
+notice.language_pack_mismatch = डाउनलोड किए गए स्थान नाम डेटा के किसी दूसरे बिल्ड के हैं, इसलिए उपयोग नहीं किए गए।
+notice.font_pack = इस भाषा का फ़ॉन्ट लोड नहीं हो सका, इसलिए कुछ टेक्स्ट दिखाई न दे।
+notice.dismiss = हटाएँ
+
+# Drawers
+drawer.close = बंद करें
+
+# About dialog
+about.title = EU5 Location DB
+about.version = संस्करण {version}
+about.data = स्थान डेटा Europa Universalis V {version}, Steam बिल्ड {build} से लिया गया है।
+about.author = निर्माता: Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = स्थिर मानचित्र डेटा का एक अनौपचारिक ब्राउज़र। Paradox Interactive से संबद्ध या उसके द्वारा समर्थित नहीं।
+about.trademark = Europa Universalis और Paradox Interactive अपने-अपने स्वामियों के ट्रेडमार्क हैं।
+about.license.source = स्रोत लाइसेंस: MIT OR Apache-2.0
+about.license.ui = इंटरफ़ेस टूलकिट: iced, MIT लाइसेंस
+about.license.fonts = फ़ॉन्ट: IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP और Noto Sans परिवार, SIL Open Font License 1.1
+about.licenses.show = लाइसेंस पाठ दिखाएँ
+about.licenses.hide = लाइसेंस पाठ छिपाएँ
+about.keys.title = कीबोर्ड
+about.keys.search = खोज पर फ़ोकस करें
+about.keys.regions = हेडर, फ़िल्टर, परिणाम और विवरण के बीच जाएँ
+about.keys.focus = नियंत्रणों के बीच जाएँ
+about.keys.rows = चयनित पंक्ति को खिसकाएँ
+about.keys.columns = सक्रिय कॉलम को खिसकाएँ
+about.keys.sort = सक्रिय कॉलम के अनुसार क्रमबद्ध करें
+about.keys.resize = सक्रिय कॉलम का आकार बदलें
+about.keys.details = चयनित पंक्ति का विवरण दिखाएँ
+about.keys.toggle = सक्रिय विकल्प को चालू या बंद करें
+about.keys.close = मेनू, संवाद या दराज़ बंद करें
+about.close = बंद करें
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Space
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = तीर कुंजियाँ
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

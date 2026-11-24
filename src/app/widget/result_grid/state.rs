@@ -3,6 +3,7 @@
 use std::cell::RefCell;
 
 use iced::Point;
+use iced::advanced::mouse::Click;
 use iced::advanced::widget::operation::Focusable;
 use iced::keyboard::Modifiers;
 use iced::touch::Finger;
@@ -72,6 +73,8 @@ pub(crate) struct GridState {
     pub(crate) hovered_row: Option<usize>,
     /// Column whose resize edge is under the pointer.
     pub(crate) hovered_edge: Option<ColumnId>,
+    /// Scrollbar lane under the pointer, for the hovered thumb colour.
+    pub(crate) hovered_lane: Option<Axis>,
     /// Pointer drag in progress.
     pub(crate) drag: Option<GridDrag>,
     /// Touch drag in progress.
@@ -85,6 +88,11 @@ pub(crate) struct GridState {
     /// Selection seen in the previous update, so an external selection change scrolls it into
     /// view once.
     pub(crate) last_selected: Option<LocationId>,
+    /// Row index of `last_selected` when known. It is only a hint: it is checked against the
+    /// borrowed IDs before use, so a changed result set costs one scan instead of a wrong row.
+    pub(crate) selected_index: Option<usize>,
+    /// Previous left click on a row, for double-click detection.
+    pub(crate) last_click: Option<Click>,
     /// Reused cell text buffer; `draw` only has shared access to the tree, hence the cell. Use
     /// `try_borrow_mut` and skip the cell on failure rather than panicking.
     pub(crate) buffer: RefCell<String>,

@@ -1,0 +1,305 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = పేరు లేదా ఐడెంటిఫైయర్ వెతకండి
+header.search.tooltip = స్థానాల పేర్లు, ఐడెంటిఫైయర్‌లను వెతకండి
+header.result_count[one] = {count} స్థానం
+header.result_count[other] = {count} స్థానాలు
+header.build = EU5 {version} | బిల్డ్ {build}
+header.build.pending = డేటా లోడ్ అవుతోంది
+header.about = గురించి
+header.language = భాష
+header.appearance = రూపం
+header.filters = ఫిల్టర్లు
+header.details = వివరాలు
+
+# Appearance menu (desktop only)
+appearance.title = రూపం
+appearance.mode = మోడ్
+appearance.mode.light = లైట్
+appearance.mode.dark = డార్క్
+appearance.accent = యాక్సెంట్ రంగు
+appearance.accent.amber = అంబర్
+appearance.accent.lagoon = లగూన్
+appearance.accent.cobalt = కోబాల్ట్
+appearance.accent.orchid = ఆర్కిడ్
+appearance.accent.graphite = గ్రాఫైట్
+appearance.motion = యానిమేషన్లు
+appearance.motion.on = ఆన్
+appearance.motion.off = ఆఫ్
+appearance.close = మూసివేయి
+
+# Language menu (desktop only)
+language.title = భాష
+language.game_text_note = ఈ భాషకు గేమ్‌లో అనువాదం లేని చోట స్థానాల పేర్లు ఆంగ్లంలో చూపబడతాయి.
+language.close = మూసివేయి
+
+# Filter rail
+rail.title = ఫిల్టర్లు
+rail.clear_all = అన్నీ తొలగించు
+rail.collapse = ఫిల్టర్లను దాచు
+rail.expand = ఫిల్టర్లను చూపు
+rail.resize = ఫిల్టర్ పేన్ పరిమాణం మార్చు
+rail.active_count[one] = {count} ఫిల్టర్ సక్రియంగా ఉంది
+rail.active_count[other] = {count} ఫిల్టర్లు సక్రియంగా ఉన్నాయి
+rail.show_impassable = దాటలేనివి చూపు
+rail.food_only = ఆహారం ఉత్పత్తి చేసేవి మాత్రమే
+rail.section.location = స్థానం
+rail.section.geography = భూగోళశాస్త్రం
+rail.section.terrain = భూభాగం
+rail.section.society = సమాజం
+rail.section.economy = ఆర్థిక వ్యవస్థ
+rail.section.map_data = మ్యాప్ డేటా
+
+# Facet titles
+facet.kind = రకం
+facet.continent = ఖండం
+facet.subcontinent = ఉపఖండం
+facet.region = ప్రాంతం
+facet.area = ప్రదేశం
+facet.province = రాష్ట్రం
+facet.topography = భూస్వరూపం
+facet.vegetation = వృక్షసంపద
+facet.climate = వాతావరణం
+facet.religion = మతం
+facet.culture = సంస్కృతి
+facet.raw_material = ముడి సరుకు
+facet.modifier = మాడిఫైయర్
+facet.coastal = తీరప్రాంతం
+facet.river_presence = నది
+facet.river_level_min = కనిష్ఠ నది బోనస్
+facet.river_level_max = గరిష్ఠ నది బోనస్
+facet.harbor_presence = ఓడరేవు అనుకూలత
+facet.movement_presence = కదలిక సహాయం
+
+# Checklist controls
+checklist.search.placeholder = ఎంపికలను ఫిల్టర్ చేయండి
+checklist.expand = జాబితాను విస్తరించు
+checklist.collapse = జాబితాను కుదించు
+checklist.clear = ఎంపికను తొలగించు
+checklist.selected_count[one] = {count} ఎంచుకున్నది
+checklist.selected_count[other] = {count} ఎంచుకున్నవి
+checklist.empty = సరిపోలే ఎంపికలు లేవు
+
+# Static option labels
+option.kind.land = భూమి
+option.kind.sea = సముద్రం
+option.kind.lake = సరస్సు
+option.kind.impassable = దాటలేనిది
+option.kind.unknown = తెలియదు
+option.yes = అవును
+option.no = కాదు
+option.present = ఉంది
+option.missing = లేదు
+option.no_value = లేదు
+option.symbol_with_key = {label} [{key}]
+option.river_tier = స్థాయి {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = చిన్న వాగు
+river.tier.stream = వాగు
+river.tier.river = నది
+river.tier.large_river = పెద్ద నది
+river.tier.major_river = ప్రధాన నది
+river.tier.unknown = తెలియదు
+
+# Exact color and numeric ranges
+rgb.label = ఖచ్చితమైన రంగు
+rgb.placeholder = #RRGGBB
+rgb.tooltip = ఒకటి నుండి ఆరు హెక్సాడెసిమల్ అంకెలను నమోదు చేయండి; ముందున్న సున్నాలను వదిలివేయవచ్చు.
+range.harbor = ఓడరేవు విలువ
+range.movement_x = కదలిక X
+range.movement_y = కదలిక Y
+range.min.placeholder = కనిష్ఠం
+range.max.placeholder = గరిష్ఠం
+validation.rgb = ఒకటి నుండి ఆరు హెక్సాడెసిమల్ అంకెలను నమోదు చేయండి, ఉదాహరణకు #1A2B3C.
+validation.number = ఒక సంఖ్యను నమోదు చేయండి, ఉదాహరణకు 0.5.
+validation.number_finite = పరిమిత సంఖ్యను నమోదు చేయండి.
+
+# Result grid
+grid.legend.food = ఆహారం ఉత్పత్తి చేసేవి
+grid.legend.precious = బంగారం లేదా వెండి
+grid.columns = నిలువు వరుసలు
+grid.show_details = వివరాలు చూపు
+grid.sort.ascending = ఆరోహణ క్రమంలో
+grid.sort.descending = అవరోహణ క్రమంలో
+grid.sort.hint = క్రమబద్ధీకరించడానికి ఎంచుకోండి; తిప్పడానికి మళ్లీ ఎంచుకోండి
+grid.resize.hint = పరిమాణం మార్చడానికి అంచును లాగండి
+grid.empty.title = సరిపోలే స్థానాలు లేవు
+grid.empty.body = మరిన్ని స్థానాలను చూడటానికి ఫిల్టర్లను మార్చండి లేదా తొలగించండి.
+
+# Column headers
+column.color = రంగు
+column.name = పేరు
+column.identifier = ఐడెంటిఫైయర్
+column.kind = రకం
+column.topography = భూస్వరూపం
+column.vegetation = వృక్షసంపద
+column.climate = వాతావరణం
+column.continent = ఖండం
+column.subcontinent = ఉపఖండం
+column.region = ప్రాంతం
+column.area = ప్రదేశం
+column.province = రాష్ట్రం
+column.religion = మతం
+column.culture = సంస్కృతి
+column.raw_material = ముడి సరుకు
+column.modifier = మాడిఫైయర్
+column.rgb = RGB
+column.coastal = తీరప్రాంతం
+column.river_presence = నది
+column.river_level = నది బోనస్
+column.harbor = ఓడరేవు
+column.movement_presence = కదలిక
+column.movement_x = కదలిక X
+column.movement_y = కదలిక Y
+column.static_capacity = స్థిర సామర్థ్యం
+column.equator_capacity = భూమధ్యరేఖ సామర్థ్యం
+
+# Column menu
+column_menu.title = కనిపించే నిలువు వరుసలు
+column_menu.close = మూసివేయి
+column_menu.keep_one = కనీసం ఒక నిలువు వరుస కనిపిస్తూ ఉంటుంది.
+
+# Detail pane
+detail.title = స్థానం వివరాలు
+detail.hide = వివరాలను దాచు
+detail.close = మూసివేయి
+detail.resize = వివరాల పేన్ పరిమాణం మార్చు
+detail.empty.title = ఒక స్థానాన్ని ఎంచుకోండి
+detail.empty.body = స్థానం వివరాలు, శ్రేణి క్రమం, రంగు, నది డేటా ఇక్కడ కనిపిస్తాయి.
+detail.breadcrumb = శ్రేణి క్రమం
+detail.group.classification = వర్గీకరణ
+detail.group.society = సమాజం
+detail.group.economy = ఆర్థిక వ్యవస్థ
+detail.group.coast = తీరం మరియు కదలిక
+detail.group.river = నది
+detail.group.capacity = స్థిర జనాభా సామర్థ్యం
+detail.field.type = రకం
+detail.field.topography = భూస్వరూపం
+detail.field.vegetation = వృక్షసంపద
+detail.field.climate = వాతావరణం
+detail.field.religion = మతం
+detail.field.culture = సంస్కృతి
+detail.field.raw_material = ముడి సరుకు
+detail.field.modifier = మాడిఫైయర్
+detail.field.coastal = తీరప్రాంతం
+detail.field.connected_sea = అనుసంధానమైన సముద్రం
+detail.field.harbor = ఓడరేవు అనుకూలత
+detail.field.movement = కదలిక సహాయం
+detail.field.river = నది
+detail.field.river_bonus = సామర్థ్య బోనస్
+detail.field.river_source = నది ఉద్భవ స్థానం
+detail.field.river_confluence = నదుల సంగమం
+detail.field.capacity_total = మొత్తం సామర్థ్యం
+detail.field.capacity_vegetation = వృక్షసంపద సామర్థ్యం
+detail.field.capacity_equator = భూమధ్యరేఖకు సమీపత
+detail.field.capacity_modifier = స్థిర సామర్థ్య మాడిఫైయర్
+detail.capacity.note = మారని మ్యాప్ డేటా నుండి మాత్రమే రాబట్టబడింది; అభివృద్ధి, భవనాలు, చట్టాలు, ఇతర ప్రచార స్థితి చేర్చబడలేదు.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}, స్థాయి {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = ప్రారంభమవుతోంది
+load.embedded = అంతర్నిర్మిత డేటా లోడ్ అవుతోంది
+load.loading_data = EU5 {version} డేటా లోడ్ అవుతోంది
+load.preparing = EU5 {version} డేటా సిద్ధమవుతోంది
+load.external = బాహ్య డేటా సిద్ధమవుతోంది
+load.rebuild = పునర్నిర్మాణానికి సిద్ధమవుతోంది
+load.fonts = ఫాంట్లు లోడ్ అవుతున్నాయి
+load.names = స్థానాల పేర్లు లోడ్ అవుతున్నాయి
+import.templates = స్థాన టెంప్లేట్లు చదువుతున్నారు
+import.hierarchy = శ్రేణి క్రమం చదువుతున్నారు
+import.colors = మ్యాప్ రంగులు చదువుతున్నారు
+import.ports = ఓడరేవులు చదువుతున్నారు
+import.river_settings = నది సెట్టింగ్‌లు చదువుతున్నారు
+import.map_factors = స్థిర మ్యాప్ కారకాలు చదువుతున్నారు
+import.localization = స్థానికీకరణ చదువుతున్నారు
+import.rivers = మ్యాప్, నదులు స్కాన్ చేస్తున్నారు
+import.capacity = స్థిర జనాభా సామర్థ్యం లెక్కిస్తున్నారు
+import.complete = దిగుమతి పూర్తయింది
+
+# Load errors
+error.title = EU5 స్థానాలను లోడ్ చేయలేకపోయింది
+error.detail = సాంకేతిక వివరాలు
+error.io = {path} కోసం ఫైల్ ఆపరేషన్ విఫలమైంది.
+error.parse = గేమ్ ఫైల్ {source}ను బైట్ {offset} దగ్గర పార్స్ చేయలేకపోయింది.
+error.installation = Europa Universalis V ఇన్‌స్టాలేషన్ కనిపించలేదు.
+error.missing_file = గేమ్‌కు అవసరమైన ఫైల్ లేదు: {path}
+error.invalid_data = స్థాన డేటా చెల్లనిది.
+error.encoding = స్థాన డేటాను డీకోడ్ చేయలేకపోయింది.
+error.compression = స్థాన డేటాను డీకంప్రెస్ చేయలేకపోయింది.
+error.png = మ్యాప్ చిత్రాన్ని డీకోడ్ చేయలేకపోయింది: {path}
+error.ui = ఇంటర్‌ఫేస్ విఫలమైంది.
+error.worker = బ్యాక్‌గ్రౌండ్ లోడర్ అనుకోకుండా ఆగిపోయింది.
+error.hint.retryable = ఇన్‌స్టాలేషన్ డైరెక్టరీని తనిఖీ చేసి, మళ్లీ ప్రయత్నించండి లేదా డేటాను పునర్నిర్మించండి.
+error.hint.rebuild = ఈ లోపానికి మళ్లీ ప్రయత్నించడం సహాయపడదు; గేమ్ ఫైళ్ల నుండి డేటాను పునర్నిర్మించండి.
+error.hint.web = మళ్లీ ప్రయత్నించడానికి పేజీని రీలోడ్ చేయండి.
+error.install_path.label = ఇన్‌స్టాలేషన్ డైరెక్టరీ
+error.install_path.placeholder = Europa Universalis V ఇన్‌స్టాలేషన్ డైరెక్టరీ
+error.retry = మళ్లీ ప్రయత్నించు
+error.rebuild = డేటాను పునర్నిర్మించు
+
+# Notices shown over a loaded interface
+notice.language_pack = ఈ భాషకు స్థానాల పేర్లు లోడ్ కాలేదు, కాబట్టి ఆంగ్ల పేర్లు చూపబడుతున్నాయి.
+notice.language_pack_mismatch = డౌన్‌లోడ్ చేసిన స్థానాల పేర్లు డేటా యొక్క వేరే బిల్డ్‌కు చెందినవి, కాబట్టి ఉపయోగించలేదు.
+notice.font_pack = ఈ భాషకు ఫాంట్ లోడ్ కాలేదు, కాబట్టి కొంత వచనం కనిపించకపోవచ్చు.
+notice.dismiss = విస్మరించు
+
+# Drawers
+drawer.close = మూసివేయి
+
+# About dialog
+about.title = EU5 Location DB
+about.version = వెర్షన్ {version}
+about.data = స్థాన డేటా Europa Universalis V {version}, Steam బిల్డ్ {build} నుండి.
+about.author = రూపకర్త: Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = స్థిర మ్యాప్ డేటా కోసం అనధికారిక బ్రౌజర్. Paradox Interactiveతో సంబంధం లేదు, వారి ఆమోదం లేదు.
+about.trademark = Europa Universalis, Paradox Interactive వాటి యజమానుల ట్రేడ్‌మార్క్‌లు.
+about.license.source = సోర్స్ లైసెన్స్: MIT OR Apache-2.0
+about.license.ui = ఇంటర్‌ఫేస్ టూల్‌కిట్: iced, MIT లైసెన్స్
+about.license.fonts = ఫాంట్లు: IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP, Noto Sans కుటుంబాలు, SIL Open Font License 1.1
+about.licenses.show = లైసెన్స్ పాఠాలను చూపు
+about.licenses.hide = లైసెన్స్ పాఠాలను దాచు
+about.keys.title = కీబోర్డ్
+about.keys.search = శోధనపై ఫోకస్ చేయి
+about.keys.regions = హెడర్, ఫిల్టర్లు, ఫలితాలు, వివరాల మధ్య వెళ్లు
+about.keys.focus = నియంత్రణల మధ్య వెళ్లు
+about.keys.rows = ఎంచుకున్న వరుసను కదిలించు
+about.keys.columns = సక్రియ నిలువు వరుసను కదిలించు
+about.keys.sort = సక్రియ నిలువు వరుస ప్రకారం క్రమబద్ధీకరించు
+about.keys.resize = సక్రియ నిలువు వరుస పరిమాణం మార్చు
+about.keys.details = ఎంచుకున్న వరుస వివరాలను చూపు
+about.keys.toggle = సక్రియ ఎంపికను ఆన్ లేదా ఆఫ్ చేయి
+about.keys.close = మెనూ, డైలాగ్ లేదా డ్రాయర్‌ను మూసివేయి
+about.close = మూసివేయి
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Space
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = బాణం కీలు
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

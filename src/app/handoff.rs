@@ -38,3 +38,17 @@ impl<T> fmt::Debug for Handoff<T> {
         formatter.write_str("Handoff(..)")
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::Handoff;
+
+    #[test]
+    fn clones_share_one_take() {
+        let first = Handoff::new(String::from("engine"));
+        let second = first.clone();
+        assert_eq!(second.take().as_deref(), Some("engine"));
+        assert_eq!(first.take(), None);
+        assert_eq!(format!("{first:?}"), "Handoff(..)");
+    }
+}

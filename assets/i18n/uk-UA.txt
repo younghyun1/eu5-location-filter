@@ -1,0 +1,312 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = Пошук за назвою або ідентифікатором
+header.search.tooltip = Пошук за назвами та ідентифікаторами локацій
+header.result_count[one] = {count} локація
+header.result_count[few] = {count} локації
+header.result_count[many] = {count} локацій
+header.result_count[other] = {count} локацій
+header.build = EU5 {version} | Збірка {build}
+header.build.pending = Завантаження даних
+header.about = Про програму
+header.language = Мова
+header.appearance = Оформлення
+header.filters = Фільтри
+header.details = Деталі
+
+# Appearance menu (desktop only)
+appearance.title = Оформлення
+appearance.mode = Режим
+appearance.mode.light = Світла
+appearance.mode.dark = Темна
+appearance.accent = Акцент
+appearance.accent.amber = Бурштиновий
+appearance.accent.lagoon = Лагуна
+appearance.accent.cobalt = Кобальт
+appearance.accent.orchid = Орхідея
+appearance.accent.graphite = Графіт
+appearance.motion = Анімації
+appearance.motion.on = Увімк.
+appearance.motion.off = Вимк.
+appearance.close = Закрити
+
+# Language menu (desktop only)
+language.title = Мова
+language.game_text_note = Назви локацій подано англійською, якщо гра не має перекладу для цієї мови.
+language.close = Закрити
+
+# Filter rail
+rail.title = Фільтри
+rail.clear_all = Скинути всі
+rail.collapse = Сховати фільтри
+rail.expand = Показати фільтри
+rail.resize = Змінити ширину панелі фільтрів
+rail.active_count[one] = {count} активний фільтр
+rail.active_count[few] = {count} активні фільтри
+rail.active_count[many] = {count} активних фільтрів
+rail.active_count[other] = {count} активних фільтрів
+rail.show_impassable = Показати непрохідні
+rail.food_only = Лише ті, що виробляють їжу
+rail.section.location = Локація
+rail.section.geography = Географія
+rail.section.terrain = Рельєф
+rail.section.society = Суспільство
+rail.section.economy = Економіка
+rail.section.map_data = Дані карти
+
+# Facet titles
+facet.kind = Тип
+facet.continent = Континент
+facet.subcontinent = Субконтинент
+facet.region = Регіон
+facet.area = Область
+facet.province = Провінція
+facet.topography = Рельєф
+facet.vegetation = Рослинність
+facet.climate = Клімат
+facet.religion = Релігія
+facet.culture = Культура
+facet.raw_material = Сировина
+facet.modifier = Модифікатор
+facet.coastal = Прибережна
+facet.river_presence = Річка
+facet.river_level_min = Мінімальний бонус річки
+facet.river_level_max = Максимальний бонус річки
+facet.harbor_presence = Придатність для гавані
+facet.movement_presence = Допомога в пересуванні
+
+# Checklist controls
+checklist.search.placeholder = Фільтр варіантів
+checklist.expand = Розгорнути список
+checklist.collapse = Згорнути список
+checklist.clear = Очистити вибір
+checklist.selected_count[one] = обрано {count}
+checklist.selected_count[few] = обрано {count}
+checklist.selected_count[many] = обрано {count}
+checklist.selected_count[other] = обрано {count}
+checklist.empty = Немає відповідних варіантів
+
+# Static option labels
+option.kind.land = Суша
+option.kind.sea = Море
+option.kind.lake = Озеро
+option.kind.impassable = Непрохідна
+option.kind.unknown = Невідомо
+option.yes = Так
+option.no = Ні
+option.present = Є
+option.missing = Немає
+option.no_value = Немає даних
+option.symbol_with_key = {label} [{key}]
+option.river_tier = Рівень {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = Струмок
+river.tier.stream = Потік
+river.tier.river = Річка
+river.tier.large_river = Велика річка
+river.tier.major_river = Головна річка
+river.tier.unknown = Невідомо
+
+# Exact color and numeric ranges
+rgb.label = Точний колір
+rgb.placeholder = #RRGGBB
+rgb.tooltip = Введіть від однієї до шести шістнадцяткових цифр; провідні нулі можна опустити.
+range.harbor = Значення гавані
+range.movement_x = Пересування за X
+range.movement_y = Пересування за Y
+range.min.placeholder = Мінімум
+range.max.placeholder = Максимум
+validation.rgb = Введіть від однієї до шести шістнадцяткових цифр, наприклад #1A2B3C.
+validation.number = Введіть число, наприклад 0.5.
+validation.number_finite = Введіть скінченне число.
+
+# Result grid
+grid.legend.food = Виробляє їжу
+grid.legend.precious = Золото або срібло
+grid.columns = Стовпці
+grid.show_details = Показати деталі
+grid.sort.ascending = Сортування за зростанням
+grid.sort.descending = Сортування за спаданням
+grid.sort.hint = Натисніть для сортування; натисніть ще раз, щоб змінити порядок
+grid.resize.hint = Перетягніть край, щоб змінити розмір
+grid.empty.title = Немає відповідних локацій
+grid.empty.body = Змініть або скиньте фільтри, щоб побачити більше локацій.
+
+# Column headers
+column.color = Колір
+column.name = Назва
+column.identifier = Ідентифікатор
+column.kind = Тип
+column.topography = Рельєф
+column.vegetation = Рослинність
+column.climate = Клімат
+column.continent = Континент
+column.subcontinent = Субконтинент
+column.region = Регіон
+column.area = Область
+column.province = Провінція
+column.religion = Релігія
+column.culture = Культура
+column.raw_material = Сировина
+column.modifier = Модифікатор
+column.rgb = RGB
+column.coastal = Прибережна
+column.river_presence = Річка
+column.river_level = Бонус річки
+column.harbor = Гавань
+column.movement_presence = Пересування
+column.movement_x = Пересування за X
+column.movement_y = Пересування за Y
+column.static_capacity = Статична місткість
+column.equator_capacity = Місткість на екваторі
+
+# Column menu
+column_menu.title = Видимі стовпці
+column_menu.close = Закрити
+column_menu.keep_one = Принаймні один стовпець лишається видимим.
+
+# Detail pane
+detail.title = Деталі локації
+detail.hide = Сховати деталі
+detail.close = Закрити
+detail.resize = Змінити ширину панелі деталей
+detail.empty.title = Оберіть локацію
+detail.empty.body = Тут з'являться деталі локації, ієрархія, колір і дані про річку.
+detail.breadcrumb = Ієрархія
+detail.group.classification = Класифікація
+detail.group.society = Суспільство
+detail.group.economy = Економіка
+detail.group.coast = Узбережжя і пересування
+detail.group.river = Річка
+detail.group.capacity = Статична місткість населення
+detail.field.type = Тип
+detail.field.topography = Рельєф
+detail.field.vegetation = Рослинність
+detail.field.climate = Клімат
+detail.field.religion = Релігія
+detail.field.culture = Культура
+detail.field.raw_material = Сировина
+detail.field.modifier = Модифікатор
+detail.field.coastal = Прибережна
+detail.field.connected_sea = Пов'язане море
+detail.field.harbor = Придатність для гавані
+detail.field.movement = Допомога в пересуванні
+detail.field.river = Річка
+detail.field.river_bonus = Бонус місткості
+detail.field.river_source = Джерело річки
+detail.field.river_confluence = Злиття річок
+detail.field.capacity_total = Загальна місткість
+detail.field.capacity_vegetation = Місткість рослинності
+detail.field.capacity_equator = Близькість до екватора
+detail.field.capacity_modifier = Модифікатор статичної місткості
+detail.capacity.note = Розраховано лише за незмінними даними карти; розвиток, будівлі, закони та інший стан кампанії не враховуються.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}, рівень {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = Запуск
+load.embedded = Завантаження вбудованих даних
+load.loading_data = Завантаження даних EU5 {version}
+load.preparing = Підготовка даних EU5 {version}
+load.external = Підготовка зовнішніх даних
+load.rebuild = Підготовка перебудови
+load.fonts = Завантаження шрифтів
+load.names = Завантаження назв локацій
+import.templates = Читання шаблонів локацій
+import.hierarchy = Читання ієрархії
+import.colors = Читання кольорів карти
+import.ports = Читання портів
+import.river_settings = Читання налаштувань річок
+import.map_factors = Читання статичних коефіцієнтів карти
+import.localization = Читання локалізації
+import.rivers = Сканування карти та річок
+import.capacity = Обчислення статичної місткості населення
+import.complete = Імпорт завершено
+
+# Load errors
+error.title = Не вдалося завантажити локації EU5
+error.detail = Технічні відомості
+error.io = Помилка операції з файлом для {path}.
+error.parse = Не вдалося розібрати файл гри {source} поблизу байта {offset}.
+error.installation = Інсталяцію Europa Universalis V не знайдено.
+error.missing_file = Відсутній потрібний файл гри: {path}
+error.invalid_data = Дані про локації некоректні.
+error.encoding = Не вдалося декодувати дані про локації.
+error.compression = Не вдалося розпакувати дані про локації.
+error.png = Не вдалося декодувати зображення карти: {path}
+error.ui = Помилка інтерфейсу.
+error.worker = Фоновий завантажувач несподівано зупинився.
+error.hint.retryable = Перевірте каталог інсталяції, потім повторіть спробу або перебудуйте дані.
+error.hint.rebuild = Повтор із цією помилкою не допоможе; перебудуйте дані з файлів гри.
+error.hint.web = Перезавантажте сторінку, щоб повторити спробу.
+error.install_path.label = Каталог інсталяції
+error.install_path.placeholder = Каталог інсталяції Europa Universalis V
+error.retry = Повторити
+error.rebuild = Перебудувати дані
+
+# Notices shown over a loaded interface
+notice.language_pack = Назви локацій для цієї мови не вдалося завантажити, тому показано англійські назви.
+notice.language_pack_mismatch = Завантажені назви локацій належать до іншої збірки даних і не були використані.
+notice.font_pack = Шрифт для цієї мови не вдалося завантажити, тому частина тексту може не відображатися.
+notice.dismiss = Сховати
+
+# Drawers
+drawer.close = Закрити
+
+# About dialog
+about.title = EU5 Location DB
+about.version = Версія {version}
+about.data = Дані про локації з Europa Universalis V {version}, збірка Steam {build}.
+about.author = Автор: Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = Неофіційний статичний переглядач даних карти. Не пов'язаний із Paradox Interactive і не схвалений нею.
+about.trademark = Europa Universalis і Paradox Interactive є торговими марками їхніх власників.
+about.license.source = Ліцензія вихідного коду: MIT OR Apache-2.0
+about.license.ui = Інструмент інтерфейсу: iced, ліцензія MIT
+about.license.fonts = Шрифти: родини IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP та Noto Sans, SIL Open Font License 1.1
+about.licenses.show = Показати тексти ліцензій
+about.licenses.hide = Сховати тексти ліцензій
+about.keys.title = Клавіатура
+about.keys.search = Перейти до пошуку
+about.keys.regions = Перехід між заголовком, фільтрами, результатами та деталями
+about.keys.focus = Перехід між елементами керування
+about.keys.rows = Переміщення по вибраному рядку
+about.keys.columns = Переміщення по активному стовпцю
+about.keys.sort = Сортування за активним стовпцем
+about.keys.resize = Зміна ширини активного стовпця
+about.keys.details = Показати деталі вибраного рядка
+about.keys.toggle = Перемкнути активний варіант
+about.keys.close = Закрити меню, діалог або панель
+about.close = Закрити
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Пробіл
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = Стрілки
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End
+

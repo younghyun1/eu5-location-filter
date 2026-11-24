@@ -15,7 +15,7 @@ pub(crate) type OnSelect<'a, Message> = Box<dyn Fn(LocationId, SelectionSource) 
 pub(crate) type OnSort<'a, Message> = Box<dyn Fn(ColumnId) -> Message + 'a>;
 /// Callback for a requested, unclamped column width.
 pub(crate) type OnResize<'a, Message> = Box<dyn Fn(ColumnId, f32) -> Message + 'a>;
-/// Callback for Space on a focused grid.
+/// Callback for Space on a focused grid or a double click on a row.
 pub(crate) type OnShowDetail<'a, Message> = Box<dyn Fn(LocationId) -> Message + 'a>;
 
 /// Virtualized, sortable, resizable result table.
@@ -23,7 +23,7 @@ pub(crate) type OnShowDetail<'a, Message> = Box<dyn Fn(LocationId) -> Message + 
 /// Messages: `on_select` on click, tap, or arrow, page, Home and End keys (with the selection
 /// scrolled into view); `on_sort` on a header click or Enter on the active column; `on_resize`
 /// while dragging a header edge or on Shift with ArrowLeft or ArrowRight; `on_show_detail` on
-/// Space. Tab is never captured.
+/// Space or a double click on a row. Tab and Escape are never captured.
 pub(crate) struct ResultGrid<'a, Message> {
     /// Filtered, sorted result IDs; borrowed from the application state, never copied.
     pub(super) ids: &'a [LocationId],
@@ -49,9 +49,13 @@ pub(crate) struct ResultGrid<'a, Message> {
     pub(super) empty_title: &'a str,
     /// Empty-state body.
     pub(super) empty_body: &'a str,
+    /// Row selection callback.
     pub(super) on_select: Option<OnSelect<'a, Message>>,
+    /// Sort request callback.
     pub(super) on_sort: Option<OnSort<'a, Message>>,
+    /// Column width request callback.
     pub(super) on_resize: Option<OnResize<'a, Message>>,
+    /// Detail request callback.
     pub(super) on_show_detail: Option<OnShowDetail<'a, Message>>,
 }
 
@@ -153,7 +157,7 @@ impl<'a, Message> ResultGrid<'a, Message> {
         self
     }
 
-    /// Publishes Space on a focused grid.
+    /// Publishes Space on a focused grid and double clicks on rows.
     #[must_use]
     pub(crate) fn on_show_detail(
         mut self,

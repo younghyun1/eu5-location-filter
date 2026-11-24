@@ -33,8 +33,23 @@ impl PaletteFade {
     /// Starts a fade from the palette shown at `now` to `target`, or jumps there with reduced
     /// motion.
     pub(crate) fn retarget(&mut self, target: Palette, now: Instant, reduced_motion: bool) {
-        let _ = (now, reduced_motion);
-        *self = Self::settled(target);
+        if reduced_motion {
+            *self = Self::settled(target);
+            return;
+        }
+        // The host and the frame loop may repeat the palette they already sent; restarting the
+        // fade for an identical target would stall it at its first frame.
+        if target == self.to {
+            return;
+        }
+        // Start from what is on screen now, so a retarget in mid-fade does not jump.
+        let from = self.sample(now);
+        self.from = from;
+        self.to = target;
+        self.progress = Animation::new(false)
+            .duration(palette_duration(false))
+            .easing(palette_easing())
+            .go(true, now);
     }
 
     /// Palette to draw at `now`.
@@ -64,11 +79,41 @@ pub(crate) fn palette_easing() -> Easing {
 }
 
 /// Cubic Bezier `PALETTE_EASING_BEZIER` evaluated at progress `x` in `0..=1`: solves the curve's
-/// x for its parameter, then returns its y.
+/// x for its parameter, then returns its y. The x control points lie in `0..=1`, so x is
+/// monotonic in the parameter and bisection converges. Input is clamped to `0..=1` and NaN maps to 0.
 #[must_use]
 pub(crate) fn chrome_curve(x: f32) -> f32 {
-    let _ = PALETTE_EASING_BEZIER;
-    x.clamp(0.0, 1.0)
+    if x.is_nan() {
+        return 0.0;
+    }
+    // The end points are exact so that a finished fade is exactly its target.
+    if x <= 0.0 {
+        return 0.0;
+    }
+    if x >= 1.0 {
+        return 1.0;
+    }
+    let [x1, y1, x2, y2] = PALETTE_EASING_BEZIER;
+    let mut low = 0.0_f32;
+    let mut high = 1.0_f32;
+    for _ in 0..BISECTION_STEPS {
+        let middle = (low + high) * 0.5;
+        if bezier(x1, x2, middle) < x {
+            low = middle;
+        } else {
+            high = middle;
+        }
+    }
+    bezier(y1, y2, (low + high) * 0.5)
+}
+
+/// Bisection steps; 24 halvings of the unit interval are finer than an `f32` can resolve.
+const BISECTION_STEPS: u32 = 24;
+
+/// One coordinate of a cubic Bezier with end points 0 and 1 and control points `p1`, `p2`.
+fn bezier(p1: f32, p2: f32, t: f32) -> f32 {
+    let u = 1.0 - t;
+    3.0 * u * u * t * p1 + 3.0 * u * t * t * p2 + t * t * t
 }
 
 /// Drawer slide and scrim fade duration.

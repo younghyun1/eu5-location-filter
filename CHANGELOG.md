@@ -2,6 +2,14 @@
 
 ## 0.1.0 - Unreleased
 
+- Replace the Slint interface with iced 0.14 on desktop and in the browser (wgpu with a WebGL 2 fallback). The result grid and the checklists are custom widgets that draw only visible rows. Slint and its royalty-free licence attribution are removed; the About dialog lists iced, IBM Plex and Noto licences.
+- Redesign the interface after the cyhdev site: twelve host palette colours with a short palette transition, five accent presets on desktop, reduced motion, and keyboard operation of every control. iced 0.14 has no screen-reader tree, which is a documented limit.
+- Add interface catalogs for the site's 27 locales and right-to-left layout for Arabic, Persian and Urdu. Only English and Korean are written directly; the other catalogs are drafts that need native review.
+- Add game-text language packs for French, German, Spanish, Brazilian Portuguese, Polish, Russian, Turkish, Japanese, Korean and Simplified Chinese, with localized names, labels, search text and sort orders. Index schema 6 splits the language-independent index from a per-language section; symbol columns now sort by their displayed label instead of their identifier. Desktop embeds the packs; the browser fetches one on demand and rejects a pack from another build.
+- Add IBM Plex Sans and Mono for Latin, Vietnamese and Cyrillic, and font packs for Korean, Japanese, Chinese, Arabic, Devanagari, Bengali and Telugu.
+- Add a narrow layout with drawers and touch scrolling, which the browser build uses below 768 pixels.
+- Replace the string theme messages with a versioned host protocol that carries the palette, locale, direction, reduced motion and a bounded view-state string for shareable links, and add a DOM search field in the browser so Korean, Japanese and Chinese input and paste work.
+- Add typed import progress stages and the `--languages` and `--lang-dir` import options, and extend `diff` and `reindex` to language packs.
 - Bundle adaptive facet bitmaps, numeric range indexes, substring postings, and inverse sort ranks; add offline reindexing and scan-equivalence timing tests.
 - Add the initial EU5 location importer, versioned data blob, filters, command-line interface, and desktop UI.
 - Embed level-22 location and filter-index bundles for EU5 1.4.8 build 26547371, replacing the 1.3.11 data: 5,739 locations change climate under the reworked climate set, 4,582 static capacities follow, 261 names and 126 raw materials change, and horses count as food-producing.

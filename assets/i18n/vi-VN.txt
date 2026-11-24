@@ -1,0 +1,302 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = Tìm theo tên hoặc mã định danh
+header.search.tooltip = Tìm theo tên và mã định danh của địa điểm
+header.result_count[other] = {count} địa điểm
+header.build = EU5 {version} | Bản dựng {build}
+header.build.pending = Đang tải dữ liệu
+header.about = Giới thiệu
+header.language = Ngôn ngữ
+header.appearance = Giao diện
+header.filters = Bộ lọc
+header.details = Chi tiết
+
+# Appearance menu (desktop only)
+appearance.title = Giao diện
+appearance.mode = Chế độ
+appearance.mode.light = Sáng
+appearance.mode.dark = Tối
+appearance.accent = Màu nhấn
+appearance.accent.amber = Hổ phách
+appearance.accent.lagoon = Đầm phá
+appearance.accent.cobalt = Xanh coban
+appearance.accent.orchid = Lan tím
+appearance.accent.graphite = Than chì
+appearance.motion = Hiệu ứng chuyển động
+appearance.motion.on = Bật
+appearance.motion.off = Tắt
+appearance.close = Đóng
+
+# Language menu (desktop only)
+language.title = Ngôn ngữ
+language.game_text_note = Tên địa điểm dùng tiếng Anh khi trò chơi chưa có bản dịch cho ngôn ngữ này.
+language.close = Đóng
+
+# Filter rail
+rail.title = Bộ lọc
+rail.clear_all = Xóa tất cả
+rail.collapse = Ẩn bộ lọc
+rail.expand = Hiện bộ lọc
+rail.resize = Thay đổi kích thước khung bộ lọc
+rail.active_count[other] = {count} bộ lọc đang bật
+rail.show_impassable = Hiện vùng không đi qua được
+rail.food_only = Chỉ vùng sản xuất lương thực
+rail.section.location = Địa điểm
+rail.section.geography = Địa lý
+rail.section.terrain = Địa hình
+rail.section.society = Xã hội
+rail.section.economy = Kinh tế
+rail.section.map_data = Dữ liệu bản đồ
+
+# Facet titles
+facet.kind = Loại
+facet.continent = Châu lục
+facet.subcontinent = Tiểu châu lục
+facet.region = Khu vực
+facet.area = Vùng
+facet.province = Tỉnh
+facet.topography = Địa hình
+facet.vegetation = Thảm thực vật
+facet.climate = Khí hậu
+facet.religion = Tôn giáo
+facet.culture = Văn hóa
+facet.raw_material = Nguyên liệu thô
+facet.modifier = Hệ số
+facet.coastal = Ven biển
+facet.river_presence = Sông
+facet.river_level_min = Mức thưởng sông tối thiểu
+facet.river_level_max = Mức thưởng sông tối đa
+facet.harbor_presence = Mức phù hợp làm cảng
+facet.movement_presence = Hỗ trợ di chuyển
+
+# Checklist controls
+checklist.search.placeholder = Lọc tùy chọn
+checklist.expand = Mở rộng danh sách
+checklist.collapse = Thu gọn danh sách
+checklist.clear = Xóa lựa chọn
+checklist.selected_count[other] = Đã chọn {count}
+checklist.empty = Không có tùy chọn phù hợp
+
+# Static option labels
+option.kind.land = Đất liền
+option.kind.sea = Biển
+option.kind.lake = Hồ
+option.kind.impassable = Không đi qua được
+option.kind.unknown = Không rõ
+option.yes = Có
+option.no = Không
+option.present = Có
+option.missing = Thiếu
+option.no_value = Thiếu
+option.symbol_with_key = {label} [{key}]
+option.river_tier = Cấp {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = Suối nhỏ
+river.tier.stream = Dòng suối
+river.tier.river = Sông
+river.tier.large_river = Sông lớn
+river.tier.major_river = Sông chính
+river.tier.unknown = Không rõ
+
+# Exact color and numeric ranges
+rgb.label = Màu chính xác
+rgb.placeholder = #RRGGBB
+rgb.tooltip = Nhập từ một đến sáu chữ số thập lục phân; có thể bỏ các số 0 đứng đầu.
+range.harbor = Giá trị cảng
+range.movement_x = Di chuyển X
+range.movement_y = Di chuyển Y
+range.min.placeholder = Tối thiểu
+range.max.placeholder = Tối đa
+validation.rgb = Nhập từ một đến sáu chữ số thập lục phân, ví dụ #1A2B3C.
+validation.number = Nhập một số, ví dụ 0.5.
+validation.number_finite = Nhập một số hữu hạn.
+
+# Result grid
+grid.legend.food = Sản xuất lương thực
+grid.legend.precious = Vàng hoặc bạc
+grid.columns = Cột
+grid.show_details = Hiện chi tiết
+grid.sort.ascending = Sắp xếp tăng dần
+grid.sort.descending = Sắp xếp giảm dần
+grid.sort.hint = Chọn để sắp xếp; chọn lại để đảo thứ tự
+grid.resize.hint = Kéo cạnh để thay đổi kích thước
+grid.empty.title = Không có địa điểm nào khớp
+grid.empty.body = Thay đổi hoặc xóa bộ lọc để xem thêm địa điểm.
+
+# Column headers
+column.color = Màu
+column.name = Tên
+column.identifier = Mã định danh
+column.kind = Loại
+column.topography = Địa hình
+column.vegetation = Thảm thực vật
+column.climate = Khí hậu
+column.continent = Châu lục
+column.subcontinent = Tiểu châu lục
+column.region = Khu vực
+column.area = Vùng
+column.province = Tỉnh
+column.religion = Tôn giáo
+column.culture = Văn hóa
+column.raw_material = Nguyên liệu thô
+column.modifier = Hệ số
+column.rgb = RGB
+column.coastal = Ven biển
+column.river_presence = Sông
+column.river_level = Mức thưởng sông
+column.harbor = Cảng
+column.movement_presence = Di chuyển
+column.movement_x = Di chuyển X
+column.movement_y = Di chuyển Y
+column.static_capacity = Sức chứa tĩnh
+column.equator_capacity = Sức chứa theo xích đạo
+
+# Column menu
+column_menu.title = Cột hiển thị
+column_menu.close = Đóng
+column_menu.keep_one = Luôn giữ ít nhất một cột hiển thị.
+
+# Detail pane
+detail.title = Chi tiết địa điểm
+detail.hide = Ẩn chi tiết
+detail.close = Đóng
+detail.resize = Thay đổi kích thước khung chi tiết
+detail.empty.title = Chọn một địa điểm
+detail.empty.body = Chi tiết địa điểm, phân cấp, màu sắc và dữ liệu sông sẽ hiển thị ở đây.
+detail.breadcrumb = Phân cấp
+detail.group.classification = Phân loại
+detail.group.society = Xã hội
+detail.group.economy = Kinh tế
+detail.group.coast = Ven biển và di chuyển
+detail.group.river = Sông
+detail.group.capacity = Sức chứa dân số tĩnh
+detail.field.type = Loại
+detail.field.topography = Địa hình
+detail.field.vegetation = Thảm thực vật
+detail.field.climate = Khí hậu
+detail.field.religion = Tôn giáo
+detail.field.culture = Văn hóa
+detail.field.raw_material = Nguyên liệu thô
+detail.field.modifier = Hệ số
+detail.field.coastal = Ven biển
+detail.field.connected_sea = Biển liên kết
+detail.field.harbor = Mức phù hợp làm cảng
+detail.field.movement = Hỗ trợ di chuyển
+detail.field.river = Sông
+detail.field.river_bonus = Mức thưởng sức chứa
+detail.field.river_source = Nguồn sông
+detail.field.river_confluence = Hợp lưu
+detail.field.capacity_total = Tổng sức chứa
+detail.field.capacity_vegetation = Sức chứa thảm thực vật
+detail.field.capacity_equator = Mức gần xích đạo
+detail.field.capacity_modifier = Hệ số sức chứa tĩnh
+detail.capacity.note = Chỉ được suy ra từ dữ liệu bản đồ bất biến; không tính phát triển, công trình, luật và các trạng thái chiến dịch khác.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = C{level} +{percent}%
+format.river_detail = {tier}, cấp {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = Đang khởi động
+load.embedded = Đang tải dữ liệu nhúng
+load.loading_data = Đang tải dữ liệu EU5 {version}
+load.preparing = Đang chuẩn bị dữ liệu EU5 {version}
+load.external = Đang chuẩn bị dữ liệu bên ngoài
+load.rebuild = Đang chuẩn bị dựng lại
+load.fonts = Đang tải phông chữ
+load.names = Đang tải tên địa điểm
+import.templates = Đang đọc mẫu địa điểm
+import.hierarchy = Đang đọc phân cấp
+import.colors = Đang đọc màu bản đồ
+import.ports = Đang đọc cảng
+import.river_settings = Đang đọc thiết lập sông
+import.map_factors = Đang đọc hệ số bản đồ tĩnh
+import.localization = Đang đọc bản địa hóa
+import.rivers = Đang quét bản đồ và sông
+import.capacity = Đang tính sức chứa dân số tĩnh
+import.complete = Đã nhập xong
+
+# Load errors
+error.title = Không thể tải địa điểm EU5
+error.detail = Chi tiết kỹ thuật
+error.io = Thao tác tệp thất bại với {path}.
+error.parse = Không thể phân tích tệp trò chơi {source} gần byte {offset}.
+error.installation = Không tìm thấy thư mục cài đặt Europa Universalis V.
+error.missing_file = Thiếu tệp trò chơi cần thiết: {path}
+error.invalid_data = Dữ liệu địa điểm không hợp lệ.
+error.encoding = Không thể giải mã dữ liệu địa điểm.
+error.compression = Không thể giải nén dữ liệu địa điểm.
+error.png = Không thể giải mã ảnh bản đồ: {path}
+error.ui = Giao diện gặp lỗi.
+error.worker = Bộ tải nền đã dừng đột ngột.
+error.hint.retryable = Kiểm tra thư mục cài đặt, sau đó thử lại hoặc dựng lại dữ liệu.
+error.hint.rebuild = Thử lại sẽ không giúp ích với lỗi này; hãy dựng lại dữ liệu từ tệp trò chơi.
+error.hint.web = Tải lại trang để thử lại.
+error.install_path.label = Thư mục cài đặt
+error.install_path.placeholder = Thư mục cài đặt Europa Universalis V
+error.retry = Thử lại
+error.rebuild = Dựng lại dữ liệu
+
+# Notices shown over a loaded interface
+notice.language_pack = Không thể tải tên địa điểm cho ngôn ngữ này, nên đang hiển thị tên tiếng Anh.
+notice.language_pack_mismatch = Tên địa điểm đã tải về thuộc một bản dựng dữ liệu khác nên không được sử dụng.
+notice.font_pack = Không thể tải phông chữ cho ngôn ngữ này, nên một số chữ có thể không hiển thị.
+notice.dismiss = Bỏ qua
+
+# Drawers
+drawer.close = Đóng
+
+# About dialog
+about.title = EU5 Location DB
+about.version = Phiên bản {version}
+about.data = Dữ liệu địa điểm từ Europa Universalis V {version}, bản dựng Steam {build}.
+about.author = Tác giả: Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = Trình duyệt dữ liệu bản đồ tĩnh không chính thức. Không liên kết với và không được Paradox Interactive chứng thực.
+about.trademark = Europa Universalis và Paradox Interactive là nhãn hiệu của chủ sở hữu tương ứng.
+about.license.source = Giấy phép mã nguồn: MIT OR Apache-2.0
+about.license.ui = Bộ công cụ giao diện: iced, Giấy phép MIT
+about.license.fonts = Phông chữ: họ IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP và Noto Sans, SIL Open Font License 1.1
+about.licenses.show = Hiện nội dung giấy phép
+about.licenses.hide = Ẩn nội dung giấy phép
+about.keys.title = Bàn phím
+about.keys.search = Chuyển tiêu điểm đến ô tìm kiếm
+about.keys.regions = Di chuyển giữa tiêu đề, bộ lọc, kết quả và chi tiết
+about.keys.focus = Di chuyển giữa các điều khiển
+about.keys.rows = Di chuyển hàng đang chọn
+about.keys.columns = Di chuyển cột đang hoạt động
+about.keys.sort = Sắp xếp theo cột đang hoạt động
+about.keys.resize = Thay đổi kích thước cột đang hoạt động
+about.keys.details = Hiện chi tiết của hàng đang chọn
+about.keys.toggle = Bật hoặc tắt tùy chọn đang hoạt động
+about.keys.close = Đóng menu, hộp thoại hoặc ngăn kéo
+about.close = Đóng
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Space
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = Phím mũi tên
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

@@ -1,0 +1,305 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = নাম বা শনাক্তকারী খুঁজুন
+header.search.tooltip = অবস্থানের নাম ও শনাক্তকারী খুঁজুন
+header.result_count[one] = {count}টি অবস্থান
+header.result_count[other] = {count}টি অবস্থান
+header.build = EU5 {version} | বিল্ড {build}
+header.build.pending = ডেটা লোড হচ্ছে
+header.about = পরিচিতি
+header.language = ভাষা
+header.appearance = চেহারা
+header.filters = ফিল্টার
+header.details = বিবরণ
+
+# Appearance menu (desktop only)
+appearance.title = চেহারা
+appearance.mode = মোড
+appearance.mode.light = হালকা
+appearance.mode.dark = গাঢ়
+appearance.accent = অ্যাকসেন্ট রং
+appearance.accent.amber = অ্যাম্বার
+appearance.accent.lagoon = ল্যাগুন
+appearance.accent.cobalt = কোবাল্ট
+appearance.accent.orchid = অর্কিড
+appearance.accent.graphite = গ্রাফাইট
+appearance.motion = অ্যানিমেশন
+appearance.motion.on = চালু
+appearance.motion.off = বন্ধ
+appearance.close = বন্ধ করুন
+
+# Language menu (desktop only)
+language.title = ভাষা
+language.game_text_note = যেখানে গেমে এই ভাষার অনুবাদ নেই, সেখানে অবস্থানের নাম ইংরেজিতে দেখানো হয়।
+language.close = বন্ধ করুন
+
+# Filter rail
+rail.title = ফিল্টার
+rail.clear_all = সব মুছুন
+rail.collapse = ফিল্টার লুকান
+rail.expand = ফিল্টার দেখান
+rail.resize = ফিল্টার প্যানের আকার পরিবর্তন করুন
+rail.active_count[one] = {count}টি ফিল্টার সক্রিয়
+rail.active_count[other] = {count}টি ফিল্টার সক্রিয়
+rail.show_impassable = দুর্গম দেখান
+rail.food_only = শুধু খাদ্য উৎপাদনকারী
+rail.section.location = অবস্থান
+rail.section.geography = ভূগোল
+rail.section.terrain = ভূপ্রকৃতি
+rail.section.society = সমাজ
+rail.section.economy = অর্থনীতি
+rail.section.map_data = মানচিত্রের ডেটা
+
+# Facet titles
+facet.kind = ধরন
+facet.continent = মহাদেশ
+facet.subcontinent = উপমহাদেশ
+facet.region = অঞ্চল
+facet.area = এলাকা
+facet.province = প্রদেশ
+facet.topography = ভূসংস্থান
+facet.vegetation = উদ্ভিদ
+facet.climate = জলবায়ু
+facet.religion = ধর্ম
+facet.culture = সংস্কৃতি
+facet.raw_material = কাঁচামাল
+facet.modifier = মডিফায়ার
+facet.coastal = উপকূলীয়
+facet.river_presence = নদী
+facet.river_level_min = সর্বনিম্ন নদী বোনাস
+facet.river_level_max = সর্বোচ্চ নদী বোনাস
+facet.harbor_presence = বন্দরের উপযোগিতা
+facet.movement_presence = চলাচলে সহায়তা
+
+# Checklist controls
+checklist.search.placeholder = বিকল্প ফিল্টার করুন
+checklist.expand = তালিকা প্রসারিত করুন
+checklist.collapse = তালিকা গুটিয়ে নিন
+checklist.clear = নির্বাচন মুছুন
+checklist.selected_count[one] = {count}টি নির্বাচিত
+checklist.selected_count[other] = {count}টি নির্বাচিত
+checklist.empty = মিলে যাওয়া কোনো বিকল্প নেই
+
+# Static option labels
+option.kind.land = স্থল
+option.kind.sea = সাগর
+option.kind.lake = হ্রদ
+option.kind.impassable = দুর্গম
+option.kind.unknown = অজানা
+option.yes = হ্যাঁ
+option.no = না
+option.present = আছে
+option.missing = নেই
+option.no_value = নেই
+option.symbol_with_key = {label} [{key}]
+option.river_tier = স্তর {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = ঝরনা-নালা
+river.tier.stream = স্রোতধারা
+river.tier.river = নদী
+river.tier.large_river = বড় নদী
+river.tier.major_river = প্রধান নদী
+river.tier.unknown = অজানা
+
+# Exact color and numeric ranges
+rgb.label = সঠিক রং
+rgb.placeholder = #RRGGBB
+rgb.tooltip = এক থেকে ছয়টি হেক্সাডেসিমাল অঙ্ক লিখুন; শুরুর শূন্য বাদ দেওয়া যায়।
+range.harbor = বন্দরের মান
+range.movement_x = চলাচল X
+range.movement_y = চলাচল Y
+range.min.placeholder = সর্বনিম্ন
+range.max.placeholder = সর্বোচ্চ
+validation.rgb = এক থেকে ছয়টি হেক্সাডেসিমাল অঙ্ক লিখুন, যেমন #1A2B3C।
+validation.number = একটি সংখ্যা লিখুন, যেমন 0.5।
+validation.number_finite = একটি সসীম সংখ্যা লিখুন।
+
+# Result grid
+grid.legend.food = খাদ্য উৎপাদনকারী
+grid.legend.precious = সোনা বা রুপা
+grid.columns = কলাম
+grid.show_details = বিবরণ দেখান
+grid.sort.ascending = ঊর্ধ্বক্রমে সাজানো
+grid.sort.descending = নিম্নক্রমে সাজানো
+grid.sort.hint = সাজাতে নির্বাচন করুন; উল্টাতে আবার নির্বাচন করুন
+grid.resize.hint = আকার বদলাতে প্রান্ত টানুন
+grid.empty.title = কোনো অবস্থান মেলেনি
+grid.empty.body = আরও অবস্থান দেখতে ফিল্টার বদলান বা মুছুন।
+
+# Column headers
+column.color = রং
+column.name = নাম
+column.identifier = শনাক্তকারী
+column.kind = ধরন
+column.topography = ভূসংস্থান
+column.vegetation = উদ্ভিদ
+column.climate = জলবায়ু
+column.continent = মহাদেশ
+column.subcontinent = উপমহাদেশ
+column.region = অঞ্চল
+column.area = এলাকা
+column.province = প্রদেশ
+column.religion = ধর্ম
+column.culture = সংস্কৃতি
+column.raw_material = কাঁচামাল
+column.modifier = মডিফায়ার
+column.rgb = RGB
+column.coastal = উপকূলীয়
+column.river_presence = নদী
+column.river_level = নদী বোনাস
+column.harbor = বন্দর
+column.movement_presence = চলাচল
+column.movement_x = চলাচল X
+column.movement_y = চলাচল Y
+column.static_capacity = স্থির ধারণক্ষমতা
+column.equator_capacity = নিরক্ষীয় ধারণক্ষমতা
+
+# Column menu
+column_menu.title = দৃশ্যমান কলাম
+column_menu.close = বন্ধ করুন
+column_menu.keep_one = অন্তত একটি কলাম দৃশ্যমান থাকবে।
+
+# Detail pane
+detail.title = অবস্থানের বিবরণ
+detail.hide = বিবরণ লুকান
+detail.close = বন্ধ করুন
+detail.resize = বিবরণ প্যানের আকার পরিবর্তন করুন
+detail.empty.title = একটি অবস্থান নির্বাচন করুন
+detail.empty.body = অবস্থানের বিবরণ, শ্রেণিবিন্যাস, রং ও নদীর ডেটা এখানে দেখা যায়।
+detail.breadcrumb = শ্রেণিবিন্যাস
+detail.group.classification = শ্রেণিবিভাগ
+detail.group.society = সমাজ
+detail.group.economy = অর্থনীতি
+detail.group.coast = উপকূল ও চলাচল
+detail.group.river = নদী
+detail.group.capacity = স্থির জনসংখ্যার ধারণক্ষমতা
+detail.field.type = ধরন
+detail.field.topography = ভূসংস্থান
+detail.field.vegetation = উদ্ভিদ
+detail.field.climate = জলবায়ু
+detail.field.religion = ধর্ম
+detail.field.culture = সংস্কৃতি
+detail.field.raw_material = কাঁচামাল
+detail.field.modifier = মডিফায়ার
+detail.field.coastal = উপকূলীয়
+detail.field.connected_sea = সংযুক্ত সাগর
+detail.field.harbor = বন্দরের উপযোগিতা
+detail.field.movement = চলাচলে সহায়তা
+detail.field.river = নদী
+detail.field.river_bonus = ধারণক্ষমতার বোনাস
+detail.field.river_source = নদীর উৎস
+detail.field.river_confluence = নদীর সঙ্গমস্থল
+detail.field.capacity_total = মোট ধারণক্ষমতা
+detail.field.capacity_vegetation = উদ্ভিদের ধারণক্ষমতা
+detail.field.capacity_equator = নিরক্ষরেখার নৈকট্য
+detail.field.capacity_modifier = স্থির ধারণক্ষমতার মডিফায়ার
+detail.capacity.note = শুধু অপরিবর্তনীয় মানচিত্রের ডেটা থেকে নির্ণীত; উন্নয়ন, ভবন, আইন ও অভিযানের অন্যান্য অবস্থা বাদ দেওয়া হয়েছে।
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}, স্তর {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = শুরু হচ্ছে
+load.embedded = অন্তর্নির্মিত ডেটা লোড হচ্ছে
+load.loading_data = EU5 {version} ডেটা লোড হচ্ছে
+load.preparing = EU5 {version} ডেটা প্রস্তুত হচ্ছে
+load.external = বাহ্যিক ডেটা প্রস্তুত হচ্ছে
+load.rebuild = পুনর্নির্মাণের প্রস্তুতি চলছে
+load.fonts = ফন্ট লোড হচ্ছে
+load.names = অবস্থানের নাম লোড হচ্ছে
+import.templates = অবস্থানের টেমপ্লেট পড়া হচ্ছে
+import.hierarchy = শ্রেণিবিন্যাস পড়া হচ্ছে
+import.colors = মানচিত্রের রং পড়া হচ্ছে
+import.ports = বন্দর পড়া হচ্ছে
+import.river_settings = নদীর সেটিংস পড়া হচ্ছে
+import.map_factors = স্থির মানচিত্র ফ্যাক্টর পড়া হচ্ছে
+import.localization = স্থানীয়করণ পড়া হচ্ছে
+import.rivers = মানচিত্র ও নদী স্ক্যান করা হচ্ছে
+import.capacity = স্থির জনসংখ্যার ধারণক্ষমতা গণনা করা হচ্ছে
+import.complete = আমদানি সম্পূর্ণ
+
+# Load errors
+error.title = EU5 অবস্থান লোড করা যায়নি
+error.detail = প্রযুক্তিগত বিবরণ
+error.io = {path}-এর জন্য ফাইল অপারেশন ব্যর্থ হয়েছে।
+error.parse = গেম ফাইল {source} বাইট {offset}-এর কাছে পার্স করা যায়নি।
+error.installation = Europa Universalis V-এর ইনস্টলেশন পাওয়া যায়নি।
+error.missing_file = গেমের একটি প্রয়োজনীয় ফাইল নেই: {path}
+error.invalid_data = অবস্থানের ডেটা অবৈধ।
+error.encoding = অবস্থানের ডেটা ডিকোড করা যায়নি।
+error.compression = অবস্থানের ডেটা আনকমপ্রেস করা যায়নি।
+error.png = মানচিত্রের একটি ছবি ডিকোড করা যায়নি: {path}
+error.ui = ইন্টারফেস ব্যর্থ হয়েছে।
+error.worker = ব্যাকগ্রাউন্ড লোডার অপ্রত্যাশিতভাবে থেমে গেছে।
+error.hint.retryable = ইনস্টলেশন ডিরেক্টরি পরীক্ষা করুন, তারপর আবার চেষ্টা করুন অথবা ডেটা পুনর্নির্মাণ করুন।
+error.hint.rebuild = এই ত্রুটিতে আবার চেষ্টা করে লাভ হবে না; গেম ফাইল থেকে ডেটা পুনর্নির্মাণ করুন।
+error.hint.web = আবার চেষ্টা করতে পেজ রিলোড করুন।
+error.install_path.label = ইনস্টলেশন ডিরেক্টরি
+error.install_path.placeholder = Europa Universalis V-এর ইনস্টলেশন ডিরেক্টরি
+error.retry = আবার চেষ্টা করুন
+error.rebuild = ডেটা পুনর্নির্মাণ করুন
+
+# Notices shown over a loaded interface
+notice.language_pack = এই ভাষার অবস্থানের নাম লোড করা যায়নি, তাই ইংরেজি নাম দেখানো হচ্ছে।
+notice.language_pack_mismatch = ডাউনলোড করা অবস্থানের নাম ডেটার ভিন্ন বিল্ডের, তাই ব্যবহার করা হয়নি।
+notice.font_pack = এই ভাষার একটি ফন্ট লোড করা যায়নি, তাই কিছু লেখা দেখা নাও যেতে পারে।
+notice.dismiss = বাতিল করুন
+
+# Drawers
+drawer.close = বন্ধ করুন
+
+# About dialog
+about.title = EU5 Location DB
+about.version = সংস্করণ {version}
+about.data = অবস্থানের ডেটা Europa Universalis V {version}, Steam বিল্ড {build} থেকে নেওয়া।
+about.author = নির্মাতা: Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = স্থির মানচিত্রের ডেটার একটি অনানুষ্ঠানিক ব্রাউজার। Paradox Interactive-এর সঙ্গে যুক্ত নয় বা তাদের দ্বারা অনুমোদিত নয়।
+about.trademark = Europa Universalis ও Paradox Interactive নিজ নিজ মালিকের ট্রেডমার্ক।
+about.license.source = সোর্স লাইসেন্স: MIT OR Apache-2.0
+about.license.ui = ইন্টারফেস টুলকিট: iced, MIT লাইসেন্স
+about.license.fonts = ফন্ট: IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP ও Noto Sans পরিবার, SIL Open Font License 1.1
+about.licenses.show = লাইসেন্সের লেখা দেখান
+about.licenses.hide = লাইসেন্সের লেখা লুকান
+about.keys.title = কিবোর্ড
+about.keys.search = অনুসন্ধানে ফোকাস করুন
+about.keys.regions = হেডার, ফিল্টার, ফলাফল ও বিবরণের মধ্যে যান
+about.keys.focus = নিয়ন্ত্রণগুলোর মধ্যে যান
+about.keys.rows = নির্বাচিত সারি সরান
+about.keys.columns = সক্রিয় কলাম সরান
+about.keys.sort = সক্রিয় কলাম অনুযায়ী সাজান
+about.keys.resize = সক্রিয় কলামের আকার পরিবর্তন করুন
+about.keys.details = নির্বাচিত সারির বিবরণ দেখান
+about.keys.toggle = সক্রিয় বিকল্প চালু বা বন্ধ করুন
+about.keys.close = মেনু, ডায়ালগ বা ড্রয়ার বন্ধ করুন
+about.close = বন্ধ করুন
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Space
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = অ্যারো কী
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

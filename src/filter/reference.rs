@@ -1,4 +1,8 @@
 //! Original record scan retained only as a correctness and timing oracle.
+//!
+//! The scan reads search text and the column order from the same source `apply` chooses (the
+//! installed pack's section, else English, else the index), so scan equivalence holds for every
+//! language while still checking facets, ranges, trigram candidates, and output selection.
 
 use super::{FilterEngine, FilterSet, FloatRange, SortField, fold_search};
 use crate::model::{
@@ -20,11 +24,16 @@ impl FilterEngine {
     ) -> Vec<LocationId> {
         let query = fold_search(&filters.search);
         let reference = ReferenceScan {
-            searchable: &self.searchable,
+            searchable: &self.section().searchable,
             food_raw_materials: &self.reference_food,
         };
-        let Some(order) = self.sort_orders.get(sort, ascending) else {
+        let Some(stored) = self.order(sort) else {
             return Vec::new();
+        };
+        let order = if ascending {
+            &stored.ascending
+        } else {
+            &stored.descending
         };
         order
             .iter()

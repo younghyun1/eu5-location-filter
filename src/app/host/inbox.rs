@@ -6,8 +6,8 @@
 use std::cell::RefCell;
 
 use iced::Subscription;
-use iced::futures::Stream;
 use iced::futures::channel::mpsc;
+use iced::futures::{Stream, StreamExt};
 
 use crate::app::i18n::Locale;
 use crate::app::message::{HostMessage, HostSnapshot, Message};
@@ -33,6 +33,17 @@ pub(super) struct Inbox {
     pub(super) waker: Option<mpsc::Sender<()>>,
 }
 
+impl Inbox {
+    /// Whether any slot holds a value that has not been drained.
+    fn has_pending(&self) -> bool {
+        self.palette.is_some()
+            || self.locale.is_some()
+            || self.reduced_motion.is_some()
+            || self.view_state.is_some()
+            || self.search_text.is_some()
+    }
+}
+
 thread_local! {
     static INBOX: RefCell<Inbox> = RefCell::new(Inbox::default());
 }
@@ -42,6 +53,12 @@ pub(super) fn store(write: impl FnOnce(&mut Inbox)) -> bool {
     INBOX.with(|inbox| match inbox.try_borrow_mut() {
         Ok(mut inbox) => {
             write(&mut inbox);
+            // `try_send` only schedules the receiving task, so it cannot re-enter this borrow.
+            // A full buffer already holds a wake and a closed channel has no subscription to wake;
+            // both are fine to ignore.
+            if let Some(waker) = inbox.waker.as_mut() {
+                let _ = waker.try_send(());
+            }
             true
         }
         Err(_) => false,
@@ -51,7 +68,19 @@ pub(super) fn store(write: impl FnOnce(&mut Inbox)) -> bool {
 /// Drains every slot; boot calls this so the first frame already uses host values.
 #[must_use]
 pub(crate) fn take_snapshot() -> HostSnapshot {
-    HostSnapshot::default()
+    INBOX.with(|inbox| match inbox.try_borrow_mut() {
+        Ok(mut inbox) => HostSnapshot {
+            palette: inbox.palette.take(),
+            locale: inbox.locale.take(),
+            reduced_motion: inbox.reduced_motion.take(),
+            view_state: inbox.view_state.take(),
+            // Connection is a state, not an event, so it stays set across drains.
+            connected: inbox.connected,
+            search_text: inbox.search_text.take(),
+        },
+        // Only a re-entrant call can fail here; the values stay queued for the next wake.
+        Err(_) => HostSnapshot::default(),
+    })
 }
 
 /// Subscription that installs the waker and yields one snapshot per wake.
@@ -59,7 +88,20 @@ pub(crate) fn subscription() -> Subscription<Message> {
     Subscription::run(wakes).map(Message::Host)
 }
 
-/// Stream behind `subscription`.
+/// Stream behind `subscription`. Installing a new sender replaces any earlier one, so a
+/// restarted subscription takes over the wakes and the old channel closes. The stream ends only
+/// if the sender is dropped, which happens only when a newer subscription replaced it.
 fn wakes() -> impl Stream<Item = HostMessage> {
-    iced::futures::stream::empty()
+    let (mut sender, receiver) = mpsc::channel(1);
+    INBOX.with(|inbox| {
+        if let Ok(mut inbox) = inbox.try_borrow_mut() {
+            // Exports may have run between boot's drain and this subscription starting, when no
+            // waker existed; one initial wake drains whatever they stored.
+            if inbox.has_pending() || inbox.connected {
+                let _ = sender.try_send(());
+            }
+            inbox.waker = Some(sender);
+        }
+    });
+    receiver.map(|()| HostMessage::Update(take_snapshot()))
 }

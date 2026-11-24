@@ -1,0 +1,312 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = Поиск по названию или идентификатору
+header.search.tooltip = Поиск по названиям и идентификаторам локаций
+header.result_count[one] = {count} локация
+header.result_count[few] = {count} локации
+header.result_count[many] = {count} локаций
+header.result_count[other] = {count} локаций
+header.build = EU5 {version} | Сборка {build}
+header.build.pending = Загрузка данных
+header.about = О программе
+header.language = Язык
+header.appearance = Оформление
+header.filters = Фильтры
+header.details = Подробности
+
+# Appearance menu (desktop only)
+appearance.title = Оформление
+appearance.mode = Режим
+appearance.mode.light = Светлый
+appearance.mode.dark = Тёмный
+appearance.accent = Акцент
+appearance.accent.amber = Янтарный
+appearance.accent.lagoon = Лагуна
+appearance.accent.cobalt = Кобальт
+appearance.accent.orchid = Орхидея
+appearance.accent.graphite = Графит
+appearance.motion = Анимации
+appearance.motion.on = Вкл.
+appearance.motion.off = Выкл.
+appearance.close = Закрыть
+
+# Language menu (desktop only)
+language.title = Язык
+language.game_text_note = Названия локаций даны на английском, если в игре нет перевода для этого языка.
+language.close = Закрыть
+
+# Filter rail
+rail.title = Фильтры
+rail.clear_all = Сбросить все
+rail.collapse = Скрыть фильтры
+rail.expand = Показать фильтры
+rail.resize = Изменить ширину панели фильтров
+rail.active_count[one] = {count} активный фильтр
+rail.active_count[few] = {count} активных фильтра
+rail.active_count[many] = {count} активных фильтров
+rail.active_count[other] = {count} активных фильтров
+rail.show_impassable = Показать непроходимые
+rail.food_only = Только производящие продовольствие
+rail.section.location = Локация
+rail.section.geography = География
+rail.section.terrain = Рельеф
+rail.section.society = Общество
+rail.section.economy = Экономика
+rail.section.map_data = Данные карты
+
+# Facet titles
+facet.kind = Тип
+facet.continent = Континент
+facet.subcontinent = Субконтинент
+facet.region = Регион
+facet.area = Область
+facet.province = Провинция
+facet.topography = Рельеф
+facet.vegetation = Растительность
+facet.climate = Климат
+facet.religion = Религия
+facet.culture = Культура
+facet.raw_material = Сырьё
+facet.modifier = Модификатор
+facet.coastal = Прибрежная
+facet.river_presence = Река
+facet.river_level_min = Минимальный бонус реки
+facet.river_level_max = Максимальный бонус реки
+facet.harbor_presence = Пригодность для гавани
+facet.movement_presence = Помощь в передвижении
+
+# Checklist controls
+checklist.search.placeholder = Фильтр вариантов
+checklist.expand = Развернуть список
+checklist.collapse = Свернуть список
+checklist.clear = Очистить выбор
+checklist.selected_count[one] = выбран {count}
+checklist.selected_count[few] = выбрано {count}
+checklist.selected_count[many] = выбрано {count}
+checklist.selected_count[other] = выбрано {count}
+checklist.empty = Нет подходящих вариантов
+
+# Static option labels
+option.kind.land = Суша
+option.kind.sea = Море
+option.kind.lake = Озеро
+option.kind.impassable = Непроходимая
+option.kind.unknown = Неизвестно
+option.yes = Да
+option.no = Нет
+option.present = Есть
+option.missing = Нет
+option.no_value = Нет данных
+option.symbol_with_key = {label} [{key}]
+option.river_tier = Уровень {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = Ручей
+river.tier.stream = Поток
+river.tier.river = Река
+river.tier.large_river = Большая река
+river.tier.major_river = Крупная река
+river.tier.unknown = Неизвестно
+
+# Exact color and numeric ranges
+rgb.label = Точный цвет
+rgb.placeholder = #RRGGBB
+rgb.tooltip = Введите от одной до шести шестнадцатеричных цифр; ведущие нули можно опустить.
+range.harbor = Значение гавани
+range.movement_x = Передвижение по X
+range.movement_y = Передвижение по Y
+range.min.placeholder = Минимум
+range.max.placeholder = Максимум
+validation.rgb = Введите от одной до шести шестнадцатеричных цифр, например #1A2B3C.
+validation.number = Введите число, например 0.5.
+validation.number_finite = Введите конечное число.
+
+# Result grid
+grid.legend.food = Производит продовольствие
+grid.legend.precious = Золото или серебро
+grid.columns = Столбцы
+grid.show_details = Показать подробности
+grid.sort.ascending = Сортировка по возрастанию
+grid.sort.descending = Сортировка по убыванию
+grid.sort.hint = Выберите для сортировки; выберите снова, чтобы изменить порядок
+grid.resize.hint = Перетащите край, чтобы изменить размер
+grid.empty.title = Нет подходящих локаций
+grid.empty.body = Измените или сбросьте фильтры, чтобы увидеть больше локаций.
+
+# Column headers
+column.color = Цвет
+column.name = Название
+column.identifier = Идентификатор
+column.kind = Тип
+column.topography = Рельеф
+column.vegetation = Растительность
+column.climate = Климат
+column.continent = Континент
+column.subcontinent = Субконтинент
+column.region = Регион
+column.area = Область
+column.province = Провинция
+column.religion = Религия
+column.culture = Культура
+column.raw_material = Сырьё
+column.modifier = Модификатор
+column.rgb = RGB
+column.coastal = Прибрежная
+column.river_presence = Река
+column.river_level = Бонус реки
+column.harbor = Гавань
+column.movement_presence = Передвижение
+column.movement_x = Передвижение по X
+column.movement_y = Передвижение по Y
+column.static_capacity = Статическая ёмкость
+column.equator_capacity = Ёмкость у экватора
+
+# Column menu
+column_menu.title = Видимые столбцы
+column_menu.close = Закрыть
+column_menu.keep_one = Хотя бы один столбец остаётся видимым.
+
+# Detail pane
+detail.title = Подробности локации
+detail.hide = Скрыть подробности
+detail.close = Закрыть
+detail.resize = Изменить ширину панели подробностей
+detail.empty.title = Выберите локацию
+detail.empty.body = Здесь появятся подробности локации, иерархия, цвет и данные о реке.
+detail.breadcrumb = Иерархия
+detail.group.classification = Классификация
+detail.group.society = Общество
+detail.group.economy = Экономика
+detail.group.coast = Побережье и передвижение
+detail.group.river = Река
+detail.group.capacity = Статическая ёмкость населения
+detail.field.type = Тип
+detail.field.topography = Рельеф
+detail.field.vegetation = Растительность
+detail.field.climate = Климат
+detail.field.religion = Религия
+detail.field.culture = Культура
+detail.field.raw_material = Сырьё
+detail.field.modifier = Модификатор
+detail.field.coastal = Прибрежная
+detail.field.connected_sea = Связанное море
+detail.field.harbor = Пригодность для гавани
+detail.field.movement = Помощь в передвижении
+detail.field.river = Река
+detail.field.river_bonus = Бонус ёмкости
+detail.field.river_source = Исток реки
+detail.field.river_confluence = Слияние рек
+detail.field.capacity_total = Общая ёмкость
+detail.field.capacity_vegetation = Ёмкость растительности
+detail.field.capacity_equator = Близость к экватору
+detail.field.capacity_modifier = Модификатор статической ёмкости
+detail.capacity.note = Рассчитано только по неизменным данным карты; развитие, здания, законы и другое состояние кампании не учитываются.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}, уровень {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = Запуск
+load.embedded = Загрузка встроенных данных
+load.loading_data = Загрузка данных EU5 {version}
+load.preparing = Подготовка данных EU5 {version}
+load.external = Подготовка внешних данных
+load.rebuild = Подготовка пересборки
+load.fonts = Загрузка шрифтов
+load.names = Загрузка названий локаций
+import.templates = Чтение шаблонов локаций
+import.hierarchy = Чтение иерархии
+import.colors = Чтение цветов карты
+import.ports = Чтение портов
+import.river_settings = Чтение настроек рек
+import.map_factors = Чтение статических коэффициентов карты
+import.localization = Чтение локализации
+import.rivers = Сканирование карты и рек
+import.capacity = Расчёт статической ёмкости населения
+import.complete = Импорт завершён
+
+# Load errors
+error.title = Не удалось загрузить локации EU5
+error.detail = Техническая подробность
+error.io = Ошибка файловой операции для {path}.
+error.parse = Не удалось разобрать файл игры {source} рядом с байтом {offset}.
+error.installation = Установка Europa Universalis V не найдена.
+error.missing_file = Отсутствует необходимый файл игры: {path}
+error.invalid_data = Данные о локациях некорректны.
+error.encoding = Не удалось декодировать данные о локациях.
+error.compression = Не удалось распаковать данные о локациях.
+error.png = Не удалось декодировать изображение карты: {path}
+error.ui = Сбой интерфейса.
+error.worker = Фоновый загрузчик неожиданно остановился.
+error.hint.retryable = Проверьте каталог установки, затем повторите попытку или пересоберите данные.
+error.hint.rebuild = Повтор не поможет с этой ошибкой; пересоберите данные из файлов игры.
+error.hint.web = Перезагрузите страницу, чтобы повторить попытку.
+error.install_path.label = Каталог установки
+error.install_path.placeholder = Каталог установки Europa Universalis V
+error.retry = Повторить
+error.rebuild = Пересобрать данные
+
+# Notices shown over a loaded interface
+notice.language_pack = Названия локаций для этого языка не удалось загрузить, поэтому показаны английские названия.
+notice.language_pack_mismatch = Загруженные названия локаций относятся к другой сборке данных и не использованы.
+notice.font_pack = Шрифт для этого языка не удалось загрузить, поэтому часть текста может не отображаться.
+notice.dismiss = Скрыть
+
+# Drawers
+drawer.close = Закрыть
+
+# About dialog
+about.title = EU5 Location DB
+about.version = Версия {version}
+about.data = Данные о локациях из Europa Universalis V {version}, сборка Steam {build}.
+about.author = Автор: Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = Неофициальный статический браузер данных карты. Не связан с Paradox Interactive и не одобрен ею.
+about.trademark = Europa Universalis и Paradox Interactive являются товарными знаками их владельцев.
+about.license.source = Лицензия исходного кода: MIT OR Apache-2.0
+about.license.ui = Инструментарий интерфейса: iced, лицензия MIT
+about.license.fonts = Шрифты: семейства IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP и Noto Sans, SIL Open Font License 1.1
+about.licenses.show = Показать тексты лицензий
+about.licenses.hide = Скрыть тексты лицензий
+about.keys.title = Клавиатура
+about.keys.search = Перейти к поиску
+about.keys.regions = Переход между заголовком, фильтрами, результатами и подробностями
+about.keys.focus = Переход между элементами управления
+about.keys.rows = Перемещение по выбранной строке
+about.keys.columns = Перемещение по активному столбцу
+about.keys.sort = Сортировка по активному столбцу
+about.keys.resize = Изменение ширины активного столбца
+about.keys.details = Показать подробности выбранной строки
+about.keys.toggle = Переключить активный вариант
+about.keys.close = Закрыть меню, диалог или панель
+about.close = Закрыть
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Пробел
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = Стрелки
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End
+

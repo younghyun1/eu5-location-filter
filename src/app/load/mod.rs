@@ -5,9 +5,12 @@
 
 #[cfg(feature = "desktop")]
 mod desktop;
+#[cfg(feature = "desktop")]
+mod external;
 mod fonts;
 mod packs;
 mod prepare;
+#[cfg(feature = "desktop")]
 mod progress;
 #[cfg(all(feature = "web", target_family = "wasm"))]
 mod web;
@@ -19,6 +22,5 @@ pub(crate) use fonts::embedded_faces;
 pub(crate) use fonts::embedded_pack;
 pub(crate) use packs::validate_pack_bytes;
 pub(crate) use prepare::{LoadedData, prepare};
-pub(crate) use progress::{fraction, import_stage_text};
 #[cfg(all(feature = "web", target_family = "wasm"))]
 pub(crate) use web::{font_pack, language_pack, start};

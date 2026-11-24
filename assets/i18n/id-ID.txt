@@ -1,0 +1,302 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = Cari nama atau pengenal
+header.search.tooltip = Cari nama dan pengenal lokasi
+header.result_count[other] = {count} lokasi
+header.build = EU5 {version} | Build {build}
+header.build.pending = Memuat data
+header.about = Tentang
+header.language = Bahasa
+header.appearance = Tampilan
+header.filters = Filter
+header.details = Detail
+
+# Appearance menu (desktop only)
+appearance.title = Tampilan
+appearance.mode = Mode
+appearance.mode.light = Terang
+appearance.mode.dark = Gelap
+appearance.accent = Warna aksen
+appearance.accent.amber = Amber
+appearance.accent.lagoon = Laguna
+appearance.accent.cobalt = Kobalt
+appearance.accent.orchid = Anggrek
+appearance.accent.graphite = Grafit
+appearance.motion = Animasi
+appearance.motion.on = Nyala
+appearance.motion.off = Mati
+appearance.close = Tutup
+
+# Language menu (desktop only)
+language.title = Bahasa
+language.game_text_note = Nama lokasi memakai bahasa Inggris jika game belum memiliki terjemahan untuk bahasa ini.
+language.close = Tutup
+
+# Filter rail
+rail.title = Filter
+rail.clear_all = Hapus semua
+rail.collapse = Sembunyikan filter
+rail.expand = Tampilkan filter
+rail.resize = Ubah ukuran panel filter
+rail.active_count[other] = {count} filter aktif
+rail.show_impassable = Tampilkan yang tidak dapat dilalui
+rail.food_only = Hanya penghasil pangan
+rail.section.location = Lokasi
+rail.section.geography = Geografi
+rail.section.terrain = Medan
+rail.section.society = Masyarakat
+rail.section.economy = Ekonomi
+rail.section.map_data = Data peta
+
+# Facet titles
+facet.kind = Jenis
+facet.continent = Benua
+facet.subcontinent = Subbenua
+facet.region = Wilayah
+facet.area = Area
+facet.province = Provinsi
+facet.topography = Topografi
+facet.vegetation = Vegetasi
+facet.climate = Iklim
+facet.religion = Agama
+facet.culture = Budaya
+facet.raw_material = Bahan mentah
+facet.modifier = Pengubah
+facet.coastal = Pesisir
+facet.river_presence = Sungai
+facet.river_level_min = Bonus sungai minimum
+facet.river_level_max = Bonus sungai maksimum
+facet.harbor_presence = Kelayakan pelabuhan
+facet.movement_presence = Bantuan pergerakan
+
+# Checklist controls
+checklist.search.placeholder = Filter opsi
+checklist.expand = Perluas daftar
+checklist.collapse = Ciutkan daftar
+checklist.clear = Hapus pilihan
+checklist.selected_count[other] = {count} dipilih
+checklist.empty = Tidak ada opsi yang cocok
+
+# Static option labels
+option.kind.land = Darat
+option.kind.sea = Laut
+option.kind.lake = Danau
+option.kind.impassable = Tidak dapat dilalui
+option.kind.unknown = Tidak diketahui
+option.yes = Ya
+option.no = Tidak
+option.present = Ada
+option.missing = Tidak ada
+option.no_value = Tidak ada
+option.symbol_with_key = {label} [{key}]
+option.river_tier = Level {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = Anak sungai
+river.tier.stream = Aliran
+river.tier.river = Sungai
+river.tier.large_river = Sungai besar
+river.tier.major_river = Sungai utama
+river.tier.unknown = Tidak diketahui
+
+# Exact color and numeric ranges
+rgb.label = Warna tepat
+rgb.placeholder = #RRGGBB
+rgb.tooltip = Masukkan satu sampai enam digit heksadesimal; angka nol di depan boleh dihilangkan.
+range.harbor = Nilai pelabuhan
+range.movement_x = Pergerakan X
+range.movement_y = Pergerakan Y
+range.min.placeholder = Minimum
+range.max.placeholder = Maksimum
+validation.rgb = Masukkan satu sampai enam digit heksadesimal, misalnya #1A2B3C.
+validation.number = Masukkan angka, misalnya 0,5.
+validation.number_finite = Masukkan angka yang berhingga.
+
+# Result grid
+grid.legend.food = Penghasil pangan
+grid.legend.precious = Emas atau perak
+grid.columns = Kolom
+grid.show_details = Tampilkan detail
+grid.sort.ascending = Diurutkan naik
+grid.sort.descending = Diurutkan turun
+grid.sort.hint = Pilih untuk mengurutkan; pilih lagi untuk membalik urutan
+grid.resize.hint = Seret tepi untuk mengubah ukuran
+grid.empty.title = Tidak ada lokasi yang cocok
+grid.empty.body = Ubah atau hapus filter untuk melihat lebih banyak lokasi.
+
+# Column headers
+column.color = Warna
+column.name = Nama
+column.identifier = Pengenal
+column.kind = Jenis
+column.topography = Topografi
+column.vegetation = Vegetasi
+column.climate = Iklim
+column.continent = Benua
+column.subcontinent = Subbenua
+column.region = Wilayah
+column.area = Area
+column.province = Provinsi
+column.religion = Agama
+column.culture = Budaya
+column.raw_material = Bahan mentah
+column.modifier = Pengubah
+column.rgb = RGB
+column.coastal = Pesisir
+column.river_presence = Sungai
+column.river_level = Bonus sungai
+column.harbor = Pelabuhan
+column.movement_presence = Pergerakan
+column.movement_x = Pergerakan X
+column.movement_y = Pergerakan Y
+column.static_capacity = Kapasitas statis
+column.equator_capacity = Kapasitas khatulistiwa
+
+# Column menu
+column_menu.title = Kolom yang terlihat
+column_menu.close = Tutup
+column_menu.keep_one = Minimal satu kolom tetap terlihat.
+
+# Detail pane
+detail.title = Detail lokasi
+detail.hide = Sembunyikan detail
+detail.close = Tutup
+detail.resize = Ubah ukuran panel detail
+detail.empty.title = Pilih lokasi
+detail.empty.body = Detail lokasi, hierarki, warna, dan data sungai muncul di sini.
+detail.breadcrumb = Hierarki
+detail.group.classification = Klasifikasi
+detail.group.society = Masyarakat
+detail.group.economy = Ekonomi
+detail.group.coast = Pesisir dan pergerakan
+detail.group.river = Sungai
+detail.group.capacity = Kapasitas populasi statis
+detail.field.type = Jenis
+detail.field.topography = Topografi
+detail.field.vegetation = Vegetasi
+detail.field.climate = Iklim
+detail.field.religion = Agama
+detail.field.culture = Budaya
+detail.field.raw_material = Bahan mentah
+detail.field.modifier = Pengubah
+detail.field.coastal = Pesisir
+detail.field.connected_sea = Laut terhubung
+detail.field.harbor = Kelayakan pelabuhan
+detail.field.movement = Bantuan pergerakan
+detail.field.river = Sungai
+detail.field.river_bonus = Bonus kapasitas
+detail.field.river_source = Hulu sungai
+detail.field.river_confluence = Pertemuan sungai
+detail.field.capacity_total = Total kapasitas
+detail.field.capacity_vegetation = Kapasitas vegetasi
+detail.field.capacity_equator = Kedekatan dengan khatulistiwa
+detail.field.capacity_modifier = Pengubah kapasitas statis
+detail.capacity.note = Hanya diturunkan dari data peta yang tetap; pembangunan, bangunan, hukum, dan status kampanye lain tidak disertakan.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}, level {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = Memulai
+load.embedded = Memuat data bawaan
+load.loading_data = Memuat data EU5 {version}
+load.preparing = Menyiapkan data EU5 {version}
+load.external = Menyiapkan data eksternal
+load.rebuild = Menyiapkan pembangunan ulang
+load.fonts = Memuat font
+load.names = Memuat nama lokasi
+import.templates = Membaca templat lokasi
+import.hierarchy = Membaca hierarki
+import.colors = Membaca warna peta
+import.ports = Membaca pelabuhan
+import.river_settings = Membaca pengaturan sungai
+import.map_factors = Membaca faktor peta statis
+import.localization = Membaca lokalisasi
+import.rivers = Memindai peta dan sungai
+import.capacity = Menghitung kapasitas populasi statis
+import.complete = Impor selesai
+
+# Load errors
+error.title = Lokasi EU5 tidak dapat dimuat
+error.detail = Detail teknis
+error.io = Operasi berkas gagal untuk {path}.
+error.parse = Berkas game {source} tidak dapat diurai di dekat byte {offset}.
+error.installation = Instalasi Europa Universalis V tidak ditemukan.
+error.missing_file = Berkas game yang diperlukan tidak ada: {path}
+error.invalid_data = Data lokasi tidak valid.
+error.encoding = Data lokasi tidak dapat didekode.
+error.compression = Data lokasi tidak dapat didekompresi.
+error.png = Gambar peta tidak dapat didekode: {path}
+error.ui = Antarmuka gagal.
+error.worker = Pemuat latar belakang berhenti secara tak terduga.
+error.hint.retryable = Periksa direktori instalasi, lalu coba lagi atau bangun ulang data.
+error.hint.rebuild = Mencoba lagi tidak membantu untuk galat ini; bangun ulang data dari berkas game.
+error.hint.web = Muat ulang halaman untuk mencoba lagi.
+error.install_path.label = Direktori instalasi
+error.install_path.placeholder = Direktori instalasi Europa Universalis V
+error.retry = Coba lagi
+error.rebuild = Bangun ulang data
+
+# Notices shown over a loaded interface
+notice.language_pack = Nama lokasi untuk bahasa ini tidak dapat dimuat, jadi nama bahasa Inggris ditampilkan.
+notice.language_pack_mismatch = Nama lokasi yang diunduh berasal dari build data yang berbeda dan tidak digunakan.
+notice.font_pack = Font untuk bahasa ini tidak dapat dimuat, jadi sebagian teks mungkin tidak tampil.
+notice.dismiss = Tutup
+
+# Drawers
+drawer.close = Tutup
+
+# About dialog
+about.title = EU5 Location DB
+about.version = Versi {version}
+about.data = Data lokasi dari Europa Universalis V {version}, build Steam {build}.
+about.author = Dibuat oleh Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = Penjelajah data peta statis yang tidak resmi. Tidak berafiliasi dengan atau didukung oleh Paradox Interactive.
+about.trademark = Europa Universalis dan Paradox Interactive adalah merek dagang dari pemiliknya masing-masing.
+about.license.source = Lisensi sumber: MIT OR Apache-2.0
+about.license.ui = Toolkit antarmuka: iced, Lisensi MIT
+about.license.fonts = Font: keluarga IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP, dan Noto Sans, SIL Open Font License 1.1
+about.licenses.show = Tampilkan teks lisensi
+about.licenses.hide = Sembunyikan teks lisensi
+about.keys.title = Papan ketik
+about.keys.search = Fokuskan ke pencarian
+about.keys.regions = Berpindah antara header, filter, hasil, dan detail
+about.keys.focus = Berpindah antar kontrol
+about.keys.rows = Pindahkan baris yang dipilih
+about.keys.columns = Pindahkan kolom aktif
+about.keys.sort = Urutkan berdasarkan kolom aktif
+about.keys.resize = Ubah ukuran kolom aktif
+about.keys.details = Tampilkan detail untuk baris yang dipilih
+about.keys.toggle = Ubah opsi aktif
+about.keys.close = Tutup menu, dialog, atau laci
+about.close = Tutup
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Spasi
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = Tombol panah
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

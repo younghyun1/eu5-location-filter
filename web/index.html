@@ -1,12 +1,23 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
     <title>EU5 Locations DB</title>
     <style>
-      html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000000; }
-      html[data-theme="light"], html[data-theme="light"] body { background: #f6f1e8; }
+      /* Transparent until the first host message, so the parent's paper colour shows through. */
+      :root {
+        --eu5-surface: #141210;
+        --eu5-ink: #f0ece5;
+        --eu5-ink-muted: #a39a8f;
+        --eu5-line: #262220;
+        --eu5-accent: #fbbf24;
+        background: transparent;
+      }
+      html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: transparent; }
+      body { position: relative; }
+      /* iced replaces the placeholder with a canvas that has no id, so the element selector applies. */
       canvas {
         display: block;
         width: 100% !important;
@@ -15,42 +26,330 @@
         min-height: 0 !important;
         max-width: 100% !important;
         max-height: 100% !important;
+        outline: none;
+        /* winit sets no touch-action; without this the browser pans and zooms instead of the grid. */
+        touch-action: none;
       }
+      #eu5-search {
+        position: absolute;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0 10px;
+        border: 1px solid var(--eu5-line);
+        border-radius: 6px;
+        background: var(--eu5-surface);
+        color: var(--eu5-ink);
+        font: 14px system-ui, sans-serif;
+        outline: none;
+        z-index: 1;
+      }
+      #eu5-search::placeholder { color: var(--eu5-ink-muted); opacity: 1; }
+      #eu5-search:focus-visible, #eu5-search:focus { outline: 2px solid var(--eu5-accent); outline-offset: 1px; }
+      #eu5-search[hidden] { display: none; }
+      #eu5-error {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        box-sizing: border-box;
+        background: #000000;
+        color: #f0ece5;
+        font: 15px/1.5 system-ui, sans-serif;
+        text-align: center;
+        z-index: 2;
+      }
+      #eu5-error[hidden] { display: none; }
+      #eu5-error-text { max-width: 36em; margin: 0; }
     </style>
   </head>
   <body>
     <canvas id="canvas"></canvas>
+    <input id="eu5-search" type="search" autocomplete="off" spellcheck="false" hidden>
+    <div id="eu5-error" role="alert" hidden><p id="eu5-error-text"></p></div>
     <script type="module">
-      import init, { set_web_theme } from "./pkg/eu5_location_filter.js";
+      // Host script for protocol version 2; docs/design/fe/host-protocol.md is the contract.
+      // The named imports must match the wasm exports exactly: a missing name is a link error
+      // that stops the whole module. benchmark_filter_work exists only in benchmark builds.
+      import init, {
+        apply_view_state,
+        set_locale,
+        set_palette,
+        set_reduced_motion,
+        set_search_text,
+      } from "./pkg/eu5_location_filter.js";
 
-      const messagePrefix = "cyhdev:eu5-theme:";
-      const readyMessage = "cyhdev:eu5-theme-ready";
-      let initialized = false;
-      let selectedTheme = "dark";
-      document.documentElement.dataset.theme = selectedTheme;
+      const VERSION = 2;
+      const HOST_TYPE = "cyhdev:eu5-host";
+      const READY_TYPE = "cyhdev:eu5-ready";
+      const STATE_TYPE = "cyhdev:eu5-state";
+      const TOKENS = ["paper", "surface", "ink", "inkMuted", "inkFaint", "line", "lineStrong", "accent", "accentStrong", "accentSoft", "ok", "danger"];
+      const COLOR = /^#[0-9a-f]{6}$/;
+      const LOCALE = /^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}$/;
+      const MAX_LOCALE = 35;
+      const VIEW = /^[A-Za-z0-9_.~*!-]{1,2000}$/;
+      const ASSET = /^(?:lang\/[a-z-]{2,16}\.[0-9]{1,20}\.bitcode\.zst|fonts\/[a-z0-9-]{1,48}\.ttf)$/;
+      const ASSET_CEILING = 33554432;
+      const REPORT_DEBOUNCE_MS = 250;
+      const ADAPTER_TIMEOUT_MS = 3000;
+      const MAX_SEARCH_BYTES = 256;
+      const NO_RENDERER = "This viewer needs WebGPU or WebGL 2, and this browser provides neither.";
+      const START_FAILED = "The viewer could not start. Reload the page to try again.";
 
-      const applyTheme = (theme) => {
-        if (theme !== "light" && theme !== "dark") return;
-        selectedTheme = theme;
-        document.documentElement.dataset.theme = theme;
-        if (initialized) set_web_theme(theme);
+      const root = document.documentElement;
+      const standalone = window.parent === window;
+      // Inside the opaque-origin frame this is still the document URL's origin, the site origin.
+      const parentOrigin = window.location.origin;
+      const search = document.getElementById("eu5-search");
+
+      // 1. Imported globals, defined before init() because the application may call them at startup.
+
+      let lastPosted = null;
+      let pendingState = null;
+      let reportTimer = 0;
+      globalThis.cyhdevEu5ReportState = (state) => {
+        if (standalone || typeof state !== "string" || !VIEW.test(state)) return;
+        pendingState = state;
+        clearTimeout(reportTimer);
+        reportTimer = setTimeout(() => {
+          if (pendingState === null || pendingState === lastPosted) return;
+          lastPosted = pendingState;
+          try {
+            window.parent.postMessage({ type: STATE_TYPE, v: VERSION, state: pendingState }, parentOrigin);
+          } catch {
+            // Reporting is best effort.
+          }
+        }, REPORT_DEBOUNCE_MS);
       };
+
+      // Reads the body in chunks so an oversized response is abandoned without buffering it whole.
+      const readCapped = async (response, cap) => {
+        if (response.body === null) {
+          const buffer = await response.arrayBuffer();
+          if (buffer.byteLength > cap) throw new Error("asset exceeds its size limit");
+          return new Uint8Array(buffer);
+        }
+        const reader = response.body.getReader();
+        const chunks = [];
+        let total = 0;
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          total += value.byteLength;
+          if (total > cap) {
+            await reader.cancel().catch(() => {});
+            throw new Error("asset exceeds its size limit");
+          }
+          chunks.push(value);
+        }
+        const bytes = new Uint8Array(total);
+        let offset = 0;
+        for (const chunk of chunks) {
+          bytes.set(chunk, offset);
+          offset += chunk.byteLength;
+        }
+        return bytes;
+      };
+
+      globalThis.cyhdevEu5FetchAsset = async (path, maxBytes) => {
+        if (typeof path !== "string" || !ASSET.test(path)) throw new Error("asset path rejected");
+        if (!Number.isInteger(maxBytes) || maxBytes <= 0) throw new Error("asset size limit rejected");
+        const cap = Math.min(maxBytes, ASSET_CEILING);
+        const response = await fetch(new URL(path, document.baseURI), { mode: "cors", credentials: "omit" });
+        if (!response.ok) throw new Error("asset request failed with status " + response.status);
+        const declared = response.headers.get("Content-Length");
+        if (declared !== null) {
+          const length = Number(declared);
+          if (Number.isFinite(length) && length > cap) throw new Error("asset exceeds its size limit");
+        }
+        return readCapped(response, cap);
+      };
+
+      // The canvas has no input-method support, so the global search is a real field placed over
+      // the header slot. Rust positions it; this script only forwards typed text.
+      let callable = false;
+      let composing = false;
+
+      const utf8Length = (codePoint) => (codePoint < 0x80 ? 1 : codePoint < 0x800 ? 2 : codePoint < 0x10000 ? 3 : 4);
+      const truncateUtf8 = (value, maxBytes) => {
+        let bytes = 0;
+        let end = 0;
+        for (const character of value) {
+          const size = utf8Length(character.codePointAt(0) ?? 0);
+          if (bytes + size > maxBytes) return value.slice(0, end);
+          bytes += size;
+          end += character.length;
+        }
+        return value;
+      };
+
+      const forwardSearch = () => {
+        const text = truncateUtf8(search.value, MAX_SEARCH_BYTES);
+        if (text !== search.value && !composing) search.value = text;
+        if (!callable) return;
+        try {
+          set_search_text(text);
+        } catch {
+          // The application validates again; a failure leaves the previous search.
+        }
+      };
+      search.addEventListener("compositionstart", () => { composing = true; });
+      search.addEventListener("compositionend", () => { composing = false; forwardSearch(); });
+      search.addEventListener("input", forwardSearch);
+      search.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || event.isComposing) return;
+        event.preventDefault();
+        search.blur();
+        document.querySelector("canvas")?.focus();
+      });
+
+      globalThis.cyhdevEu5SearchOverlay = (visible, x, y, width, height, text, placeholder, rtl) => {
+        if (!visible) {
+          search.hidden = true;
+          return;
+        }
+        search.style.left = x + "px";
+        search.style.top = y + "px";
+        search.style.width = width + "px";
+        search.style.height = height + "px";
+        search.placeholder = String(placeholder);
+        search.setAttribute("aria-label", String(placeholder));
+        search.dir = rtl ? "rtl" : "ltr";
+        if (!composing && search.value !== text) search.value = String(text);
+        search.hidden = false;
+      };
+      globalThis.cyhdevEu5FocusSearch = () => {
+        // Deferred so focus events never run while the application is inside its update.
+        queueMicrotask(() => {
+          if (search.hidden) return;
+          search.focus();
+          search.select();
+        });
+      };
+
+      // 2. Host messages, buffered until the exports are callable.
+
+      const record = (value) => typeof value === "object" && value !== null && !Array.isArray(value);
+      const validHost = (data) =>
+        record(data) &&
+        data.type === HOST_TYPE &&
+        data.v === VERSION &&
+        record(data.theme) &&
+        (data.theme.mode === "light" || data.theme.mode === "dark") &&
+        TOKENS.every((token) => typeof data.theme[token] === "string" && COLOR.test(data.theme[token])) &&
+        typeof data.locale === "string" &&
+        data.locale.length <= MAX_LOCALE &&
+        LOCALE.test(data.locale) &&
+        (data.dir === "ltr" || data.dir === "rtl") &&
+        typeof data.reducedMotion === "boolean";
+
+      const apply = (data) => {
+        const theme = data.theme;
+        root.lang = data.locale;
+        root.dir = data.dir;
+        root.style.colorScheme = theme.mode;
+        root.style.background = theme.paper;
+        root.style.setProperty("--eu5-surface", theme.surface);
+        root.style.setProperty("--eu5-ink", theme.ink);
+        root.style.setProperty("--eu5-ink-muted", theme.inkMuted);
+        root.style.setProperty("--eu5-line", theme.line);
+        root.style.setProperty("--eu5-accent", theme.accent);
+        const view = typeof data.viewState === "string" && VIEW.test(data.viewState) ? data.viewState : null;
+        const colours = Uint32Array.from(TOKENS, (token) => Number.parseInt(theme[token].slice(1), 16));
+        // Fixed order: the first set_palette marks the host connected, so a view state given in
+        // the same message is queued before reporting can begin.
+        const calls = [
+          () => set_locale(data.locale),
+          () => set_reduced_motion(data.reducedMotion),
+          () => { if (view !== null) apply_view_state(view); },
+          () => set_palette(theme.mode, colours),
+        ];
+        for (const call of calls) {
+          try {
+            call();
+          } catch {
+            // Each export validates again and never throws by contract.
+          }
+        }
+      };
+
+      let buffered = null;
       window.addEventListener("message", (event) => {
-        if (event.origin !== window.location.origin || event.source !== window.parent) return;
-        if (typeof event.data !== "string" || !event.data.startsWith(messagePrefix)) return;
-        applyTheme(event.data.slice(messagePrefix.length));
+        if (event.source !== window.parent || event.origin !== parentOrigin || !validHost(event.data)) return;
+        if (callable) apply(event.data);
+        else buffered = event.data;
       });
-      window.parent.postMessage(readyMessage, window.location.origin);
 
-      const finishInitialization = () => {
-        initialized = true;
-        set_web_theme(selectedTheme);
+      // 3 and 4. Renderer check and error surface.
+
+      const showError = (message) => {
+        root.lang = "en";
+        root.dir = "ltr";
+        search.hidden = true;
+        document.getElementById("eu5-error-text").textContent = message;
+        document.getElementById("eu5-error").hidden = false;
       };
-      void init().then(finishInitialization, (error) => {
-        const message = error instanceof Error ? error.message : String(error);
-        if (!message.includes("Using exceptions for control flow")) throw error;
-        finishInitialization();
-      });
+
+      // A navigator.gpu object alone does not prove an adapter exists.
+      const hasWebGpu = async () => {
+        const gpu = navigator.gpu;
+        if (!gpu || typeof gpu.requestAdapter !== "function") return false;
+        let timer = 0;
+        try {
+          const timeout = new Promise((resolve) => { timer = setTimeout(() => resolve(null), ADAPTER_TIMEOUT_MS); });
+          const adapter = await Promise.race([gpu.requestAdapter(), timeout]);
+          return adapter !== null && adapter !== undefined;
+        } catch {
+          return false;
+        } finally {
+          clearTimeout(timer);
+        }
+      };
+      const hasWebGl2 = () => {
+        try {
+          const context = document.createElement("canvas").getContext("webgl2");
+          if (context === null) return false;
+          context.getExtension("WEBGL_lose_context")?.loseContext();
+          return true;
+        } catch {
+          return false;
+        }
+      };
+
+      const start = async () => {
+        if (!(await hasWebGpu()) && !hasWebGl2()) {
+          showError(NO_RENDERER);
+          return;
+        }
+        // 5. The start function hands the event loop to the browser and returns.
+        try {
+          await init();
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          if (!message.includes("Using exceptions for control flow")) {
+            showError(START_FAILED);
+            return;
+          }
+        }
+        // 6. Exports are callable; apply the latest message that arrived during startup.
+        callable = true;
+        if (buffered !== null) {
+          const data = buffered;
+          buffered = null;
+          apply(data);
+        }
+        if (!search.hidden && search.value !== "") forwardSearch();
+        // 7. Ready, once per document load.
+        if (!standalone) {
+          try {
+            window.parent.postMessage({ type: READY_TYPE, v: VERSION }, parentOrigin);
+          } catch {
+            // Without a parent there is nothing to tell.
+          }
+        }
+      };
+      void start();
     </script>
   </body>
 </html>

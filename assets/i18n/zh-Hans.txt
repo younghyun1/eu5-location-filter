@@ -1,0 +1,302 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = 搜索名称或标识符
+header.search.tooltip = 搜索地点名称和标识符
+header.result_count[other] = {count} 个地点
+header.build = EU5 {version} | 构建 {build}
+header.build.pending = 正在加载数据
+header.about = 关于
+header.language = 语言
+header.appearance = 外观
+header.filters = 筛选
+header.details = 详情
+
+# Appearance menu (desktop only)
+appearance.title = 外观
+appearance.mode = 模式
+appearance.mode.light = 浅色
+appearance.mode.dark = 深色
+appearance.accent = 强调色
+appearance.accent.amber = 琥珀
+appearance.accent.lagoon = 潟湖
+appearance.accent.cobalt = 钴蓝
+appearance.accent.orchid = 兰紫
+appearance.accent.graphite = 石墨
+appearance.motion = 动画
+appearance.motion.on = 开
+appearance.motion.off = 关
+appearance.close = 关闭
+
+# Language menu (desktop only)
+language.title = 语言
+language.game_text_note = 游戏中没有该语言翻译的地点名称将显示英文。
+language.close = 关闭
+
+# Filter rail
+rail.title = 筛选
+rail.clear_all = 全部清除
+rail.collapse = 隐藏筛选
+rail.expand = 显示筛选
+rail.resize = 调整筛选面板大小
+rail.active_count[other] = 已启用 {count} 个筛选
+rail.show_impassable = 显示不可通行
+rail.food_only = 仅显示产粮地点
+rail.section.location = 地点
+rail.section.geography = 地理
+rail.section.terrain = 地貌
+rail.section.society = 社会
+rail.section.economy = 经济
+rail.section.map_data = 地图数据
+
+# Facet titles
+facet.kind = 类型
+facet.continent = 大陆
+facet.subcontinent = 次大陆
+facet.region = 区域
+facet.area = 地区
+facet.province = 省份
+facet.topography = 地形
+facet.vegetation = 植被
+facet.climate = 气候
+facet.religion = 宗教
+facet.culture = 文化
+facet.raw_material = 原材料
+facet.modifier = 修正
+facet.coastal = 沿海
+facet.river_presence = 河流
+facet.river_level_min = 最小河流加成
+facet.river_level_max = 最大河流加成
+facet.harbor_presence = 港口适宜度
+facet.movement_presence = 移动辅助
+
+# Checklist controls
+checklist.search.placeholder = 筛选选项
+checklist.expand = 展开列表
+checklist.collapse = 折叠列表
+checklist.clear = 清除选择
+checklist.selected_count[other] = 已选择 {count} 项
+checklist.empty = 没有匹配的选项
+
+# Static option labels
+option.kind.land = 陆地
+option.kind.sea = 海洋
+option.kind.lake = 湖泊
+option.kind.impassable = 不可通行
+option.kind.unknown = 未知
+option.yes = 是
+option.no = 否
+option.present = 有
+option.missing = 无
+option.no_value = 无
+option.symbol_with_key = {label} [{key}]
+option.river_tier = {level} 级：{tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = 溪流
+river.tier.stream = 小溪
+river.tier.river = 河流
+river.tier.large_river = 大河
+river.tier.major_river = 主要河流
+river.tier.unknown = 未知
+
+# Exact color and numeric ranges
+rgb.label = 精确颜色
+rgb.placeholder = #RRGGBB
+rgb.tooltip = 请输入 1 至 6 位十六进制数字，可省略前导零。
+range.harbor = 港口值
+range.movement_x = 移动 X
+range.movement_y = 移动 Y
+range.min.placeholder = 最小值
+range.max.placeholder = 最大值
+validation.rgb = 请输入 1 至 6 位十六进制数字，例如 #1A2B3C。
+validation.number = 请输入数字，例如 0.5。
+validation.number_finite = 请输入有限数字。
+
+# Result grid
+grid.legend.food = 产粮
+grid.legend.precious = 金或银
+grid.columns = 列
+grid.show_details = 显示详情
+grid.sort.ascending = 已升序排序
+grid.sort.descending = 已降序排序
+grid.sort.hint = 点击排序，再次点击反向排序
+grid.resize.hint = 拖动边缘调整大小
+grid.empty.title = 没有匹配的地点
+grid.empty.body = 更改或清除筛选条件以查看更多地点。
+
+# Column headers
+column.color = 颜色
+column.name = 名称
+column.identifier = 标识符
+column.kind = 类型
+column.topography = 地形
+column.vegetation = 植被
+column.climate = 气候
+column.continent = 大陆
+column.subcontinent = 次大陆
+column.region = 区域
+column.area = 地区
+column.province = 省份
+column.religion = 宗教
+column.culture = 文化
+column.raw_material = 原材料
+column.modifier = 修正
+column.rgb = RGB
+column.coastal = 沿海
+column.river_presence = 河流
+column.river_level = 河流加成
+column.harbor = 港口
+column.movement_presence = 移动
+column.movement_x = 移动 X
+column.movement_y = 移动 Y
+column.static_capacity = 固定容量
+column.equator_capacity = 赤道容量
+
+# Column menu
+column_menu.title = 可见列
+column_menu.close = 关闭
+column_menu.keep_one = 至少保留一列可见。
+
+# Detail pane
+detail.title = 地点详情
+detail.hide = 隐藏详情
+detail.close = 关闭
+detail.resize = 调整详情面板大小
+detail.empty.title = 请选择地点
+detail.empty.body = 地点详情、层级、颜色和河流数据将显示在此处。
+detail.breadcrumb = 层级
+detail.group.classification = 分类
+detail.group.society = 社会
+detail.group.economy = 经济
+detail.group.coast = 沿海与移动
+detail.group.river = 河流
+detail.group.capacity = 固定人口容量
+detail.field.type = 类型
+detail.field.topography = 地形
+detail.field.vegetation = 植被
+detail.field.climate = 气候
+detail.field.religion = 宗教
+detail.field.culture = 文化
+detail.field.raw_material = 原材料
+detail.field.modifier = 修正
+detail.field.coastal = 沿海
+detail.field.connected_sea = 相连海域
+detail.field.harbor = 港口适宜度
+detail.field.movement = 移动辅助
+detail.field.river = 河流
+detail.field.river_bonus = 容量加成
+detail.field.river_source = 河流源头
+detail.field.river_confluence = 河流汇合处
+detail.field.capacity_total = 总容量
+detail.field.capacity_vegetation = 植被容量
+detail.field.capacity_equator = 赤道接近度
+detail.field.capacity_modifier = 固定容量修正
+detail.capacity.note = 仅根据不可变的地图数据推算，不含发展度、建筑、法律等战役状态。
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}，{level} 级
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = 正在启动
+load.embedded = 正在加载内置数据
+load.loading_data = 正在加载 EU5 {version} 数据
+load.preparing = 正在准备 EU5 {version} 数据
+load.external = 正在准备外部数据
+load.rebuild = 正在准备重建
+load.fonts = 正在加载字体
+load.names = 正在加载地点名称
+import.templates = 正在读取地点模板
+import.hierarchy = 正在读取层级
+import.colors = 正在读取地图颜色
+import.ports = 正在读取港口
+import.river_settings = 正在读取河流设置
+import.map_factors = 正在读取固定地图系数
+import.localization = 正在读取本地化文本
+import.rivers = 正在扫描地图和河流
+import.capacity = 正在计算固定人口容量
+import.complete = 导入完成
+
+# Load errors
+error.title = 无法加载 EU5 地点
+error.detail = 技术详情
+error.io = 对 {path} 的文件操作失败。
+error.parse = 无法解析游戏文件 {source}（位于字节 {offset} 附近）。
+error.installation = 未找到 Europa Universalis V 的安装目录。
+error.missing_file = 缺少所需的游戏文件：{path}
+error.invalid_data = 地点数据无效。
+error.encoding = 无法解码地点数据。
+error.compression = 无法解压地点数据。
+error.png = 无法解码地图图像：{path}
+error.ui = 界面出现故障。
+error.worker = 后台加载器意外停止。
+error.hint.retryable = 请检查安装目录，然后重试或重建数据。
+error.hint.rebuild = 重试无法解决此错误，请从游戏文件重建数据。
+error.hint.web = 请刷新页面后重试。
+error.install_path.label = 安装目录
+error.install_path.placeholder = Europa Universalis V 安装目录
+error.retry = 重试
+error.rebuild = 重建数据
+
+# Notices shown over a loaded interface
+notice.language_pack = 无法加载该语言的地点名称，因此显示英文名称。
+notice.language_pack_mismatch = 下载的地点名称属于其他数据构建，未被使用。
+notice.font_pack = 无法加载该语言的字体，部分文字可能无法显示。
+notice.dismiss = 关闭
+
+# Drawers
+drawer.close = 关闭
+
+# About dialog
+about.title = EU5 Location DB
+about.version = 版本 {version}
+about.data = 地点数据来自 Europa Universalis V {version}，Steam 构建 {build}。
+about.author = 作者：Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = 这是非官方的静态地图数据浏览器，与 Paradox Interactive 无关联，也未获其认可。
+about.trademark = Europa Universalis 和 Paradox Interactive 是其各自所有者的商标。
+about.license.source = 源代码许可证：MIT OR Apache-2.0
+about.license.ui = 界面工具包：iced，MIT License
+about.license.fonts = 字体：IBM Plex Sans、IBM Plex Mono、IBM Plex Sans KR、IBM Plex Sans JP 及 Noto Sans 系列，SIL Open Font License 1.1
+about.licenses.show = 显示许可证全文
+about.licenses.hide = 隐藏许可证全文
+about.keys.title = 键盘
+about.keys.search = 聚焦搜索框
+about.keys.regions = 在页眉、筛选、结果和详情之间移动
+about.keys.focus = 在控件之间移动
+about.keys.rows = 移动所选行
+about.keys.columns = 移动当前列
+about.keys.sort = 按当前列排序
+about.keys.resize = 调整当前列宽
+about.keys.details = 显示所选行的详情
+about.keys.toggle = 切换当前选项
+about.keys.close = 关闭菜单、对话框或抽屉
+about.close = 关闭
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Space
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = 方向键
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

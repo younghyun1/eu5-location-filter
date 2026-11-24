@@ -26,3 +26,32 @@ pub(crate) fn prepare(
     };
     Ok(LoadedData { dataset, engine })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::prepare;
+    use crate::AppError;
+    use crate::filter::test_fixture::fixture;
+    use crate::filter::{FilterEngine, FilterSet, SortField};
+
+    #[test]
+    fn stored_and_rebuilt_indexes_give_the_same_results() -> Result<(), AppError> {
+        let stored = FilterEngine::build_stored_index(&fixture());
+        let restored = prepare(fixture(), Some(stored))?;
+        let rebuilt = prepare(fixture(), None)?;
+        let filters = FilterSet::land_only();
+        assert_eq!(
+            restored.engine.apply(&filters, SortField::Name, true),
+            rebuilt.engine.apply(&filters, SortField::Name, true)
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn an_index_built_for_another_dataset_is_rejected() {
+        let mut other = fixture();
+        other.stored.build_id = other.stored.build_id.wrapping_add(1);
+        let stored = FilterEngine::build_stored_index(&other);
+        assert!(prepare(fixture(), Some(stored)).is_err());
+    }
+}

@@ -41,6 +41,13 @@ pub enum AppError {
     /// Compression or decompression failed.
     #[error("dataset compression failed: {0}")]
     Compression(String),
+    /// A browser asset request was rejected or returned a non-success status.
+    #[error("asset request failed: {0}")]
+    Fetch(String),
+    /// A language pack was built for another dataset or language, so it cannot pair with the
+    /// loaded location data.
+    #[error("language pack does not match the location data: {0}")]
+    PackMismatch(String),
     /// A PNG could not be decoded.
     #[cfg(feature = "desktop")]
     #[error("PNG decode failed for {path}: {source}")]
@@ -51,7 +58,7 @@ pub enum AppError {
         #[source]
         source: png::DecodingError,
     },
-    /// The Slint event loop or UI failed.
+    /// The windowing event loop or the user interface failed.
     #[error("user interface failed: {0}")]
     Ui(String),
     /// A worker thread exited without returning a result.
@@ -64,13 +71,18 @@ impl AppError {
     #[must_use]
     pub const fn is_retryable(&self) -> bool {
         match self {
-            Self::Io { .. } | Self::Installation(_) | Self::MissingFile(_) | Self::Worker => true,
+            Self::Io { .. }
+            | Self::Installation(_)
+            | Self::MissingFile(_)
+            | Self::Fetch(_)
+            | Self::Worker => true,
             #[cfg(feature = "desktop")]
             Self::Png { .. } => true,
             Self::Parse { .. }
             | Self::InvalidData(_)
             | Self::Encoding(_)
             | Self::Compression(_)
+            | Self::PackMismatch(_)
             | Self::Ui(_) => false,
         }
     }
@@ -95,5 +107,21 @@ impl AppError {
             offset,
             message: message.into(),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::AppError;
+
+    #[test]
+    fn pack_failures_follow_the_retry_classification() {
+        assert!(AppError::Fetch("status 503".to_owned()).is_retryable());
+        let missing = std::io::Error::from(std::io::ErrorKind::NotFound);
+        assert!(AppError::io("read", "lang/ko.1.bitcode.zst", missing).is_retryable());
+        assert!(!AppError::PackMismatch("build".to_owned()).is_retryable());
+        assert!(!AppError::InvalidData("magic".to_owned()).is_retryable());
+        assert!(!AppError::Compression("frame".to_owned()).is_retryable());
+        assert!(!AppError::Encoding("payload".to_owned()).is_retryable());
     }
 }

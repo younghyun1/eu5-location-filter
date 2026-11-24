@@ -7,6 +7,9 @@
 
 use std::path::{Path, PathBuf};
 
+#[path = "build/catalog/mod.rs"]
+mod catalog;
+
 /// Committed location and index bundles, staged for every target.
 const BUNDLES: [&str; 2] = ["eu5-locations.bitcode.zst", "eu5-indexes.bitcode.zst"];
 
@@ -38,17 +41,6 @@ const PACK_CODES: [&str; 10] = [
     "fr", "de", "es", "pt-br", "pl", "ru", "tr", "ja", "ko", "zh-hans",
 ];
 
-/// Site locale tags in `Locale::ALL` order (`src/app/i18n/locale.rs`); the generated
-/// `CATALOGS` table uses this order, so both lists must change together.
-const LOCALE_TAGS: [&str; 27] = [
-    "en-US", "ko-KR", "fr-FR", "es-ES", "zh-Hans", "zh-Hant", "ja-JP", "de-DE", "ar", "hi-IN",
-    "bn-BD", "te-IN", "pt-BR", "id-ID", "ru-RU", "ur-PK", "vi-VN", "tl-PH", "fa-IR", "it-IT",
-    "pl-PL", "sv-SE", "sh", "ro-RO", "nl-NL", "uk-UA", "tr-TR",
-];
-
-/// Generated catalog file, included by `src/app/i18n/catalog.rs`.
-const CATALOG_FILE: &str = "i18n_catalog.rs";
-
 fn main() {
     if let Err(error) = run() {
         eprintln!("build script failed: {error}");
@@ -67,7 +59,10 @@ fn run() -> Result<(), String> {
     if desktop {
         stage_language_packs(&output)?;
     }
-    generate_catalogs(Path::new("assets/i18n"), &output.join(CATALOG_FILE))
+    catalog::generate_catalogs(
+        Path::new("assets/i18n"),
+        &output.join(catalog::CATALOG_FILE),
+    )
 }
 
 /// Copies the two committed bundles; both are required.
@@ -177,82 +172,4 @@ fn copy_or_empty(source: &Path, target: &Path) -> Result<(), String> {
 fn write_empty(target: &Path) -> Result<(), String> {
     std::fs::write(target, [])
         .map_err(|error| format!("failed to write {}: {error}", target.display()))
-}
-
-// Interface catalog generation. The format is specified in assets/i18n/README.md; the generated
-// file's exact shape is specified in the rustdoc of src/app/i18n/catalog.rs.
-
-/// CLDR plural category written in square brackets after a key.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-enum Category {
-    Zero,
-    One,
-    Two,
-    Few,
-    Many,
-    Other,
-}
-
-/// One decoded catalog line.
-#[derive(Debug)]
-struct Entry {
-    /// Dotted key without the plural suffix.
-    key: String,
-    /// Plural category, when the line carries one.
-    category: Option<Category>,
-    /// Value with backslash escapes decoded; brace syntax is kept for placeholder values and
-    /// decoded for values without placeholders.
-    value: String,
-    /// One-based source line for error messages.
-    line: usize,
-}
-
-/// One parsed locale file.
-#[derive(Debug)]
-struct Catalog {
-    /// Site locale tag, one of `LOCALE_TAGS`.
-    tag: &'static str,
-    /// Entries in file order.
-    entries: Vec<Entry>,
-}
-
-/// Reads every catalog, checks the README rules, and writes the generated tables. A locale
-/// without a file is generated as `None` and falls back to English at run time; a `.txt` file
-/// with an unknown tag is an error.
-fn generate_catalogs(directory: &Path, output: &Path) -> Result<(), String> {
-    println!("cargo:rerun-if-changed={}", directory.display());
-    let _ = (output, LOCALE_TAGS);
-    Err("interface catalog generation is not implemented yet".to_owned())
-}
-
-/// Parses one file per the README line rules, decoding escapes and checking keys and braces.
-fn parse_catalog(tag: &'static str, text: &str) -> Result<Catalog, String> {
-    let _ = text;
-    Err(format!("catalog parsing is not implemented yet for {tag}"))
-}
-
-/// Decodes `\n`, `\s` and `\\`; any other backslash sequence is an error.
-fn decode_escapes(raw: &str, line: usize) -> Result<String, String> {
-    let _ = raw;
-    Err(format!("escape decoding is not implemented yet (line {line})"))
-}
-
-/// Renders the generated Rust source from English and the other catalogs in `LOCALE_TAGS` order.
-fn render(english: &Catalog, others: &[Option<Catalog>]) -> String {
-    let _ = (english, others);
-    String::new()
-}
-
-/// Enum variant for a key: split at `.` and `_`, capitalize each part, join
-/// (`grid.show_details` becomes `GridShowDetails`).
-fn variant_name(key: &str) -> String {
-    let mut name = String::with_capacity(key.len());
-    for part in key.split(['.', '_']) {
-        let mut characters = part.chars();
-        if let Some(first) = characters.next() {
-            name.extend(first.to_uppercase());
-            name.push_str(characters.as_str());
-        }
-    }
-    name
 }

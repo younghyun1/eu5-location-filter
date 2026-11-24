@@ -1,11 +1,25 @@
-//! Build-time embedded location and filter-index bundles.
+//! Build-time embedded location and filter-index bundles, plus desktop language packs.
 
 use crate::filter::StoredFilterIndex;
+#[cfg(feature = "desktop")]
+use crate::lang_pack::GameLanguage;
 use crate::model::Dataset;
 use crate::{AppError, index_storage, storage};
 
+#[cfg(all(test, feature = "desktop"))]
+mod pack_tests;
+
 const LOCATIONS: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/eu5-locations.bitcode.zst"));
 const INDEXES: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/eu5-indexes.bitcode.zst"));
+
+/// Includes the pack `build.rs` staged as `OUT_DIR/lang-<code>.bitcode.zst`; the build script
+/// writes an empty file when `assets/lang` has no pack for that code.
+#[cfg(feature = "desktop")]
+macro_rules! staged_pack {
+    ($code:literal) => {
+        include_bytes!(concat!(env!("OUT_DIR"), "/lang-", $code, ".bitcode.zst"))
+    };
+}
 
 /// Decodes both committed bundles into memory without accessing game files.
 pub fn load() -> Result<(Dataset, StoredFilterIndex), AppError> {
@@ -18,6 +32,29 @@ pub fn load() -> Result<(Dataset, StoredFilterIndex), AppError> {
         storage::decode_blob(LOCATIONS)?,
         index_storage::decode_index(INDEXES)?,
     ))
+}
+
+/// Compressed pack embedded in the desktop binary, or `None` for English (which lives in the
+/// main bundles) and for a language whose pack was absent when this binary was built.
+///
+/// The bytes are not decoded here; callers decode and validate them off the UI thread.
+#[cfg(feature = "desktop")]
+#[must_use]
+pub fn language_pack(language: GameLanguage) -> Option<&'static [u8]> {
+    let bytes: &'static [u8] = match language {
+        GameLanguage::English => return None,
+        GameLanguage::French => staged_pack!("fr"),
+        GameLanguage::German => staged_pack!("de"),
+        GameLanguage::Spanish => staged_pack!("es"),
+        GameLanguage::BrazilianPortuguese => staged_pack!("pt-br"),
+        GameLanguage::Polish => staged_pack!("pl"),
+        GameLanguage::Russian => staged_pack!("ru"),
+        GameLanguage::Turkish => staged_pack!("tr"),
+        GameLanguage::Japanese => staged_pack!("ja"),
+        GameLanguage::Korean => staged_pack!("ko"),
+        GameLanguage::SimplifiedChinese => staged_pack!("zh-hans"),
+    };
+    if bytes.is_empty() { None } else { Some(bytes) }
 }
 
 #[cfg(test)]

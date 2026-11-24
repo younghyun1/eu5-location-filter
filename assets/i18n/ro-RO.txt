@@ -1,0 +1,309 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = Caută după nume sau identificator
+header.search.tooltip = Caută nume și identificatori de locații
+header.result_count[one] = {count} locație
+header.result_count[few] = {count} locații
+header.result_count[other] = {count} de locații
+header.build = EU5 {version} | Compilația {build}
+header.build.pending = Se încarcă datele
+header.about = Despre
+header.language = Limbă
+header.appearance = Aspect
+header.filters = Filtre
+header.details = Detalii
+
+# Appearance menu (desktop only)
+appearance.title = Aspect
+appearance.mode = Mod
+appearance.mode.light = Luminos
+appearance.mode.dark = Întunecat
+appearance.accent = Accent
+appearance.accent.amber = Chihlimbar
+appearance.accent.lagoon = Lagună
+appearance.accent.cobalt = Cobalt
+appearance.accent.orchid = Orhidee
+appearance.accent.graphite = Grafit
+appearance.motion = Animații
+appearance.motion.on = Activat
+appearance.motion.off = Dezactivat
+appearance.close = Închide
+
+# Language menu (desktop only)
+language.title = Limbă
+language.game_text_note = Numele locațiilor apar în engleză acolo unde jocul nu are traducere pentru această limbă.
+language.close = Închide
+
+# Filter rail
+rail.title = Filtre
+rail.clear_all = Șterge tot
+rail.collapse = Ascunde filtrele
+rail.expand = Afișează filtrele
+rail.resize = Redimensionează panoul de filtre
+rail.active_count[one] = {count} filtru activ
+rail.active_count[few] = {count} filtre active
+rail.active_count[other] = {count} de filtre active
+rail.show_impassable = Afișează zonele impracticabile
+rail.food_only = Doar cele care produc hrană
+rail.section.location = Locație
+rail.section.geography = Geografie
+rail.section.terrain = Teren
+rail.section.society = Societate
+rail.section.economy = Economie
+rail.section.map_data = Date hartă
+
+# Facet titles
+facet.kind = Tip
+facet.continent = Continent
+facet.subcontinent = Subcontinent
+facet.region = Regiune
+facet.area = Zonă
+facet.province = Provincie
+facet.topography = Relief
+facet.vegetation = Vegetație
+facet.climate = Climă
+facet.religion = Religie
+facet.culture = Cultură
+facet.raw_material = Materie primă
+facet.modifier = Modificator
+facet.coastal = Litoral
+facet.river_presence = Râu
+facet.river_level_min = Bonus minim al râului
+facet.river_level_max = Bonus maxim al râului
+facet.harbor_presence = Potrivire pentru port
+facet.movement_presence = Ajutor la deplasare
+
+# Checklist controls
+checklist.search.placeholder = Filtrează opțiunile
+checklist.expand = Extinde lista
+checklist.collapse = Restrânge lista
+checklist.clear = Golește selecția
+checklist.selected_count[one] = {count} selectat
+checklist.selected_count[few] = {count} selectate
+checklist.selected_count[other] = {count} de selectate
+checklist.empty = Nu există opțiuni potrivite
+
+# Static option labels
+option.kind.land = Uscat
+option.kind.sea = Mare
+option.kind.lake = Lac
+option.kind.impassable = Impracticabil
+option.kind.unknown = Necunoscut
+option.yes = Da
+option.no = Nu
+option.present = Prezent
+option.missing = Lipsă
+option.no_value = Lipsă
+option.symbol_with_key = {label} [{key}]
+option.river_tier = Nivelul {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = Pârâu
+river.tier.stream = Râu mic
+river.tier.river = Râu
+river.tier.large_river = Râu mare
+river.tier.major_river = Fluviu
+river.tier.unknown = Necunoscut
+
+# Exact color and numeric ranges
+rgb.label = Culoare exactă
+rgb.placeholder = #RRGGBB
+rgb.tooltip = Introduceți de la una la șase cifre hexazecimale; zerourile de la început pot fi omise.
+range.harbor = Valoarea portului
+range.movement_x = Deplasare X
+range.movement_y = Deplasare Y
+range.min.placeholder = Minim
+range.max.placeholder = Maxim
+validation.rgb = Introduceți de la una la șase cifre hexazecimale, de exemplu #1A2B3C.
+validation.number = Introduceți un număr, de exemplu 0.5.
+validation.number_finite = Introduceți un număr finit.
+
+# Result grid
+grid.legend.food = Produce hrană
+grid.legend.precious = Aur sau argint
+grid.columns = Coloane
+grid.show_details = Afișează detaliile
+grid.sort.ascending = Sortat crescător
+grid.sort.descending = Sortat descrescător
+grid.sort.hint = Selectați pentru sortare; selectați din nou pentru inversare
+grid.resize.hint = Trageți de margine pentru a redimensiona
+grid.empty.title = Nicio locație nu corespunde
+grid.empty.body = Modificați sau ștergeți filtrele pentru a vedea mai multe locații.
+
+# Column headers
+column.color = Culoare
+column.name = Nume
+column.identifier = Identificator
+column.kind = Tip
+column.topography = Relief
+column.vegetation = Vegetație
+column.climate = Climă
+column.continent = Continent
+column.subcontinent = Subcontinent
+column.region = Regiune
+column.area = Zonă
+column.province = Provincie
+column.religion = Religie
+column.culture = Cultură
+column.raw_material = Materie primă
+column.modifier = Modificator
+column.rgb = RGB
+column.coastal = Litoral
+column.river_presence = Râu
+column.river_level = Bonus râu
+column.harbor = Port
+column.movement_presence = Deplasare
+column.movement_x = Deplasare X
+column.movement_y = Deplasare Y
+column.static_capacity = Capacitate statică
+column.equator_capacity = Capacitate la ecuator
+
+# Column menu
+column_menu.title = Coloane vizibile
+column_menu.close = Închide
+column_menu.keep_one = Cel puțin o coloană rămâne vizibilă.
+
+# Detail pane
+detail.title = Detaliile locației
+detail.hide = Ascunde detaliile
+detail.close = Închide
+detail.resize = Redimensionează panoul de detalii
+detail.empty.title = Selectați o locație
+detail.empty.body = Aici apar detaliile locației, ierarhia, culoarea și datele despre râu.
+detail.breadcrumb = Ierarhie
+detail.group.classification = Clasificare
+detail.group.society = Societate
+detail.group.economy = Economie
+detail.group.coast = Litoral și deplasare
+detail.group.river = Râu
+detail.group.capacity = Capacitate statică a populației
+detail.field.type = Tip
+detail.field.topography = Relief
+detail.field.vegetation = Vegetație
+detail.field.climate = Climă
+detail.field.religion = Religie
+detail.field.culture = Cultură
+detail.field.raw_material = Materie primă
+detail.field.modifier = Modificator
+detail.field.coastal = Litoral
+detail.field.connected_sea = Mare conectată
+detail.field.harbor = Potrivire pentru port
+detail.field.movement = Ajutor la deplasare
+detail.field.river = Râu
+detail.field.river_bonus = Bonus de capacitate
+detail.field.river_source = Izvorul râului
+detail.field.river_confluence = Confluența râurilor
+detail.field.capacity_total = Capacitate totală
+detail.field.capacity_vegetation = Capacitate din vegetație
+detail.field.capacity_equator = Apropiere de ecuator
+detail.field.capacity_modifier = Modificator al capacității statice
+detail.capacity.note = Calculat doar din datele hărții nemodificabile; dezvoltarea, clădirile, legile și alte stări ale campaniei nu sunt incluse.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}, nivelul {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = Se pornește
+load.embedded = Se încarcă datele incluse
+load.loading_data = Se încarcă datele EU5 {version}
+load.preparing = Se pregătesc datele EU5 {version}
+load.external = Se pregătesc datele externe
+load.rebuild = Se pregătește reconstruirea
+load.fonts = Se încarcă fonturile
+load.names = Se încarcă numele locațiilor
+import.templates = Se citesc șabloanele locațiilor
+import.hierarchy = Se citește ierarhia
+import.colors = Se citesc culorile hărții
+import.ports = Se citesc porturile
+import.river_settings = Se citesc setările râurilor
+import.map_factors = Se citesc factorii statici ai hărții
+import.localization = Se citește localizarea
+import.rivers = Se scanează harta și râurile
+import.capacity = Se calculează capacitatea statică a populației
+import.complete = Importul s-a încheiat
+
+# Load errors
+error.title = Locațiile EU5 nu au putut fi încărcate
+error.detail = Detalii tehnice
+error.io = Operația cu fișierul a eșuat pentru {path}.
+error.parse = Fișierul jocului {source} nu a putut fi analizat în apropierea octetului {offset}.
+error.installation = Instalarea Europa Universalis V nu a fost găsită.
+error.missing_file = Lipsește un fișier necesar al jocului: {path}
+error.invalid_data = Datele despre locații nu sunt valide.
+error.encoding = Datele despre locații nu au putut fi decodificate.
+error.compression = Datele despre locații nu au putut fi decomprimate.
+error.png = Imaginea hărții nu a putut fi decodificată: {path}
+error.ui = Interfața a eșuat.
+error.worker = Încărcătorul din fundal s-a oprit neașteptat.
+error.hint.retryable = Verificați directorul de instalare, apoi reîncercați sau reconstruiți datele.
+error.hint.rebuild = Reîncercarea nu ajută în cazul acestei erori; reconstruiți datele din fișierele jocului.
+error.hint.web = Reîncărcați pagina pentru a încerca din nou.
+error.install_path.label = Director de instalare
+error.install_path.placeholder = Directorul de instalare Europa Universalis V
+error.retry = Reîncearcă
+error.rebuild = Reconstruiește datele
+
+# Notices shown over a loaded interface
+notice.language_pack = Numele locațiilor pentru această limbă nu au putut fi încărcate, deci se afișează numele în engleză.
+notice.language_pack_mismatch = Numele locațiilor descărcate aparțin unei alte versiuni de date și nu au fost folosite.
+notice.font_pack = Un font pentru această limbă nu a putut fi încărcat, deci unele texte pot să nu se afișeze.
+notice.dismiss = Închide
+
+# Drawers
+drawer.close = Închide
+
+# About dialog
+about.title = EU5 Location DB
+about.version = Versiunea {version}
+about.data = Date despre locații din Europa Universalis V {version}, compilația Steam {build}.
+about.author = Creat de Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = Un explorator neoficial de date statice ale hărții. Nu este afiliat și nu este aprobat de Paradox Interactive.
+about.trademark = Europa Universalis și Paradox Interactive sunt mărci comerciale ale proprietarilor respectivi.
+about.license.source = Licența sursei: MIT OR Apache-2.0
+about.license.ui = Instrument de interfață: iced, licența MIT
+about.license.fonts = Fonturi: familiile IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP și Noto Sans, SIL Open Font License 1.1
+about.licenses.show = Afișează textele licențelor
+about.licenses.hide = Ascunde textele licențelor
+about.keys.title = Tastatură
+about.keys.search = Mută focusul la căutare
+about.keys.regions = Deplasare între antet, filtre, rezultate și detalii
+about.keys.focus = Deplasare între controale
+about.keys.rows = Deplasare în rândul selectat
+about.keys.columns = Deplasare în coloana activă
+about.keys.sort = Sortare după coloana activă
+about.keys.resize = Redimensionare a coloanei active
+about.keys.details = Afișează detaliile rândului selectat
+about.keys.toggle = Comută opțiunea activă
+about.keys.close = Închide un meniu, o fereastră sau un panou
+about.close = Închide
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Spațiu
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = Tastele săgeți
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End
+

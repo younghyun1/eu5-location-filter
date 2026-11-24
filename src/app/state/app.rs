@@ -8,18 +8,22 @@ use iced::Size;
 use super::{Appearance, FocusState, OverlayState, PackState, Phase, TextFields};
 use crate::app::context::{Platform, ViewContext};
 use crate::app::i18n::Locale;
-use crate::app::layout::{self, Direction, LayoutMode, PaneState};
+use crate::app::layout::{self, Direction, Drawer, LayoutMode, PaneState};
 use crate::app::load::LoadedData;
 use crate::app::theme::Palette;
 use crate::app::view_model::{
     Columns, FacetId, FacetOptions, FacetUi, LocationDetail, LocationKeys, SortState,
+    build_detail,
 };
 use crate::filter::{FilterEngine, FilterSet};
-use crate::lang_pack::Labels;
 use crate::model::{Dataset, LocationId};
 
 /// Desktop command-line paths, kept for retry and rebuild. Empty in the browser.
 #[derive(Clone, Debug, Default)]
+#[cfg_attr(
+    not(feature = "desktop"),
+    allow(dead_code, reason = "the browser loader has no paths to read")
+)]
 pub(crate) struct LaunchPaths {
     /// External location bundle; `None` loads the embedded one.
     pub(crate) data_file: Option<PathBuf>,
@@ -147,6 +151,10 @@ impl App {
 
     /// Ready state from an already prepared dataset; used by simulator tests and benchmarks.
     #[must_use]
+    #[cfg_attr(
+        not(test),
+        allow(dead_code, reason = "only tests and benchmarks start from a prepared dataset")
+    )]
     pub(crate) fn with_data(
         platform: Platform,
         locale: Locale,
@@ -160,11 +168,26 @@ impl App {
 
     /// Installs a prepared dataset: builds option lists for the active language, location key
     /// lookup and the first result set, and switches to `Phase::Ready`.
+    ///
+    /// Replacing an earlier dataset (after a rebuild) resets every filter, selection, field and
+    /// option query except the search text, because symbol and location IDs belong to the old
+    /// dictionary and would select unrelated values in the new one.
     pub(crate) fn install_data(&mut self, data: LoadedData) {
         let LoadedData { dataset, engine } = data;
-        let options = FacetOptions::build(Labels::new(&dataset, None), self.locale);
+        if self.data.is_some() {
+            self.reset_dataset_state();
+        }
+        let options = FacetOptions::build(engine.labels(), self.locale);
+        for facet in &mut self.facets {
+            facet.refresh(options.get(facet.facet));
+        }
         let location_keys = LocationKeys::build(&dataset);
         let results = engine.apply(&self.filters, self.sort.field, self.sort.ascending);
+        self.selection = FilterEngine::preserve_selection(self.selection, &results);
+        self.detail = match self.selection {
+            Some(id) => build_detail(engine.labels(), self.locale, id),
+            None => None,
+        };
         self.data = Some(DataState {
             dataset,
             engine,
@@ -172,7 +195,34 @@ impl App {
             options,
             location_keys,
         });
+        // A pack requested for the previous engine can no longer be installed into this one.
+        self.packs.pending_language = None;
         self.phase = Phase::Ready;
+    }
+
+    /// Clears the dataset-dependent parts of the interface state before a new dataset installs.
+    fn reset_dataset_state(&mut self) {
+        let search = std::mem::take(&mut self.filters.search);
+        self.filters = FilterSet::land_only();
+        self.filters.search = search;
+        self.selection = None;
+        self.detail = None;
+        self.fields.clear_rail();
+        for facet in &mut self.facets {
+            facet.query.clear();
+            facet.visible.clear();
+        }
+    }
+
+    /// Drawer shown open this frame: set while `PaneState::drawer` names one and its animation
+    /// target is open. A closing drawer keeps `PaneState::drawer` until its slide ends, so the
+    /// view can still draw it, but no longer counts as open here.
+    #[must_use]
+    pub(crate) fn open_drawer(&self) -> Option<Drawer> {
+        match self.panes.drawer {
+            Some(drawer) if self.overlay.drawer_motion.value() => Some(drawer),
+            _ => None,
+        }
     }
 
     /// View inputs for this frame.

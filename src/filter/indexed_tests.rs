@@ -59,7 +59,7 @@ pub(super) fn varied_fixture() -> Dataset {
     dataset
 }
 
-fn equal_to_scan(engine: &FilterEngine, filters: &FilterSet) {
+pub(super) fn equal_to_scan(engine: &FilterEngine, filters: &FilterSet) {
     for field in SortField::ALL {
         for ascending in [true, false] {
             assert_eq!(
@@ -249,9 +249,23 @@ fn rejects_corrupt_ranks_postings_and_numeric_indexes() {
     }
     assert!(corrupt.validate(&dataset).is_err());
     let mut corrupt = stored.clone();
-    if let Some(trigram) = corrupt.query.trigrams.first_mut() {
+    if let Some(trigram) = corrupt.english.trigrams.first_mut() {
         trigram.ids.push(LocationId(999));
     }
+    assert!(corrupt.validate(&dataset).is_err());
+    let mut corrupt = stored.clone();
+    if let Some(order) = corrupt.english.orders.last_mut() {
+        order.descending.swap(0, 1);
+    }
+    assert!(corrupt.validate(&dataset).is_err());
+    let mut corrupt = stored.clone();
+    corrupt.english.orders.swap(0, 1);
+    assert!(corrupt.validate(&dataset).is_err());
+    let mut corrupt = stored.clone();
+    corrupt.english.searchable.pop();
+    assert!(corrupt.validate(&dataset).is_err());
+    let mut corrupt = stored.clone();
+    corrupt.orders.pop();
     assert!(corrupt.validate(&dataset).is_err());
     assert_eq!(stored, FilterEngine::build_stored_index(&dataset));
 }

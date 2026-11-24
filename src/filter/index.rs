@@ -1,32 +1,20 @@
-//! Serializable search text and sort orders for the embedded dataset.
-
-use std::collections::HashSet;
+//! Serializable language-independent indexes and the English language section.
 
 use bitcode::{Decode, Encode};
 
-use super::SortField;
 use crate::AppError;
+use crate::lang_pack::{LANGUAGE_INDEPENDENT_SORT_FIELDS, StoredLanguageSection, StoredOrder};
 use crate::model::{Dataset, EU5_APP_ID, LocationId};
 
 /// Schema version for the independent filter-index bundle.
-pub const INDEX_FORMAT_VERSION: u16 = 5;
-
-/// One field's precomputed ascending and descending location order.
-#[derive(Clone, Debug, Decode, Encode, PartialEq)]
-pub struct StoredSortOrder {
-    /// Sort field represented by both vectors.
-    pub field: SortField,
-    /// Ascending IDs with nulls last.
-    pub ascending: Vec<LocationId>,
-    /// Descending IDs with nulls last.
-    pub descending: Vec<LocationId>,
-    /// Inverse ascending permutation, indexed by location ID.
-    pub ascending_ranks: Vec<u32>,
-    /// Inverse descending permutation, retaining null placement and tie order.
-    pub descending_ranks: Vec<u32>,
-}
+///
+/// Version 6 moved search text, trigram postings and the label-ordered sorts into the English
+/// [`StoredLanguageSection`], the shape every language pack shares.
+pub const INDEX_FORMAT_VERSION: u16 = 6;
 
 /// Complete payload stored in `eu5-indexes.bitcode.zst`.
+///
+/// Bitcode encodes fields in declaration order, so the order below is part of the schema.
 #[derive(Clone, Debug, Default, Decode, Encode, PartialEq)]
 pub struct StoredFilterIndex {
     /// Index schema version.
@@ -37,12 +25,12 @@ pub struct StoredFilterIndex {
     pub build_id: u64,
     /// Record count of the paired location dataset.
     pub location_count: u32,
-    /// Compact folded English name and internal ID for each location.
-    pub searchable: Vec<String>,
-    /// Fixed sort orders in `SortField::ALL` order.
-    pub orders: Vec<StoredSortOrder>,
-    /// Offline facet, numeric-range, and substring candidate indexes.
+    /// Orders for `LANGUAGE_INDEPENDENT_SORT_FIELDS`, in that order.
+    pub orders: Vec<StoredOrder>,
+    /// Offline facet and numeric-range indexes.
     pub(super) query: super::query::QueryIndex,
+    /// English search text, trigram postings, and label-ordered sorts.
+    pub english: StoredLanguageSection,
 }
 
 impl StoredFilterIndex {
@@ -56,36 +44,39 @@ impl StoredFilterIndex {
         let count = dataset.stored.locations.len();
         if self.build_id != dataset.stored.build_id
             || usize::try_from(self.location_count).ok() != Some(count)
-            || self.searchable.len() != count
         {
             return Err(AppError::InvalidData(
                 "filter index does not match the location dataset".to_owned(),
             ));
         }
-        let mut fields = HashSet::with_capacity(self.orders.len());
-        for order in &self.orders {
-            if !fields.insert(order.field) {
-                return Err(AppError::InvalidData(
-                    "filter index repeats a sort field".to_owned(),
-                ));
-            }
-            validate_permutation(&order.ascending, count)?;
-            validate_permutation(&order.descending, count)?;
-            validate_ranks(&order.ascending, &order.ascending_ranks)?;
-            validate_ranks(&order.descending, &order.descending_ranks)?;
-        }
-        if fields.len() != SortField::ALL.len()
-            || SortField::ALL.iter().any(|field| !fields.contains(field))
+        if self.orders.len() != LANGUAGE_INDEPENDENT_SORT_FIELDS.len()
+            || self
+                .orders
+                .iter()
+                .zip(LANGUAGE_INDEPENDENT_SORT_FIELDS)
+                .any(|(order, field)| order.field != field)
         {
             return Err(AppError::InvalidData(
-                "filter index does not cover every sort field".to_owned(),
+                "filter index sort fields are missing, duplicated, or out of order".to_owned(),
             ));
         }
-        self.query.validate(dataset, &self.searchable)
+        for order in &self.orders {
+            validate_order(order, count)?;
+        }
+        self.query.validate(dataset)?;
+        super::section::validate(&self.english, dataset, None)
     }
 }
 
-fn validate_ranks(order: &[LocationId], ranks: &[u32]) -> Result<(), AppError> {
+/// Checks that both directions are permutations of `0..count` with matching inverse ranks.
+pub(super) fn validate_order(order: &StoredOrder, count: usize) -> Result<(), AppError> {
+    validate_permutation(&order.ascending, count)?;
+    validate_permutation(&order.descending, count)?;
+    validate_ranks(&order.ascending, &order.ascending_ranks)?;
+    validate_ranks(&order.descending, &order.descending_ranks)
+}
+
+pub(super) fn validate_ranks(order: &[LocationId], ranks: &[u32]) -> Result<(), AppError> {
     if ranks.len() != order.len()
         || order
             .iter()
@@ -99,7 +90,7 @@ fn validate_ranks(order: &[LocationId], ranks: &[u32]) -> Result<(), AppError> {
     Ok(())
 }
 
-fn validate_permutation(values: &[LocationId], count: usize) -> Result<(), AppError> {
+pub(super) fn validate_permutation(values: &[LocationId], count: usize) -> Result<(), AppError> {
     if values.len() != count {
         return Err(AppError::InvalidData(
             "filter index order has an invalid length".to_owned(),

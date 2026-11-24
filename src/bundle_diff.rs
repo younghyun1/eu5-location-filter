@@ -1,12 +1,20 @@
-//! Field-level comparison of two location bundles, keyed by location identifier.
+//! Field-level comparison of two location bundles, keyed by location identifier, and of their
+//! game text per language.
 //!
 //! Symbols are compared by their resolved text because each bundle owns its own
 //! dictionary, so numeric `SymbolId` values are not comparable across bundles.
 
+mod text;
+#[cfg(test)]
+mod tests;
+mod values;
+
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
 
-use crate::model::{Dataset, LocationRecord, SymbolId};
+use crate::model::{Dataset, LocationRecord};
+pub use text::{TextDiff, diff_text};
+use values::fields;
 
 /// Number of example changes retained per field; the report stays bounded for any input.
 const MAX_EXAMPLES: usize = 12;
@@ -16,8 +24,18 @@ const MAX_EXAMPLES: usize = 12;
 pub struct FieldChanges {
     /// Locations whose value differs between the bundles.
     pub count: usize,
-    /// Up to [`MAX_EXAMPLES`] lines of `key: old -> new`.
+    /// Up to twelve lines of `key: old -> new`.
     pub examples: Vec<String>,
+}
+
+impl FieldChanges {
+    /// Counts one change and keeps it as an example while fewer than the limit are stored.
+    fn record(&mut self, key: &str, before: &str, after: &str) {
+        self.count += 1;
+        if self.examples.len() < MAX_EXAMPLES {
+            self.examples.push(format!("{key}: {before} -> {after}"));
+        }
+    }
 }
 
 /// Result of comparing an older bundle with a newer one.
@@ -96,16 +114,17 @@ pub fn diff(old: &Dataset, new: &Dataset) -> BundleDiff {
             if before == after {
                 continue;
             }
-            let entry = result.fields.entry(name).or_default();
-            entry.count += 1;
-            if entry.examples.len() < MAX_EXAMPLES {
-                entry.examples.push(format!("{key}: {before} -> {after}"));
-            }
+            result
+                .fields
+                .entry(name)
+                .or_default()
+                .record(key, &before, &after);
         }
     }
     result
 }
 
+/// Records by internal identifier, in identifier order so reports are deterministic.
 fn rows_by_key(dataset: &Dataset) -> BTreeMap<&str, &LocationRecord> {
     dataset
         .stored
@@ -113,122 +132,4 @@ fn rows_by_key(dataset: &Dataset) -> BTreeMap<&str, &LocationRecord> {
         .iter()
         .filter_map(|record| dataset.symbol(record.key).map(|key| (key, record)))
         .collect()
-}
-
-fn text(dataset: &Dataset, symbol: Option<SymbolId>) -> String {
-    match symbol.and_then(|id| dataset.symbol(id)) {
-        Some(value) => value.to_owned(),
-        None => "-".to_owned(),
-    }
-}
-
-/// Field names and rendered values in a fixed order shared by both sides.
-fn fields(dataset: &Dataset, record: &LocationRecord) -> Vec<(&'static str, String)> {
-    let connected = match record
-        .connected_sea
-        .and_then(|id| dataset.location(id))
-        .and_then(|sea| dataset.symbol(sea.key))
-    {
-        Some(key) => key.to_owned(),
-        None => "-".to_owned(),
-    };
-    let capacity = record.static_population_capacity;
-    vec![
-        ("area", text(dataset, Some(record.hierarchy.area))),
-        (
-            "capacity_equator",
-            capacity.map_or_else(|| "-".to_owned(), |value| value.equator.0.to_string()),
-        ),
-        (
-            "capacity_modifier_bp",
-            capacity.map_or_else(
-                || "-".to_owned(),
-                |value| value.modifier_basis_points.to_string(),
-            ),
-        ),
-        (
-            "capacity_total",
-            capacity.map_or_else(|| "-".to_owned(), |value| value.total.0.to_string()),
-        ),
-        (
-            "capacity_vegetation",
-            capacity.map_or_else(|| "-".to_owned(), |value| value.vegetation.0.to_string()),
-        ),
-        ("climate", text(dataset, record.climate)),
-        ("coastal", record.coastal.to_string()),
-        ("color", record.color.hex()),
-        ("connected_sea", connected),
-        ("continent", text(dataset, Some(record.hierarchy.continent))),
-        ("culture", text(dataset, record.culture)),
-        (
-            "harbor_suitability",
-            record
-                .harbor_suitability
-                .map_or_else(|| "-".to_owned(), |value| format!("{value:.4}")),
-        ),
-        ("kind", record.kind.label().to_owned()),
-        ("modifier", text(dataset, record.modifier)),
-        (
-            "movement_assistance",
-            record.movement_assistance.map_or_else(
-                || "-".to_owned(),
-                |value| format!("{:.4},{:.4}", value[0], value[1]),
-            ),
-        ),
-        ("name", text(dataset, Some(record.name))),
-        ("province", text(dataset, Some(record.hierarchy.province))),
-        ("raw_material", text(dataset, record.raw_material)),
-        ("region", text(dataset, Some(record.hierarchy.region))),
-        ("religion", text(dataset, record.religion)),
-        (
-            "river",
-            record.river.map_or_else(
-                || "-".to_owned(),
-                |river| {
-                    format!(
-                        "L{} source={} confluence={}",
-                        river.level.0, river.has_source, river.has_confluence
-                    )
-                },
-            ),
-        ),
-        (
-            "subcontinent",
-            text(dataset, Some(record.hierarchy.subcontinent)),
-        ),
-        ("topography", text(dataset, Some(record.topography))),
-        ("vegetation", text(dataset, record.vegetation)),
-    ]
-}
-
-#[cfg(test)]
-mod tests {
-    use super::diff;
-
-    #[test]
-    fn reports_changed_fields_and_removed_locations() {
-        let loaded = crate::embedded::load();
-        assert!(loaded.is_ok());
-        let Ok((old, _)) = loaded else { return };
-        let unchanged = diff(&old, &old);
-        assert!(unchanged.added.is_empty());
-        assert!(unchanged.removed.is_empty());
-        assert!(unchanged.fields.is_empty());
-
-        let mut new = old.clone();
-        let removed = new.stored.locations.pop();
-        assert!(removed.is_some());
-        let Some(first) = new.stored.locations.first_mut() else {
-            return;
-        };
-        first.coastal = !first.coastal;
-        let changed = diff(&old, &new);
-        assert_eq!(changed.removed.len(), 1);
-        assert!(changed.added.is_empty());
-        assert_eq!(
-            changed.fields.get("coastal").map(|field| field.count),
-            Some(1)
-        );
-        assert!(changed.report().contains("coastal: 1 changed"));
-    }
 }

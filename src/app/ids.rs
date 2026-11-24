@@ -44,6 +44,9 @@ pub(crate) const COLUMN_MENU_LIST: Id = Id::new("column_menu.list");
 pub(crate) const ABOUT_SCROLL: Id = Id::new("about.scroll");
 /// Desktop installation directory field on the load-error card.
 pub(crate) const INSTALL_PATH: Id = Id::new("error.install_path");
+/// Container around the topmost open menu, dialog or drawer. Tab and Shift+Tab are scoped to
+/// it while a surface is open, which keeps keyboard focus inside the surface.
+pub(crate) const OPEN_SURFACE: Id = Id::new("surface.open");
 
 /// Checklist of one facet group.
 #[must_use]

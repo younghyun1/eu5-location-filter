@@ -1,0 +1,317 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = ابحث بالاسم أو المعرّف
+header.search.tooltip = ابحث في أسماء المواقع ومعرّفاتها
+header.result_count[zero] = لا توجد مواقع
+header.result_count[one] = موقع واحد
+header.result_count[two] = موقعان
+header.result_count[few] = {count} مواقع
+header.result_count[many] = {count} موقعًا
+header.result_count[other] = {count} موقع
+header.build = EU5 {version} | الإصدار {build}
+header.build.pending = جارٍ تحميل البيانات
+header.about = حول
+header.language = اللغة
+header.appearance = المظهر
+header.filters = عوامل التصفية
+header.details = التفاصيل
+
+# Appearance menu (desktop only)
+appearance.title = المظهر
+appearance.mode = النمط
+appearance.mode.light = فاتح
+appearance.mode.dark = داكن
+appearance.accent = لون التمييز
+appearance.accent.amber = عنبري
+appearance.accent.lagoon = بحيري
+appearance.accent.cobalt = كوبالتي
+appearance.accent.orchid = أرجواني
+appearance.accent.graphite = رصاصي
+appearance.motion = الحركة
+appearance.motion.on = تشغيل
+appearance.motion.off = إيقاف
+appearance.close = إغلاق
+
+# Language menu (desktop only)
+language.title = اللغة
+language.game_text_note = تُعرض أسماء المواقع بالإنجليزية عندما لا تتوفر ترجمتها في اللعبة لهذه اللغة.
+language.close = إغلاق
+
+# Filter rail
+rail.title = عوامل التصفية
+rail.clear_all = مسح الكل
+rail.collapse = إخفاء عوامل التصفية
+rail.expand = إظهار عوامل التصفية
+rail.resize = تغيير حجم لوحة التصفية
+rail.active_count[zero] = لا توجد عوامل تصفية مفعّلة
+rail.active_count[one] = عامل تصفية واحد مفعّل
+rail.active_count[two] = عاملا تصفية مفعّلان
+rail.active_count[few] = {count} عوامل تصفية مفعّلة
+rail.active_count[many] = {count} عامل تصفية مفعّلًا
+rail.active_count[other] = {count} عامل تصفية مفعّل
+rail.show_impassable = إظهار المواقع غير الصالحة للعبور
+rail.food_only = المنتجة للغذاء فقط
+rail.section.location = الموقع
+rail.section.geography = الجغرافيا
+rail.section.terrain = التضاريس
+rail.section.society = المجتمع
+rail.section.economy = الاقتصاد
+rail.section.map_data = بيانات الخريطة
+
+# Facet titles
+facet.kind = النوع
+facet.continent = القارة
+facet.subcontinent = شبه القارة
+facet.region = الإقليم
+facet.area = المنطقة
+facet.province = المقاطعة
+facet.topography = التضاريس
+facet.vegetation = الغطاء النباتي
+facet.climate = المناخ
+facet.religion = الدين
+facet.culture = الثقافة
+facet.raw_material = المادة الخام
+facet.modifier = المعدِّل
+facet.coastal = ساحلي
+facet.river_presence = النهر
+facet.river_level_min = الحد الأدنى لمكافأة النهر
+facet.river_level_max = الحد الأقصى لمكافأة النهر
+facet.harbor_presence = ملاءمة الميناء
+facet.movement_presence = مساعدة الحركة
+
+# Checklist controls
+checklist.search.placeholder = تصفية الخيارات
+checklist.expand = توسيع القائمة
+checklist.collapse = طي القائمة
+checklist.clear = مسح التحديد
+checklist.selected_count[zero] = لا يوجد تحديد
+checklist.selected_count[one] = تحديد واحد
+checklist.selected_count[two] = تحديدان
+checklist.selected_count[few] = {count} تحديدات
+checklist.selected_count[many] = {count} تحديدًا
+checklist.selected_count[other] = {count} تحديد
+checklist.empty = لا توجد خيارات مطابقة
+
+# Static option labels
+option.kind.land = بر
+option.kind.sea = بحر
+option.kind.lake = بحيرة
+option.kind.impassable = غير صالح للعبور
+option.kind.unknown = غير معروف
+option.yes = نعم
+option.no = لا
+option.present = موجود
+option.missing = غير موجود
+option.no_value = غير موجود
+option.symbol_with_key = {label} [{key}]
+option.river_tier = المستوى {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = جدول
+river.tier.stream = مجرى
+river.tier.river = نهر
+river.tier.large_river = نهر كبير
+river.tier.major_river = نهر رئيسي
+river.tier.unknown = غير معروف
+
+# Exact color and numeric ranges
+rgb.label = اللون الدقيق
+rgb.placeholder = #RRGGBB
+rgb.tooltip = أدخل من رقم إلى ستة أرقام ست عشرية؛ يمكن حذف الأصفار البادئة.
+range.harbor = قيمة الميناء
+range.movement_x = الحركة X
+range.movement_y = الحركة Y
+range.min.placeholder = الحد الأدنى
+range.max.placeholder = الحد الأقصى
+validation.rgb = أدخل من رقم إلى ستة أرقام ست عشرية، مثل #1A2B3C.
+validation.number = أدخل رقمًا، مثل 0.5.
+validation.number_finite = أدخل رقمًا منتهيًا.
+
+# Result grid
+grid.legend.food = منتج للغذاء
+grid.legend.precious = ذهب أو فضة
+grid.columns = الأعمدة
+grid.show_details = إظهار التفاصيل
+grid.sort.ascending = مرتب تصاعديًا
+grid.sort.descending = مرتب تنازليًا
+grid.sort.hint = اختر للترتيب؛ اختر مرة أخرى للعكس
+grid.resize.hint = اسحب الحافة لتغيير الحجم
+grid.empty.title = لا توجد مواقع مطابقة
+grid.empty.body = غيّر عوامل التصفية أو امسحها لعرض مزيد من المواقع.
+
+# Column headers
+column.color = اللون
+column.name = الاسم
+column.identifier = المعرّف
+column.kind = النوع
+column.topography = التضاريس
+column.vegetation = الغطاء النباتي
+column.climate = المناخ
+column.continent = القارة
+column.subcontinent = شبه القارة
+column.region = الإقليم
+column.area = المنطقة
+column.province = المقاطعة
+column.religion = الدين
+column.culture = الثقافة
+column.raw_material = المادة الخام
+column.modifier = المعدِّل
+column.rgb = RGB
+column.coastal = ساحلي
+column.river_presence = النهر
+column.river_level = مكافأة النهر
+column.harbor = الميناء
+column.movement_presence = الحركة
+column.movement_x = الحركة X
+column.movement_y = الحركة Y
+column.static_capacity = السعة الثابتة
+column.equator_capacity = سعة خط الاستواء
+
+# Column menu
+column_menu.title = الأعمدة المرئية
+column_menu.close = إغلاق
+column_menu.keep_one = يبقى عمود واحد على الأقل مرئيًا.
+
+# Detail pane
+detail.title = تفاصيل الموقع
+detail.hide = إخفاء التفاصيل
+detail.close = إغلاق
+detail.resize = تغيير حجم لوحة التفاصيل
+detail.empty.title = اختر موقعًا
+detail.empty.body = تظهر هنا تفاصيل الموقع وتسلسله الهرمي ولونه وبيانات النهر.
+detail.breadcrumb = التسلسل الهرمي
+detail.group.classification = التصنيف
+detail.group.society = المجتمع
+detail.group.economy = الاقتصاد
+detail.group.coast = الساحل والحركة
+detail.group.river = النهر
+detail.group.capacity = السعة السكانية الثابتة
+detail.field.type = النوع
+detail.field.topography = التضاريس
+detail.field.vegetation = الغطاء النباتي
+detail.field.climate = المناخ
+detail.field.religion = الدين
+detail.field.culture = الثقافة
+detail.field.raw_material = المادة الخام
+detail.field.modifier = المعدِّل
+detail.field.coastal = ساحلي
+detail.field.connected_sea = البحر المتصل
+detail.field.harbor = ملاءمة الميناء
+detail.field.movement = مساعدة الحركة
+detail.field.river = النهر
+detail.field.river_bonus = مكافأة السعة
+detail.field.river_source = منبع النهر
+detail.field.river_confluence = ملتقى الأنهار
+detail.field.capacity_total = السعة الإجمالية
+detail.field.capacity_vegetation = سعة الغطاء النباتي
+detail.field.capacity_equator = القرب من خط الاستواء
+detail.field.capacity_modifier = معدِّل السعة الثابتة
+detail.capacity.note = مشتقة من بيانات الخريطة الثابتة فقط؛ لا تشمل التطوير والمباني والقوانين وغيرها من حالة الحملة.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = م{level} +{percent}%
+format.river_detail = {tier}، المستوى {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = جارٍ البدء
+load.embedded = جارٍ تحميل البيانات المضمّنة
+load.loading_data = جارٍ تحميل بيانات EU5 {version}
+load.preparing = جارٍ تجهيز بيانات EU5 {version}
+load.external = جارٍ تجهيز البيانات الخارجية
+load.rebuild = جارٍ التجهيز لإعادة البناء
+load.fonts = جارٍ تحميل الخطوط
+load.names = جارٍ تحميل أسماء المواقع
+import.templates = جارٍ قراءة قوالب المواقع
+import.hierarchy = جارٍ قراءة التسلسل الهرمي
+import.colors = جارٍ قراءة ألوان الخريطة
+import.ports = جارٍ قراءة الموانئ
+import.river_settings = جارٍ قراءة إعدادات الأنهار
+import.map_factors = جارٍ قراءة عوامل الخريطة الثابتة
+import.localization = جارٍ قراءة ملفات الترجمة
+import.rivers = جارٍ فحص الخريطة والأنهار
+import.capacity = جارٍ حساب السعة السكانية الثابتة
+import.complete = اكتمل الاستيراد
+
+# Load errors
+error.title = تعذّر تحميل مواقع EU5
+error.detail = التفاصيل التقنية
+error.io = فشلت عملية على ملف في {path}.
+error.parse = تعذّر تحليل ملف اللعبة {source} قرب البايت {offset}.
+error.installation = لم يُعثر على تثبيت Europa Universalis V.
+error.missing_file = ملف لعبة مطلوب مفقود: {path}
+error.invalid_data = بيانات المواقع غير صالحة.
+error.encoding = تعذّر فك ترميز بيانات المواقع.
+error.compression = تعذّر فك ضغط بيانات المواقع.
+error.png = تعذّر فك ترميز صورة الخريطة: {path}
+error.ui = تعطلت الواجهة.
+error.worker = توقف المحمّل الخلفي بشكل غير متوقع.
+error.hint.retryable = تحقق من دليل التثبيت، ثم أعد المحاولة أو أعد بناء البيانات.
+error.hint.rebuild = لن تفيد إعادة المحاولة في هذا الخطأ؛ أعد بناء البيانات من ملفات اللعبة.
+error.hint.web = أعد تحميل الصفحة للمحاولة مرة أخرى.
+error.install_path.label = دليل التثبيت
+error.install_path.placeholder = دليل تثبيت Europa Universalis V
+error.retry = إعادة المحاولة
+error.rebuild = إعادة بناء البيانات
+
+# Notices shown over a loaded interface
+notice.language_pack = تعذّر تحميل أسماء المواقع لهذه اللغة، لذا تُعرض الأسماء الإنجليزية.
+notice.language_pack_mismatch = أسماء المواقع التي نُزّلت تخص إصدار بيانات مختلفًا ولم تُستخدم.
+notice.font_pack = تعذّر تحميل خط لهذه اللغة، لذا قد لا يظهر بعض النص.
+notice.dismiss = تجاهل
+
+# Drawers
+drawer.close = إغلاق
+
+# About dialog
+about.title = EU5 Location DB
+about.version = الإصدار {version}
+about.data = بيانات المواقع من Europa Universalis V {version}، إصدار Steam {build}.
+about.author = من إعداد Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = متصفح غير رسمي لبيانات الخريطة الثابتة. غير تابع لشركة Paradox Interactive ولا برعايتها.
+about.trademark = Europa Universalis وParadox Interactive علامتان تجاريتان لمالكيهما.
+about.license.source = ترخيص الشيفرة المصدرية: MIT OR Apache-2.0
+about.license.ui = مجموعة أدوات الواجهة: iced، ترخيص MIT
+about.license.fonts = الخطوط: عائلات IBM Plex Sans وIBM Plex Mono وIBM Plex Sans KR وIBM Plex Sans JP وNoto Sans، ترخيص SIL Open Font License 1.1
+about.licenses.show = إظهار نصوص التراخيص
+about.licenses.hide = إخفاء نصوص التراخيص
+about.keys.title = لوحة المفاتيح
+about.keys.search = التركيز على البحث
+about.keys.regions = التنقل بين الترويسة وعوامل التصفية والنتائج والتفاصيل
+about.keys.focus = التنقل بين عناصر التحكم
+about.keys.rows = تحريك الصف المحدد
+about.keys.columns = تحريك العمود النشط
+about.keys.sort = الترتيب حسب العمود النشط
+about.keys.resize = تغيير حجم العمود النشط
+about.keys.details = إظهار تفاصيل الصف المحدد
+about.keys.toggle = تبديل الخيار النشط
+about.keys.close = إغلاق قائمة أو مربع حوار أو درج
+about.close = إغلاق
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Space
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = مفاتيح الأسهم
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

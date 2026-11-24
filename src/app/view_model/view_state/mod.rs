@@ -4,7 +4,9 @@
 
 mod decode;
 mod encode;
+mod fields;
 mod limits;
+mod parse;
 mod resolve;
 #[cfg(test)]
 mod tests;

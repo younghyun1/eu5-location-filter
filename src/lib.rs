@@ -19,6 +19,8 @@ pub mod embedded;
 pub mod error;
 pub mod filter;
 #[cfg(feature = "desktop")]
+pub mod font_pack;
+#[cfg(feature = "desktop")]
 pub mod import;
 pub mod index_storage;
 pub mod lang_pack;

@@ -10,6 +10,8 @@ mod phase;
 pub(crate) use app::{App, DataState, HostState, LaunchPaths};
 pub(crate) use appearance::Appearance;
 pub(crate) use fields::{FieldBuffer, TextFields};
-pub(crate) use overlay::{FocusRegion, FocusState, Notice, OverlayState, Surface};
+pub(crate) use overlay::{
+    FocusRegion, FocusState, Notice, OverlayState, Surface, drawer_animation,
+};
 pub(crate) use packs::{PackFailure, PackState};
 pub(crate) use phase::{LoadFailure, LoadProgress, Phase};

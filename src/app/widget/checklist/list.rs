@@ -11,8 +11,11 @@ use crate::app::theme::{PALETTE_DARK, Palette, SANS};
 pub(crate) type OnToggle<'a, Message> = Box<dyn Fn(u32, bool) -> Message + 'a>;
 
 /// Virtualized checklist. Publishes `on_toggle` on a click, a tap below `TOUCH_SLOP`, or Space
-/// on the active option. Its height is `min(rows, max_visible_rows) * row_height`, so it never
-/// lays out rows it does not draw.
+/// on the active option. Its height is `min(rows, max_visible_rows) * row_height` (one row when
+/// the list is empty and has an empty text), so it never lays out rows it does not draw; given
+/// less height by its container, it scrolls within what it received. It draws its own `surface`
+/// ground and `line` border with `RADIUS` corners inside its bounds, so panes must not add a
+/// second border.
 pub(crate) struct Checklist<'a, Message, M> {
     /// Row source, held by value so a view can build it on the fly.
     pub(super) model: M,
@@ -32,6 +35,7 @@ pub(crate) struct Checklist<'a, Message, M> {
     pub(super) id: Option<Id>,
     /// Text shown when the model has no rows.
     pub(super) empty_text: &'a str,
+    /// Toggle callback; without one the list still scrolls and moves focus but publishes nothing.
     pub(super) on_toggle: Option<OnToggle<'a, Message>>,
 }
 

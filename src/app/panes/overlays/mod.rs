@@ -3,6 +3,7 @@
 
 mod drawer;
 mod error;
+pub(crate) mod kit;
 mod loading;
 mod notice;
 

@@ -4,5 +4,8 @@
 mod facet_group;
 mod fields;
 mod rail;
+mod sections;
+#[cfg(test)]
+mod tests;
 
 pub(crate) use rail::{RailModel, view};

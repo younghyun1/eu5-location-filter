@@ -1,7 +1,10 @@
 //! Transient surfaces, notices and keyboard focus bookkeeping.
 
 use iced::Animation;
+use iced::animation::Easing;
 use iced::widget::Id;
+
+use crate::app::theme::drawer_duration;
 
 /// Menus and dialogs; at most one is open at a time.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -46,9 +49,18 @@ impl Default for OverlayState {
             surface: None,
             licenses_expanded: false,
             notice: None,
-            drawer_motion: Animation::new(false),
+            drawer_motion: drawer_animation(false, false),
         }
     }
+}
+
+/// Drawer animation resting at `open`, with the slide duration for the motion setting. The
+/// duration is fixed when the animation is built, so a motion change rebuilds it.
+#[must_use]
+pub(crate) fn drawer_animation(open: bool, reduced_motion: bool) -> Animation<bool> {
+    Animation::new(open)
+        .duration(drawer_duration(reduced_motion))
+        .easing(Easing::EaseOutCubic)
 }
 
 /// Keyboard regions F6 cycles through, in order.

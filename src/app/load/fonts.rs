@@ -38,3 +38,21 @@ pub(crate) fn embedded_pack(pack: crate::app::i18n::FontPack) -> Option<&'static
         .copied()
         .filter(|bytes| !bytes.is_empty())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::embedded_faces;
+
+    #[test]
+    fn embedded_faces_skips_empty_sources() {
+        assert!(embedded_faces().all(|face| !face.is_empty()));
+    }
+
+    #[cfg(feature = "desktop")]
+    #[test]
+    fn embedded_packs_are_never_empty_slices() {
+        for pack in crate::app::i18n::FontPack::ALL {
+            assert!(super::embedded_pack(pack).is_none_or(|bytes| !bytes.is_empty()));
+        }
+    }
+}

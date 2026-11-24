@@ -1,0 +1,309 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = Pretraži po nazivu ili identifikatoru
+header.search.tooltip = Pretražuj nazive i identifikatore lokacija
+header.result_count[one] = {count} lokacija
+header.result_count[few] = {count} lokacije
+header.result_count[other] = {count} lokacija
+header.build = EU5 {version} | Verzija {build}
+header.build.pending = Učitavanje podataka
+header.about = O programu
+header.language = Jezik
+header.appearance = Izgled
+header.filters = Filteri
+header.details = Detalji
+
+# Appearance menu (desktop only)
+appearance.title = Izgled
+appearance.mode = Režim
+appearance.mode.light = Svijetli
+appearance.mode.dark = Tamni
+appearance.accent = Akcent
+appearance.accent.amber = Jantarna
+appearance.accent.lagoon = Laguna
+appearance.accent.cobalt = Kobalt
+appearance.accent.orchid = Orhideja
+appearance.accent.graphite = Grafit
+appearance.motion = Animacije
+appearance.motion.on = Uključeno
+appearance.motion.off = Isključeno
+appearance.close = Zatvori
+
+# Language menu (desktop only)
+language.title = Jezik
+language.game_text_note = Nazivi lokacija prikazuju se na engleskom ako igra nema prijevod za ovaj jezik.
+language.close = Zatvori
+
+# Filter rail
+rail.title = Filteri
+rail.clear_all = Poništi sve
+rail.collapse = Sakrij filtere
+rail.expand = Prikaži filtere
+rail.resize = Promijeni širinu panela filtera
+rail.active_count[one] = {count} aktivan filter
+rail.active_count[few] = {count} aktivna filtera
+rail.active_count[other] = {count} aktivnih filtera
+rail.show_impassable = Prikaži neprohodne
+rail.food_only = Samo proizvođači hrane
+rail.section.location = Lokacija
+rail.section.geography = Geografija
+rail.section.terrain = Teren
+rail.section.society = Društvo
+rail.section.economy = Ekonomija
+rail.section.map_data = Podaci o mapi
+
+# Facet titles
+facet.kind = Tip
+facet.continent = Kontinent
+facet.subcontinent = Potkontinent
+facet.region = Regija
+facet.area = Područje
+facet.province = Provincija
+facet.topography = Reljef
+facet.vegetation = Vegetacija
+facet.climate = Klima
+facet.religion = Religija
+facet.culture = Kultura
+facet.raw_material = Sirovina
+facet.modifier = Modifikator
+facet.coastal = Obalna
+facet.river_presence = Rijeka
+facet.river_level_min = Najmanji bonus rijeke
+facet.river_level_max = Najveći bonus rijeke
+facet.harbor_presence = Pogodnost za luku
+facet.movement_presence = Pomoć pri kretanju
+
+# Checklist controls
+checklist.search.placeholder = Filtriraj opcije
+checklist.expand = Proširi listu
+checklist.collapse = Sužava listu
+checklist.clear = Poništi odabir
+checklist.selected_count[one] = {count} odabrana
+checklist.selected_count[few] = {count} odabrane
+checklist.selected_count[other] = {count} odabranih
+checklist.empty = Nema odgovarajućih opcija
+
+# Static option labels
+option.kind.land = Kopno
+option.kind.sea = More
+option.kind.lake = Jezero
+option.kind.impassable = Neprohodno
+option.kind.unknown = Nepoznato
+option.yes = Da
+option.no = Ne
+option.present = Prisutno
+option.missing = Nedostaje
+option.no_value = Nedostaje
+option.symbol_with_key = {label} [{key}]
+option.river_tier = Nivo {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = Potočić
+river.tier.stream = Potok
+river.tier.river = Rijeka
+river.tier.large_river = Velika rijeka
+river.tier.major_river = Glavna rijeka
+river.tier.unknown = Nepoznato
+
+# Exact color and numeric ranges
+rgb.label = Tačna boja
+rgb.placeholder = #RRGGBB
+rgb.tooltip = Unesite od jedne do šest heksadecimalnih cifara; vodeće nule se mogu izostaviti.
+range.harbor = Vrijednost luke
+range.movement_x = Kretanje X
+range.movement_y = Kretanje Y
+range.min.placeholder = Minimum
+range.max.placeholder = Maksimum
+validation.rgb = Unesite od jedne do šest heksadecimalnih cifara, na primjer #1A2B3C.
+validation.number = Unesite broj, na primjer 0.5.
+validation.number_finite = Unesite konačan broj.
+
+# Result grid
+grid.legend.food = Proizvodi hranu
+grid.legend.precious = Zlato ili srebro
+grid.columns = Kolone
+grid.show_details = Prikaži detalje
+grid.sort.ascending = Sortirano rastuće
+grid.sort.descending = Sortirano opadajuće
+grid.sort.hint = Odaberite za sortiranje; ponovo odaberite za obrat redoslijeda
+grid.resize.hint = Povucite ivicu da promijenite veličinu
+grid.empty.title = Nema odgovarajućih lokacija
+grid.empty.body = Promijenite ili poništite filtere da biste vidjeli više lokacija.
+
+# Column headers
+column.color = Boja
+column.name = Naziv
+column.identifier = Identifikator
+column.kind = Tip
+column.topography = Reljef
+column.vegetation = Vegetacija
+column.climate = Klima
+column.continent = Kontinent
+column.subcontinent = Potkontinent
+column.region = Regija
+column.area = Područje
+column.province = Provincija
+column.religion = Religija
+column.culture = Kultura
+column.raw_material = Sirovina
+column.modifier = Modifikator
+column.rgb = RGB
+column.coastal = Obalna
+column.river_presence = Rijeka
+column.river_level = Bonus rijeke
+column.harbor = Luka
+column.movement_presence = Kretanje
+column.movement_x = Kretanje X
+column.movement_y = Kretanje Y
+column.static_capacity = Statički kapacitet
+column.equator_capacity = Kapacitet na ekvatoru
+
+# Column menu
+column_menu.title = Vidljive kolone
+column_menu.close = Zatvori
+column_menu.keep_one = Najmanje jedna kolona ostaje vidljiva.
+
+# Detail pane
+detail.title = Detalji lokacije
+detail.hide = Sakrij detalje
+detail.close = Zatvori
+detail.resize = Promijeni širinu panela detalja
+detail.empty.title = Odaberite lokaciju
+detail.empty.body = Ovdje se prikazuju detalji lokacije, hijerarhija, boja i podaci o rijeci.
+detail.breadcrumb = Hijerarhija
+detail.group.classification = Klasifikacija
+detail.group.society = Društvo
+detail.group.economy = Ekonomija
+detail.group.coast = Obala i kretanje
+detail.group.river = Rijeka
+detail.group.capacity = Statički kapacitet stanovništva
+detail.field.type = Tip
+detail.field.topography = Reljef
+detail.field.vegetation = Vegetacija
+detail.field.climate = Klima
+detail.field.religion = Religija
+detail.field.culture = Kultura
+detail.field.raw_material = Sirovina
+detail.field.modifier = Modifikator
+detail.field.coastal = Obalna
+detail.field.connected_sea = Povezano more
+detail.field.harbor = Pogodnost za luku
+detail.field.movement = Pomoć pri kretanju
+detail.field.river = Rijeka
+detail.field.river_bonus = Bonus kapaciteta
+detail.field.river_source = Izvor rijeke
+detail.field.river_confluence = Ušće rijeke
+detail.field.capacity_total = Ukupni kapacitet
+detail.field.capacity_vegetation = Kapacitet vegetacije
+detail.field.capacity_equator = Blizina ekvatoru
+detail.field.capacity_modifier = Modifikator statičkog kapaciteta
+detail.capacity.note = Izračunato samo iz nepromjenjivih podataka o mapi; razvoj, zgrade, zakoni i drugo stanje kampanje nisu uključeni.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}, nivo {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = Pokretanje
+load.embedded = Učitavanje ugrađenih podataka
+load.loading_data = Učitavanje podataka EU5 {version}
+load.preparing = Priprema podataka EU5 {version}
+load.external = Priprema vanjskih podataka
+load.rebuild = Priprema ponovne izgradnje
+load.fonts = Učitavanje fontova
+load.names = Učitavanje naziva lokacija
+import.templates = Čitanje šablona lokacija
+import.hierarchy = Čitanje hijerarhije
+import.colors = Čitanje boja mape
+import.ports = Čitanje luka
+import.river_settings = Čitanje postavki rijeka
+import.map_factors = Čitanje statičkih faktora mape
+import.localization = Čitanje lokalizacije
+import.rivers = Skeniranje mape i rijeka
+import.capacity = Računanje statičkog kapaciteta stanovništva
+import.complete = Uvoz završen
+
+# Load errors
+error.title = Lokacije EU5 nisu se mogle učitati
+error.detail = Tehnički detalji
+error.io = Operacija nad datotekom nije uspjela za {path}.
+error.parse = Datoteku igre {source} nije bilo moguće obraditi u blizini bajta {offset}.
+error.installation = Instalacija Europa Universalis V nije pronađena.
+error.missing_file = Nedostaje potrebna datoteka igre: {path}
+error.invalid_data = Podaci o lokacijama nisu valjani.
+error.encoding = Podaci o lokacijama nisu se mogli dekodirati.
+error.compression = Podaci o lokacijama nisu se mogli raspakovati.
+error.png = Slika mape nije se mogla dekodirati: {path}
+error.ui = Interfejs nije uspio.
+error.worker = Učitavanje u pozadini neočekivano je prestalo.
+error.hint.retryable = Provjerite direktorij instalacije, pa pokušajte ponovo ili ponovo izgradite podatke.
+error.hint.rebuild = Ponovni pokušaj neće pomoći kod ove greške; ponovo izgradite podatke iz datoteka igre.
+error.hint.web = Ponovo učitajte stranicu da biste pokušali ponovo.
+error.install_path.label = Direktorij instalacije
+error.install_path.placeholder = Direktorij instalacije Europa Universalis V
+error.retry = Pokušaj ponovo
+error.rebuild = Ponovo izgradi podatke
+
+# Notices shown over a loaded interface
+notice.language_pack = Nazivi lokacija za ovaj jezik nisu se mogli učitati, pa se prikazuju engleski nazivi.
+notice.language_pack_mismatch = Preuzeti nazivi lokacija pripadaju drugoj verziji podataka i nisu upotrijebljeni.
+notice.font_pack = Font za ovaj jezik nije se mogao učitati, pa dio teksta možda neće biti prikazan.
+notice.dismiss = Zatvori
+
+# Drawers
+drawer.close = Zatvori
+
+# About dialog
+about.title = EU5 Location DB
+about.version = Verzija {version}
+about.data = Podaci o lokacijama iz Europa Universalis V {version}, Steam verzija {build}.
+about.author = Kreirao Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = Neslužbeni pregledač statičkih podataka mape. Nije povezan s kompanijom Paradox Interactive niti je njome odobren.
+about.trademark = Europa Universalis i Paradox Interactive su zaštitni znaci njihovih vlasnika.
+about.license.source = Licenca izvornog koda: MIT OR Apache-2.0
+about.license.ui = Alat za korisnički interfejs: iced, licenca MIT
+about.license.fonts = Fontovi: porodice IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP i Noto Sans, SIL Open Font License 1.1
+about.licenses.show = Prikaži tekstove licenci
+about.licenses.hide = Sakrij tekstove licenci
+about.keys.title = Tastatura
+about.keys.search = Idi na pretragu
+about.keys.regions = Prelazak između zaglavlja, filtera, rezultata i detalja
+about.keys.focus = Prelazak između kontrola
+about.keys.rows = Pomjeranje odabranog reda
+about.keys.columns = Pomjeranje aktivne kolone
+about.keys.sort = Sortiranje po aktivnoj koloni
+about.keys.resize = Promjena širine aktivne kolone
+about.keys.details = Prikaži detalje odabranog reda
+about.keys.toggle = Uključi ili isključi aktivnu opciju
+about.keys.close = Zatvori meni, dijalog ili panel
+about.close = Zatvori
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Razmaknica
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = Strelice
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End
+

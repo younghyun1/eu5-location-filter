@@ -47,7 +47,8 @@ pub fn parse_localization_line(line: &str) -> Result<Option<(String, String)>, A
     Ok(Some((key.to_owned(), value)))
 }
 
-/// Recursively resolves requested English localization keys in deterministic path order.
+/// Recursively resolves requested localization keys of one language in deterministic path
+/// order, expanding `$key$` references within the same roots.
 pub fn read_localizations(
     roots: &[PathBuf],
     requested: &HashSet<String>,
@@ -77,7 +78,7 @@ pub fn read_localizations(
         total_source_size = total_source_size.saturating_add(metadata.len());
         if total_source_size > MAX_LOCALIZATION_TOTAL_SIZE {
             return Err(AppError::InvalidData(
-                "English localization sources exceed the cumulative size limit".to_owned(),
+                "localization sources exceed the cumulative size limit".to_owned(),
             ));
         }
         let bytes = fs::read(&path).map_err(|source| AppError::io("read", &path, source))?;
@@ -103,7 +104,7 @@ pub fn read_localizations(
                         || total_text_size > MAX_LOCALIZATION_TEXT
                     {
                         return Err(AppError::InvalidData(
-                            "English localization index exceeds configured limits".to_owned(),
+                            "localization index exceeds configured limits".to_owned(),
                         ));
                     }
                     raw_values.insert(key, value);
@@ -255,6 +256,21 @@ mod tests {
             None
         );
         assert_eq!(parse_localization_line(" # text").ok().flatten(), None);
+    }
+
+    #[test]
+    fn parses_entry_forms_seen_in_the_install() {
+        let cases = [
+            (" stockholm: \"Стокгольм\"", "stockholm", "Стокгольм"),
+            ("ngoussa: \"N'Goussa\"", "ngoussa", "N'Goussa"),
+            (" swedish:0 \"스웨덴\"", "swedish", "스웨덴"),
+        ];
+        for (line, key, value) in cases {
+            let parsed = parse_localization_line(line).ok().flatten();
+            assert_eq!(parsed, Some((key.to_owned(), value.to_owned())));
+        }
+        let header = parse_localization_line("\u{feff}l_simp_chinese:");
+        assert_eq!(header.ok().flatten(), None);
     }
 
     #[test]

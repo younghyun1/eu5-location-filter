@@ -1,0 +1,305 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = Sök på namn eller identifierare
+header.search.tooltip = Sök efter platsnamn och identifierare
+header.result_count[one] = {count} plats
+header.result_count[other] = {count} platser
+header.build = EU5 {version} | Build {build}
+header.build.pending = Läser in data
+header.about = Om
+header.language = Språk
+header.appearance = Utseende
+header.filters = Filter
+header.details = Detaljer
+
+# Appearance menu (desktop only)
+appearance.title = Utseende
+appearance.mode = Läge
+appearance.mode.light = Ljust
+appearance.mode.dark = Mörkt
+appearance.accent = Accentfärg
+appearance.accent.amber = Bärnsten
+appearance.accent.lagoon = Lagun
+appearance.accent.cobalt = Kobolt
+appearance.accent.orchid = Orkidé
+appearance.accent.graphite = Grafit
+appearance.motion = Animeringar
+appearance.motion.on = På
+appearance.motion.off = Av
+appearance.close = Stäng
+
+# Language menu (desktop only)
+language.title = Språk
+language.game_text_note = Platsnamn visas på engelska där spelet saknar översättning till det här språket.
+language.close = Stäng
+
+# Filter rail
+rail.title = Filter
+rail.clear_all = Rensa alla
+rail.collapse = Dölj filter
+rail.expand = Visa filter
+rail.resize = Ändra storlek på filterpanelen
+rail.active_count[one] = {count} filter aktivt
+rail.active_count[other] = {count} filter aktiva
+rail.show_impassable = Visa ofarbart
+rail.food_only = Endast livsmedelsproducerande
+rail.section.location = Plats
+rail.section.geography = Geografi
+rail.section.terrain = Terräng
+rail.section.society = Samhälle
+rail.section.economy = Ekonomi
+rail.section.map_data = Kartdata
+
+# Facet titles
+facet.kind = Typ
+facet.continent = Kontinent
+facet.subcontinent = Subkontinent
+facet.region = Region
+facet.area = Område
+facet.province = Provins
+facet.topography = Topografi
+facet.vegetation = Vegetation
+facet.climate = Klimat
+facet.religion = Religion
+facet.culture = Kultur
+facet.raw_material = Råvara
+facet.modifier = Modifierare
+facet.coastal = Kust
+facet.river_presence = Flod
+facet.river_level_min = Lägsta flodbonus
+facet.river_level_max = Högsta flodbonus
+facet.harbor_presence = Lämplighet för hamn
+facet.movement_presence = Rörelsehjälp
+
+# Checklist controls
+checklist.search.placeholder = Filtrera alternativ
+checklist.expand = Expandera listan
+checklist.collapse = Fäll ihop listan
+checklist.clear = Rensa urval
+checklist.selected_count[one] = {count} vald
+checklist.selected_count[other] = {count} valda
+checklist.empty = Inga matchande alternativ
+
+# Static option labels
+option.kind.land = Land
+option.kind.sea = Hav
+option.kind.lake = Sjö
+option.kind.impassable = Ofarbart
+option.kind.unknown = Okänd
+option.yes = Ja
+option.no = Nej
+option.present = Finns
+option.missing = Saknas
+option.no_value = Saknas
+option.symbol_with_key = {label} [{key}]
+option.river_tier = Nivå {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = Bäck
+river.tier.stream = Å
+river.tier.river = Flod
+river.tier.large_river = Stor flod
+river.tier.major_river = Huvudflod
+river.tier.unknown = Okänd
+
+# Exact color and numeric ranges
+rgb.label = Exakt färg
+rgb.placeholder = #RRGGBB
+rgb.tooltip = Ange en till sex hexadecimala siffror; inledande nollor kan utelämnas.
+range.harbor = Hamnvärde
+range.movement_x = Rörelse X
+range.movement_y = Rörelse Y
+range.min.placeholder = Minst
+range.max.placeholder = Högst
+validation.rgb = Ange en till sex hexadecimala siffror, till exempel #1A2B3C.
+validation.number = Ange ett tal, till exempel 0,5.
+validation.number_finite = Ange ett ändligt tal.
+
+# Result grid
+grid.legend.food = Livsmedelsproducerande
+grid.legend.precious = Guld eller silver
+grid.columns = Kolumner
+grid.show_details = Visa detaljer
+grid.sort.ascending = Sorterad stigande
+grid.sort.descending = Sorterad fallande
+grid.sort.hint = Välj för att sortera; välj igen för att vända ordningen
+grid.resize.hint = Dra i kanten för att ändra storlek
+grid.empty.title = Inga platser matchar
+grid.empty.body = Ändra eller rensa filtren för att se fler platser.
+
+# Column headers
+column.color = Färg
+column.name = Namn
+column.identifier = Identifierare
+column.kind = Typ
+column.topography = Topografi
+column.vegetation = Vegetation
+column.climate = Klimat
+column.continent = Kontinent
+column.subcontinent = Subkontinent
+column.region = Region
+column.area = Område
+column.province = Provins
+column.religion = Religion
+column.culture = Kultur
+column.raw_material = Råvara
+column.modifier = Modifierare
+column.rgb = RGB
+column.coastal = Kust
+column.river_presence = Flod
+column.river_level = Flodbonus
+column.harbor = Hamn
+column.movement_presence = Rörelse
+column.movement_x = Rörelse X
+column.movement_y = Rörelse Y
+column.static_capacity = Statisk kapacitet
+column.equator_capacity = Ekvatorkapacitet
+
+# Column menu
+column_menu.title = Synliga kolumner
+column_menu.close = Stäng
+column_menu.keep_one = Minst en kolumn förblir synlig.
+
+# Detail pane
+detail.title = Platsdetaljer
+detail.hide = Dölj detaljer
+detail.close = Stäng
+detail.resize = Ändra storlek på detaljpanelen
+detail.empty.title = Välj en plats
+detail.empty.body = Platsdetaljer, hierarki, färg och flodata visas här.
+detail.breadcrumb = Hierarki
+detail.group.classification = Klassificering
+detail.group.society = Samhälle
+detail.group.economy = Ekonomi
+detail.group.coast = Kust och rörelse
+detail.group.river = Flod
+detail.group.capacity = Statisk befolkningskapacitet
+detail.field.type = Typ
+detail.field.topography = Topografi
+detail.field.vegetation = Vegetation
+detail.field.climate = Klimat
+detail.field.religion = Religion
+detail.field.culture = Kultur
+detail.field.raw_material = Råvara
+detail.field.modifier = Modifierare
+detail.field.coastal = Kust
+detail.field.connected_sea = Anslutet hav
+detail.field.harbor = Lämplighet för hamn
+detail.field.movement = Rörelsehjälp
+detail.field.river = Flod
+detail.field.river_bonus = Kapacitetsbonus
+detail.field.river_source = Flodkälla
+detail.field.river_confluence = Flodsammanflöde
+detail.field.capacity_total = Total kapacitet
+detail.field.capacity_vegetation = Vegetationskapacitet
+detail.field.capacity_equator = Närhet till ekvatorn
+detail.field.capacity_modifier = Modifierare för statisk kapacitet
+detail.capacity.note = Härleds endast från oföränderliga kartdata; utveckling, byggnader, lagar och annat kampanjtillstånd ingår inte.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = N{level} +{percent}%
+format.river_detail = {tier}, nivå {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = Startar
+load.embedded = Läser in inbäddade data
+load.loading_data = Läser in EU5 {version}-data
+load.preparing = Förbereder EU5 {version}-data
+load.external = Förbereder externa data
+load.rebuild = Förbereder ombyggnad
+load.fonts = Läser in teckensnitt
+load.names = Läser in platsnamn
+import.templates = Läser platsmallar
+import.hierarchy = Läser hierarki
+import.colors = Läser kartfärger
+import.ports = Läser hamnar
+import.river_settings = Läser flodinställningar
+import.map_factors = Läser statiska kartfaktorer
+import.localization = Läser lokalisering
+import.rivers = Söker igenom karta och floder
+import.capacity = Beräknar statisk befolkningskapacitet
+import.complete = Import klar
+
+# Load errors
+error.title = Kunde inte läsa in EU5-platser
+error.detail = Tekniska detaljer
+error.io = En filåtgärd misslyckades för {path}.
+error.parse = Spelfilen {source} kunde inte tolkas vid byte {offset}.
+error.installation = Installationen av Europa Universalis V hittades inte.
+error.missing_file = En nödvändig spelfil saknas: {path}
+error.invalid_data = Platsdatan är ogiltig.
+error.encoding = Platsdatan kunde inte avkodas.
+error.compression = Platsdatan kunde inte packas upp.
+error.png = En kartbild kunde inte avkodas: {path}
+error.ui = Gränssnittet misslyckades.
+error.worker = Bakgrundsinläsaren stoppades oväntat.
+error.hint.retryable = Kontrollera installationskatalogen och försök igen, eller bygg om datan.
+error.hint.rebuild = Att försöka igen hjälper inte vid det här felet; bygg om datan från spelfilerna.
+error.hint.web = Ladda om sidan för att försöka igen.
+error.install_path.label = Installationskatalog
+error.install_path.placeholder = Installationskatalog för Europa Universalis V
+error.retry = Försök igen
+error.rebuild = Bygg om data
+
+# Notices shown over a loaded interface
+notice.language_pack = Platsnamn för det här språket kunde inte läsas in, så engelska namn visas.
+notice.language_pack_mismatch = De hämtade platsnamnen tillhör en annan databygge och användes inte.
+notice.font_pack = Ett teckensnitt för det här språket kunde inte läsas in, så en del text visas kanske inte.
+notice.dismiss = Avfärda
+
+# Drawers
+drawer.close = Stäng
+
+# About dialog
+about.title = EU5 Location DB
+about.version = Version {version}
+about.data = Platsdata från Europa Universalis V {version}, Steam-bygge {build}.
+about.author = Skapad av Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = En inofficiell webbläsare för statiska kartdata. Ingen koppling till eller godkännande från Paradox Interactive.
+about.trademark = Europa Universalis och Paradox Interactive är varumärken som tillhör respektive ägare.
+about.license.source = Källlicens: MIT OR Apache-2.0
+about.license.ui = Gränssnittsverktyg: iced, MIT-licensen
+about.license.fonts = Teckensnitt: familjerna IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP och Noto Sans, SIL Open Font License 1.1
+about.licenses.show = Visa licenstexter
+about.licenses.hide = Dölj licenstexter
+about.keys.title = Tangentbord
+about.keys.search = Flytta fokus till sökfältet
+about.keys.regions = Flytta mellan rubrik, filter, resultat och detaljer
+about.keys.focus = Flytta mellan kontroller
+about.keys.rows = Flytta den valda raden
+about.keys.columns = Flytta den aktiva kolumnen
+about.keys.sort = Sortera efter den aktiva kolumnen
+about.keys.resize = Ändra storlek på den aktiva kolumnen
+about.keys.details = Visa detaljer för den valda raden
+about.keys.toggle = Växla det aktiva alternativet
+about.keys.close = Stäng en meny, dialogruta eller panel
+about.close = Stäng
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Mellanslag
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = Piltangenter
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

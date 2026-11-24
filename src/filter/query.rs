@@ -7,10 +7,11 @@ use super::{
     bitmap::Bitmap,
     facets::{self, FacetKey as K, StoredFacet},
     numeric::{NumericField as N, NumericIndex},
-    search::{self, Trigram},
+    search,
 };
 use crate::{
     AppError,
+    lang_pack::StoredLanguageSection,
     model::{Dataset, LocationKind},
 };
 
@@ -18,26 +19,21 @@ use crate::{
 pub(super) struct QueryIndex {
     pub(super) facets: Vec<StoredFacet>,
     pub(super) numeric: Vec<NumericIndex>,
-    pub(super) trigrams: Vec<Trigram>,
 }
 
 impl QueryIndex {
-    pub(super) fn build(dataset: &Dataset, searchable: &[String]) -> Self {
+    pub(super) fn build(dataset: &Dataset) -> Self {
         Self {
             facets: facets::build(dataset),
             numeric: N::ALL
                 .into_iter()
                 .map(|field| NumericIndex::build(dataset, field))
                 .collect(),
-            trigrams: search::build(searchable),
         }
     }
 
-    pub(super) fn validate(
-        &self,
-        dataset: &Dataset,
-        searchable: &[String],
-    ) -> Result<(), AppError> {
+    /// Checks facets and numeric indexes; search data is checked with its language section.
+    pub(super) fn validate(&self, dataset: &Dataset) -> Result<(), AppError> {
         facets::validate(&self.facets, dataset)?;
         if self.numeric.len() != N::ALL.len()
             || self
@@ -53,13 +49,14 @@ impl QueryIndex {
         for index in &self.numeric {
             index.validate(dataset)?;
         }
-        search::validate(&self.trigrams, searchable)
+        Ok(())
     }
 
+    /// Builds the result mask; search reads the active language section.
     pub(super) fn apply(
         &self,
         dataset: &Dataset,
-        searchable: &[String],
+        section: &StoredLanguageSection,
         filters: &FilterSet,
     ) -> Bitmap {
         let count = dataset.stored.locations.len();
@@ -146,8 +143,8 @@ impl QueryIndex {
             &mut scratch,
         );
         search::apply(
-            &self.trigrams,
-            searchable,
+            &section.trigrams,
+            &section.searchable,
             &super::fold_search(&filters.search),
             &mut mask,
             &mut scratch,

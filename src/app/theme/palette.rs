@@ -107,11 +107,14 @@ pub(crate) const PALETTE_DARK: Palette = Palette {
 #[must_use]
 pub(crate) fn mix(a: Color, b: Color, t: f32) -> Color {
     let t = if t.is_nan() { 0.0 } else { t.clamp(0.0, 1.0) };
+    // The weighted form returns `a` at 0 and `b` at 1 exactly, which `a + (b - a) * t` does not:
+    // a finished palette fade must land on its target palette bit for bit.
+    let lerp = |from: f32, to: f32| from * (1.0 - t) + to * t;
     Color {
-        r: a.r + (b.r - a.r) * t,
-        g: a.g + (b.g - a.g) * t,
-        b: a.b + (b.b - a.b) * t,
-        a: a.a + (b.a - a.a) * t,
+        r: lerp(a.r, b.r),
+        g: lerp(a.g, b.g),
+        b: lerp(a.b, b.b),
+        a: lerp(a.a, b.a),
     }
 }
 

@@ -1,0 +1,302 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = 名前または識別子で検索
+header.search.tooltip = ロケーション名と識別子を検索
+header.result_count[other] = ロケーション {count} 件
+header.build = EU5 {version} | ビルド {build}
+header.build.pending = データを読み込み中
+header.about = このアプリについて
+header.language = 言語
+header.appearance = 外観
+header.filters = フィルター
+header.details = 詳細
+
+# Appearance menu (desktop only)
+appearance.title = 外観
+appearance.mode = モード
+appearance.mode.light = ライト
+appearance.mode.dark = ダーク
+appearance.accent = アクセントカラー
+appearance.accent.amber = アンバー
+appearance.accent.lagoon = ラグーン
+appearance.accent.cobalt = コバルト
+appearance.accent.orchid = オーキッド
+appearance.accent.graphite = グラファイト
+appearance.motion = アニメーション
+appearance.motion.on = オン
+appearance.motion.off = オフ
+appearance.close = 閉じる
+
+# Language menu (desktop only)
+language.title = 言語
+language.game_text_note = ゲームにこの言語の翻訳がない場合、ロケーション名は英語で表示されます。
+language.close = 閉じる
+
+# Filter rail
+rail.title = フィルター
+rail.clear_all = すべてクリア
+rail.collapse = フィルターを隠す
+rail.expand = フィルターを表示
+rail.resize = フィルターペインのサイズを変更
+rail.active_count[other] = 適用中のフィルター {count} 件
+rail.show_impassable = 通行不可を表示
+rail.food_only = 食料生産のみ
+rail.section.location = ロケーション
+rail.section.geography = 地理
+rail.section.terrain = 地勢
+rail.section.society = 社会
+rail.section.economy = 経済
+rail.section.map_data = マップデータ
+
+# Facet titles
+facet.kind = タイプ
+facet.continent = 大陸
+facet.subcontinent = 亜大陸
+facet.region = 地方
+facet.area = 地域
+facet.province = 州
+facet.topography = 地表環境
+facet.vegetation = 植生
+facet.climate = 気候
+facet.religion = 宗教
+facet.culture = 文化
+facet.raw_material = 原材料
+facet.modifier = 補正
+facet.coastal = 沿岸
+facet.river_presence = 河川
+facet.river_level_min = 河川ボーナス下限
+facet.river_level_max = 河川ボーナス上限
+facet.harbor_presence = 港の適性
+facet.movement_presence = 移動補助
+
+# Checklist controls
+checklist.search.placeholder = 選択肢を絞り込む
+checklist.expand = リストを展開
+checklist.collapse = リストを折りたたむ
+checklist.clear = 選択を解除
+checklist.selected_count[other] = {count} 件選択中
+checklist.empty = 一致する選択肢がありません
+
+# Static option labels
+option.kind.land = 陸地
+option.kind.sea = 海
+option.kind.lake = 湖
+option.kind.impassable = 通行不可
+option.kind.unknown = 不明
+option.yes = はい
+option.no = いいえ
+option.present = あり
+option.missing = なし
+option.no_value = なし
+option.symbol_with_key = {label} [{key}]
+option.river_tier = レベル {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = 小川
+river.tier.stream = 細流
+river.tier.river = 河川
+river.tier.large_river = 大河
+river.tier.major_river = 主要河川
+river.tier.unknown = 不明
+
+# Exact color and numeric ranges
+rgb.label = 色の完全一致
+rgb.placeholder = #RRGGBB
+rgb.tooltip = 16進数を1～6桁で入力してください。先頭の0は省略できます。
+range.harbor = 港の値
+range.movement_x = 移動 X
+range.movement_y = 移動 Y
+range.min.placeholder = 最小値
+range.max.placeholder = 最大値
+validation.rgb = #1A2B3C のように16進数を1～6桁で入力してください。
+validation.number = 0.5 のように数値を入力してください。
+validation.number_finite = 有限の数値を入力してください。
+
+# Result grid
+grid.legend.food = 食料生産
+grid.legend.precious = 金または銀
+grid.columns = 列
+grid.show_details = 詳細を表示
+grid.sort.ascending = 昇順で並べ替え済み
+grid.sort.descending = 降順で並べ替え済み
+grid.sort.hint = 選択すると並べ替え、もう一度選択すると順序が逆になります
+grid.resize.hint = 端をドラッグしてサイズを変更
+grid.empty.title = 一致するロケーションがありません
+grid.empty.body = フィルターを変更またはクリアすると、より多くのロケーションが表示されます。
+
+# Column headers
+column.color = 色
+column.name = 名前
+column.identifier = 識別子
+column.kind = タイプ
+column.topography = 地表環境
+column.vegetation = 植生
+column.climate = 気候
+column.continent = 大陸
+column.subcontinent = 亜大陸
+column.region = 地方
+column.area = 地域
+column.province = 州
+column.religion = 宗教
+column.culture = 文化
+column.raw_material = 原材料
+column.modifier = 補正
+column.rgb = RGB
+column.coastal = 沿岸
+column.river_presence = 河川
+column.river_level = 河川ボーナス
+column.harbor = 港
+column.movement_presence = 移動
+column.movement_x = 移動 X
+column.movement_y = 移動 Y
+column.static_capacity = 固定収容力
+column.equator_capacity = 赤道収容力
+
+# Column menu
+column_menu.title = 表示する列
+column_menu.close = 閉じる
+column_menu.keep_one = 少なくとも1つの列を表示する必要があります。
+
+# Detail pane
+detail.title = ロケーションの詳細
+detail.hide = 詳細を隠す
+detail.close = 閉じる
+detail.resize = 詳細ペインのサイズを変更
+detail.empty.title = ロケーションを選択してください
+detail.empty.body = ロケーションの詳細、階層、色、河川データがここに表示されます。
+detail.breadcrumb = 階層
+detail.group.classification = 分類
+detail.group.society = 社会
+detail.group.economy = 経済
+detail.group.coast = 沿岸と移動
+detail.group.river = 河川
+detail.group.capacity = 固定人口収容力
+detail.field.type = タイプ
+detail.field.topography = 地表環境
+detail.field.vegetation = 植生
+detail.field.climate = 気候
+detail.field.religion = 宗教
+detail.field.culture = 文化
+detail.field.raw_material = 原材料
+detail.field.modifier = 補正
+detail.field.coastal = 沿岸
+detail.field.connected_sea = 接続する海
+detail.field.harbor = 港の適性
+detail.field.movement = 移動補助
+detail.field.river = 河川
+detail.field.river_bonus = 収容力ボーナス
+detail.field.river_source = 河川の源流
+detail.field.river_confluence = 河川の合流点
+detail.field.capacity_total = 総収容力
+detail.field.capacity_vegetation = 植生による収容力
+detail.field.capacity_equator = 赤道への近さ
+detail.field.capacity_modifier = 固定収容力補正
+detail.capacity.note = 不変のマップデータのみから算出しており、発展度、建物、法律などキャンペーン中の状態は含まれません。
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}、レベル {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = 起動中
+load.embedded = 内蔵データを読み込み中
+load.loading_data = EU5 {version} のデータを読み込み中
+load.preparing = EU5 {version} のデータを準備中
+load.external = 外部データを準備中
+load.rebuild = 再構築を準備中
+load.fonts = フォントを読み込み中
+load.names = ロケーション名を読み込み中
+import.templates = ロケーションテンプレートを読み込み中
+import.hierarchy = 階層を読み込み中
+import.colors = マップの色を読み込み中
+import.ports = 港を読み込み中
+import.river_settings = 河川設定を読み込み中
+import.map_factors = 固定マップ係数を読み込み中
+import.localization = ローカライズを読み込み中
+import.rivers = マップと河川をスキャン中
+import.capacity = 固定人口収容力を計算中
+import.complete = インポート完了
+
+# Load errors
+error.title = EU5 のロケーションを読み込めませんでした
+error.detail = 技術的な詳細
+error.io = {path} のファイル操作に失敗しました。
+error.parse = ゲームファイル {source} をバイト {offset} 付近で解析できませんでした。
+error.installation = Europa Universalis V のインストール先が見つかりません。
+error.missing_file = 必要なゲームファイルがありません: {path}
+error.invalid_data = ロケーションデータが無効です。
+error.encoding = ロケーションデータをデコードできませんでした。
+error.compression = ロケーションデータを展開できませんでした。
+error.png = マップ画像をデコードできませんでした: {path}
+error.ui = インターフェースでエラーが発生しました。
+error.worker = バックグラウンドローダーが予期せず停止しました。
+error.hint.retryable = インストール先を確認してから、再試行するかデータを再構築してください。
+error.hint.rebuild = このエラーは再試行しても解決しません。ゲームファイルからデータを再構築してください。
+error.hint.web = ページを再読み込みしてもう一度お試しください。
+error.install_path.label = インストール先
+error.install_path.placeholder = Europa Universalis V のインストール先
+error.retry = 再試行
+error.rebuild = データを再構築
+
+# Notices shown over a loaded interface
+notice.language_pack = この言語のロケーション名を読み込めなかったため、英語の名前を表示しています。
+notice.language_pack_mismatch = ダウンロードしたロケーション名は別のデータビルドのものだったため、使用しませんでした。
+notice.font_pack = この言語のフォントを読み込めなかったため、一部の文字が表示されない可能性があります。
+notice.dismiss = 閉じる
+
+# Drawers
+drawer.close = 閉じる
+
+# About dialog
+about.title = EU5 Location DB
+about.version = バージョン {version}
+about.data = Europa Universalis V {version}、Steam ビルド {build} のロケーションデータ。
+about.author = 作者: Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = 非公式の静的マップデータブラウザーです。Paradox Interactive とは提携しておらず、承認も受けていません。
+about.trademark = Europa Universalis および Paradox Interactive は、それぞれの所有者の商標です。
+about.license.source = ソースのライセンス: MIT OR Apache-2.0
+about.license.ui = インターフェースツールキット: iced、MIT License
+about.license.fonts = フォント: IBM Plex Sans、IBM Plex Mono、IBM Plex Sans KR、IBM Plex Sans JP、Noto Sans ファミリー、SIL Open Font License 1.1
+about.licenses.show = ライセンス全文を表示
+about.licenses.hide = ライセンス全文を隠す
+about.keys.title = キーボード
+about.keys.search = 検索欄にフォーカス
+about.keys.regions = ヘッダー、フィルター、結果、詳細の間を移動
+about.keys.focus = コントロール間を移動
+about.keys.rows = 選択行を移動
+about.keys.columns = アクティブな列を移動
+about.keys.sort = アクティブな列で並べ替え
+about.keys.resize = アクティブな列のサイズを変更
+about.keys.details = 選択行の詳細を表示
+about.keys.toggle = アクティブな選択肢を切り替え
+about.keys.close = メニュー、ダイアログ、ドロワーを閉じる
+about.close = 閉じる
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Space
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = 矢印キー
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

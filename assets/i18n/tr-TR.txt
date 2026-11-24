@@ -1,0 +1,305 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = Ad veya tanımlayıcıyla ara
+header.search.tooltip = Konum adlarında ve tanımlayıcılarda ara
+header.result_count[one] = {count} konum
+header.result_count[other] = {count} konum
+header.build = EU5 {version} | Derleme {build}
+header.build.pending = Veriler yükleniyor
+header.about = Hakkında
+header.language = Dil
+header.appearance = Görünüm
+header.filters = Filtreler
+header.details = Ayrıntılar
+
+# Appearance menu (desktop only)
+appearance.title = Görünüm
+appearance.mode = Mod
+appearance.mode.light = Açık
+appearance.mode.dark = Koyu
+appearance.accent = Vurgu rengi
+appearance.accent.amber = Kehribar
+appearance.accent.lagoon = Lagün
+appearance.accent.cobalt = Kobalt
+appearance.accent.orchid = Orkide
+appearance.accent.graphite = Grafit
+appearance.motion = Animasyonlar
+appearance.motion.on = Açık
+appearance.motion.off = Kapalı
+appearance.close = Kapat
+
+# Language menu (desktop only)
+language.title = Dil
+language.game_text_note = Oyunun bu dil için çevirisi yoksa konum adları İngilizce gösterilir.
+language.close = Kapat
+
+# Filter rail
+rail.title = Filtreler
+rail.clear_all = Tümünü temizle
+rail.collapse = Filtreleri gizle
+rail.expand = Filtreleri göster
+rail.resize = Filtre bölmesinin boyutunu değiştir
+rail.active_count[one] = {count} filtre etkin
+rail.active_count[other] = {count} filtre etkin
+rail.show_impassable = Geçilemezleri göster
+rail.food_only = Yalnızca gıda üretenler
+rail.section.location = Konum
+rail.section.geography = Coğrafya
+rail.section.terrain = Arazi
+rail.section.society = Toplum
+rail.section.economy = Ekonomi
+rail.section.map_data = Harita verisi
+
+# Facet titles
+facet.kind = Tür
+facet.continent = Kıta
+facet.subcontinent = Alt kıta
+facet.region = Bölge
+facet.area = Alan
+facet.province = İl
+facet.topography = Topografya
+facet.vegetation = Bitki örtüsü
+facet.climate = İklim
+facet.religion = Din
+facet.culture = Kültür
+facet.raw_material = Ham madde
+facet.modifier = Değiştirici
+facet.coastal = Kıyı
+facet.river_presence = Nehir
+facet.river_level_min = En düşük nehir bonusu
+facet.river_level_max = En yüksek nehir bonusu
+facet.harbor_presence = Liman uygunluğu
+facet.movement_presence = Hareket desteği
+
+# Checklist controls
+checklist.search.placeholder = Seçenekleri filtrele
+checklist.expand = Listeyi genişlet
+checklist.collapse = Listeyi daralt
+checklist.clear = Seçimi temizle
+checklist.selected_count[one] = {count} seçili
+checklist.selected_count[other] = {count} seçili
+checklist.empty = Eşleşen seçenek yok
+
+# Static option labels
+option.kind.land = Kara
+option.kind.sea = Deniz
+option.kind.lake = Göl
+option.kind.impassable = Geçilemez
+option.kind.unknown = Bilinmiyor
+option.yes = Evet
+option.no = Hayır
+option.present = Mevcut
+option.missing = Eksik
+option.no_value = Eksik
+option.symbol_with_key = {label} [{key}]
+option.river_tier = Seviye {level}: {tier} (+%{percent})
+
+# River tiers
+river.tier.brook = Dere
+river.tier.stream = Çay
+river.tier.river = Nehir
+river.tier.large_river = Büyük nehir
+river.tier.major_river = Ana nehir
+river.tier.unknown = Bilinmiyor
+
+# Exact color and numeric ranges
+rgb.label = Tam renk
+rgb.placeholder = #RRGGBB
+rgb.tooltip = Bir ila altı onaltılık basamak girin; baştaki sıfırlar atlanabilir.
+range.harbor = Liman değeri
+range.movement_x = Hareket X
+range.movement_y = Hareket Y
+range.min.placeholder = En az
+range.max.placeholder = En çok
+validation.rgb = Bir ila altı onaltılık basamak girin, örneğin #1A2B3C.
+validation.number = Bir sayı girin, örneğin 0,5.
+validation.number_finite = Sonlu bir sayı girin.
+
+# Result grid
+grid.legend.food = Gıda üretenler
+grid.legend.precious = Altın veya gümüş
+grid.columns = Sütunlar
+grid.show_details = Ayrıntıları göster
+grid.sort.ascending = Artan sırada
+grid.sort.descending = Azalan sırada
+grid.sort.hint = Sıralamak için seçin; tersine çevirmek için yeniden seçin
+grid.resize.hint = Boyutu değiştirmek için kenarı sürükleyin
+grid.empty.title = Eşleşen konum yok
+grid.empty.body = Daha fazla konum görmek için filtreleri değiştirin veya temizleyin.
+
+# Column headers
+column.color = Renk
+column.name = Ad
+column.identifier = Tanımlayıcı
+column.kind = Tür
+column.topography = Topografya
+column.vegetation = Bitki örtüsü
+column.climate = İklim
+column.continent = Kıta
+column.subcontinent = Alt kıta
+column.region = Bölge
+column.area = Alan
+column.province = İl
+column.religion = Din
+column.culture = Kültür
+column.raw_material = Ham madde
+column.modifier = Değiştirici
+column.rgb = RGB
+column.coastal = Kıyı
+column.river_presence = Nehir
+column.river_level = Nehir bonusu
+column.harbor = Liman
+column.movement_presence = Hareket
+column.movement_x = Hareket X
+column.movement_y = Hareket Y
+column.static_capacity = Sabit kapasite
+column.equator_capacity = Ekvator kapasitesi
+
+# Column menu
+column_menu.title = Görünür sütunlar
+column_menu.close = Kapat
+column_menu.keep_one = En az bir sütun görünür kalır.
+
+# Detail pane
+detail.title = Konum ayrıntıları
+detail.hide = Ayrıntıları gizle
+detail.close = Kapat
+detail.resize = Ayrıntı bölmesinin boyutunu değiştir
+detail.empty.title = Bir konum seçin
+detail.empty.body = Konum ayrıntıları, hiyerarşi, renk ve nehir verileri burada görünür.
+detail.breadcrumb = Hiyerarşi
+detail.group.classification = Sınıflandırma
+detail.group.society = Toplum
+detail.group.economy = Ekonomi
+detail.group.coast = Kıyı ve hareket
+detail.group.river = Nehir
+detail.group.capacity = Sabit nüfus kapasitesi
+detail.field.type = Tür
+detail.field.topography = Topografya
+detail.field.vegetation = Bitki örtüsü
+detail.field.climate = İklim
+detail.field.religion = Din
+detail.field.culture = Kültür
+detail.field.raw_material = Ham madde
+detail.field.modifier = Değiştirici
+detail.field.coastal = Kıyı
+detail.field.connected_sea = Bağlı deniz
+detail.field.harbor = Liman uygunluğu
+detail.field.movement = Hareket desteği
+detail.field.river = Nehir
+detail.field.river_bonus = Kapasite bonusu
+detail.field.river_source = Nehir kaynağı
+detail.field.river_confluence = Nehir birleşimi
+detail.field.capacity_total = Toplam kapasite
+detail.field.capacity_vegetation = Bitki örtüsü kapasitesi
+detail.field.capacity_equator = Ekvatora yakınlık
+detail.field.capacity_modifier = Sabit kapasite değiştiricisi
+detail.capacity.note = Yalnızca değişmez harita verisinden türetilir; gelişim, binalar, yasalar ve diğer kampanya durumu hariç tutulur.
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = S{level} +%{percent}
+format.river_detail = {tier}, seviye {level}
+format.percent_bonus = +%{percent}
+format.signed_percent = %{value}
+format.movement = {x}, {y}
+format.progress = %{percent}
+value.none = -
+
+# Loading stages
+load.starting = Başlatılıyor
+load.embedded = Gömülü veriler yükleniyor
+load.loading_data = EU5 {version} verileri yükleniyor
+load.preparing = EU5 {version} verileri hazırlanıyor
+load.external = Harici veriler hazırlanıyor
+load.rebuild = Yeniden derleme hazırlanıyor
+load.fonts = Yazı tipleri yükleniyor
+load.names = Konum adları yükleniyor
+import.templates = Konum şablonları okunuyor
+import.hierarchy = Hiyerarşi okunuyor
+import.colors = Harita renkleri okunuyor
+import.ports = Limanlar okunuyor
+import.river_settings = Nehir ayarları okunuyor
+import.map_factors = Sabit harita etkenleri okunuyor
+import.localization = Yerelleştirme okunuyor
+import.rivers = Harita ve nehirler taranıyor
+import.capacity = Sabit nüfus kapasitesi hesaplanıyor
+import.complete = İçe aktarma tamamlandı
+
+# Load errors
+error.title = EU5 konumları yüklenemedi
+error.detail = Teknik ayrıntı
+error.io = {path} için bir dosya işlemi başarısız oldu.
+error.parse = {source} oyun dosyası {offset} bayt civarında ayrıştırılamadı.
+error.installation = Europa Universalis V kurulumu bulunamadı.
+error.missing_file = Gerekli bir oyun dosyası eksik: {path}
+error.invalid_data = Konum verisi geçersiz.
+error.encoding = Konum verisi çözümlenemedi.
+error.compression = Konum verisinin sıkıştırması açılamadı.
+error.png = Bir harita görüntüsü çözümlenemedi: {path}
+error.ui = Arayüz başarısız oldu.
+error.worker = Arka plan yükleyicisi beklenmedik şekilde durdu.
+error.hint.retryable = Kurulum dizinini denetleyin, ardından yeniden deneyin ya da verileri yeniden oluşturun.
+error.hint.rebuild = Bu hatada yeniden denemek işe yaramaz; verileri oyun dosyalarından yeniden oluşturun.
+error.hint.web = Yeniden denemek için sayfayı yenileyin.
+error.install_path.label = Kurulum dizini
+error.install_path.placeholder = Europa Universalis V kurulum dizini
+error.retry = Yeniden dene
+error.rebuild = Verileri yeniden oluştur
+
+# Notices shown over a loaded interface
+notice.language_pack = Bu dil için konum adları yüklenemedi, bu yüzden İngilizce adlar gösteriliyor.
+notice.language_pack_mismatch = İndirilen konum adları farklı bir veri derlemesine ait olduğu için kullanılmadı.
+notice.font_pack = Bu dil için bir yazı tipi yüklenemedi, bu yüzden bazı metinler görüntülenemeyebilir.
+notice.dismiss = Kapat
+
+# Drawers
+drawer.close = Kapat
+
+# About dialog
+about.title = EU5 Location DB
+about.version = Sürüm {version}
+about.data = Europa Universalis V {version} verileri, Steam derlemesi {build}.
+about.author = Yapan: Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = Resmi olmayan bir statik harita verisi tarayıcısıdır. Paradox Interactive ile bağlantılı değildir ve onayı yoktur.
+about.trademark = Europa Universalis ve Paradox Interactive, ilgili sahiplerinin ticari markalarıdır.
+about.license.source = Kaynak lisansı: MIT OR Apache-2.0
+about.license.ui = Arayüz araç takımı: iced, MIT Lisansı
+about.license.fonts = Yazı tipleri: IBM Plex Sans, IBM Plex Mono, IBM Plex Sans KR, IBM Plex Sans JP ve Noto Sans aileleri, SIL Open Font License 1.1
+about.licenses.show = Lisans metinlerini göster
+about.licenses.hide = Lisans metinlerini gizle
+about.keys.title = Klavye
+about.keys.search = Aramaya odaklan
+about.keys.regions = Üstbilgi, filtreler, sonuçlar ve ayrıntılar arasında geçin
+about.keys.focus = Denetimler arasında geçin
+about.keys.rows = Seçili satırı taşıyın
+about.keys.columns = Etkin sütunu taşıyın
+about.keys.sort = Etkin sütuna göre sırala
+about.keys.resize = Etkin sütunun boyutunu değiştirin
+about.keys.details = Seçili satırın ayrıntılarını göster
+about.keys.toggle = Etkin seçeneği değiştir
+about.keys.close = Bir menüyü, iletişim kutusunu veya çekmeceyi kapat
+about.close = Kapat
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Boşluk
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = Ok tuşları
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

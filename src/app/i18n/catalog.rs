@@ -83,6 +83,13 @@ pub(crate) fn tp(locale: Locale, text: Text, count: u64) -> &'static str {
     }
 }
 
+/// Catalog table of a locale without the English fallback, `None` for a locale with no file;
+/// the parity tests need to tell a missing catalog from an English one.
+#[cfg(test)]
+pub(super) fn table(locale: Locale) -> Option<&'static [Entry; Text::COUNT]> {
+    CATALOGS.get(locale.index()).copied().flatten()
+}
+
 fn entry(locale: Locale, text: Text) -> Option<Entry> {
     let table = CATALOGS
         .get(locale.index())

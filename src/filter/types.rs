@@ -129,7 +129,7 @@ impl FilterSet {
 pub enum SortField {
     /// Exact RGB color.
     Color,
-    /// English display name.
+    /// Display name in the active game language.
     Name,
     /// Internal identifier.
     Identifier,

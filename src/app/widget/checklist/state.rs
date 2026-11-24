@@ -4,7 +4,7 @@ use iced::Point;
 use iced::advanced::widget::operation::Focusable;
 use iced::touch::Finger;
 
-/// Checklist tree state.
+/// Checklist tree state. Holds only transient interaction state, never option data.
 #[derive(Debug, Default)]
 pub(crate) struct ChecklistState {
     /// Vertical offset from the first row.
@@ -19,6 +19,13 @@ pub(crate) struct ChecklistState {
     pub(crate) thumb_grab: Option<f32>,
     /// Touch drag: finger, press position and previous position.
     pub(crate) touch: Option<(Finger, Point, Point)>,
+    /// Row under the finger when the touch began; a tap toggles this row, so a list that moved
+    /// under the finger cannot toggle a different option.
+    pub(crate) touch_row: Option<usize>,
+    /// Whether the current touch moved past `TOUCH_SLOP` and is a scroll rather than a tap.
+    pub(crate) touch_scrolling: bool,
+    /// Whether the pointer is over the scrollbar lane, for the thumb hover colour.
+    pub(crate) lane_hovered: bool,
     /// Row count seen in the previous update, so a shrinking filtered list clamps the offset
     /// and the active row.
     pub(crate) last_row_count: usize,

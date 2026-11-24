@@ -1,18 +1,11 @@
 //! Bundled byte-trigram postings; exact verification preserves substring semantics.
 
-use bitcode::{Decode, Encode};
 use std::collections::BTreeMap;
 
 use super::{bitmap::Bitmap, posting::validate_ids};
-use crate::{AppError, model::LocationId};
+use crate::{AppError, lang_pack::TrigramPosting, model::LocationId};
 
-#[derive(Clone, Debug, Decode, Encode, PartialEq)]
-pub(super) struct Trigram {
-    pub(super) key: [u8; 3],
-    pub(super) ids: Vec<LocationId>,
-}
-
-pub(super) fn build(searchable: &[String]) -> Vec<Trigram> {
+pub(super) fn build(searchable: &[String]) -> Vec<TrigramPosting> {
     let mut entries = BTreeMap::<_, Vec<_>>::new();
     for (index, text) in searchable.iter().enumerate() {
         let Ok(id) = u32::try_from(index).map(LocationId) else {
@@ -27,12 +20,12 @@ pub(super) fn build(searchable: &[String]) -> Vec<Trigram> {
     }
     entries
         .into_iter()
-        .map(|(key, ids)| Trigram { key, ids })
+        .map(|(key, ids)| TrigramPosting { key, ids })
         .collect()
 }
 
 pub(super) fn apply(
-    index: &[Trigram],
+    index: &[TrigramPosting],
     searchable: &[String],
     query: &str,
     mask: &mut Bitmap,
@@ -80,7 +73,7 @@ pub(super) fn apply(
     mask.intersect(scratch);
 }
 
-pub(super) fn validate(index: &[Trigram], searchable: &[String]) -> Result<(), AppError> {
+pub(super) fn validate(index: &[TrigramPosting], searchable: &[String]) -> Result<(), AppError> {
     let max_postings: usize = searchable
         .iter()
         .map(|text| text.len().saturating_sub(2))

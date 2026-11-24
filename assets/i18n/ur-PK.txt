@@ -1,0 +1,305 @@
+# English interface catalog for EU5 Location Filter.
+# Format rules are in README.md next to this file. English is the reference
+# key set and the fallback for every other locale.
+
+# Application
+app.title = EU5 Location DB
+
+# Header
+header.search.placeholder = نام یا شناخت کنندہ تلاش کریں
+header.search.tooltip = مقامات کے نام اور شناخت کنندگان تلاش کریں
+header.result_count[one] = {count} مقام
+header.result_count[other] = {count} مقامات
+header.build = EU5 {version} | بلڈ {build}
+header.build.pending = ڈیٹا لوڈ ہو رہا ہے
+header.about = تعارف
+header.language = زبان
+header.appearance = ظاہری شکل
+header.filters = فلٹرز
+header.details = تفصیلات
+
+# Appearance menu (desktop only)
+appearance.title = ظاہری شکل
+appearance.mode = موڈ
+appearance.mode.light = روشن
+appearance.mode.dark = تاریک
+appearance.accent = نمایاں رنگ
+appearance.accent.amber = عنبری
+appearance.accent.lagoon = جھیلی
+appearance.accent.cobalt = کوبالٹ
+appearance.accent.orchid = ارغوانی
+appearance.accent.graphite = گریفائٹ
+appearance.motion = حرکت پذیری
+appearance.motion.on = آن
+appearance.motion.off = آف
+appearance.close = بند کریں
+
+# Language menu (desktop only)
+language.title = زبان
+language.game_text_note = جہاں گیم میں اس زبان کا ترجمہ موجود نہیں، وہاں مقامات کے نام انگریزی میں دکھائے جاتے ہیں۔
+language.close = بند کریں
+
+# Filter rail
+rail.title = فلٹرز
+rail.clear_all = سب صاف کریں
+rail.collapse = فلٹرز چھپائیں
+rail.expand = فلٹرز دکھائیں
+rail.resize = فلٹر پین کا سائز تبدیل کریں
+rail.active_count[one] = {count} فلٹر فعال
+rail.active_count[other] = {count} فلٹرز فعال
+rail.show_impassable = ناقابل عبور دکھائیں
+rail.food_only = صرف خوراک پیدا کرنے والے
+rail.section.location = مقام
+rail.section.geography = جغرافیہ
+rail.section.terrain = خطہ
+rail.section.society = معاشرہ
+rail.section.economy = معیشت
+rail.section.map_data = نقشے کا ڈیٹا
+
+# Facet titles
+facet.kind = قسم
+facet.continent = براعظم
+facet.subcontinent = برصغیر
+facet.region = علاقہ
+facet.area = حلقہ
+facet.province = صوبہ
+facet.topography = سطحی ساخت
+facet.vegetation = نباتات
+facet.climate = آب و ہوا
+facet.religion = مذہب
+facet.culture = ثقافت
+facet.raw_material = خام مال
+facet.modifier = ترمیم کنندہ
+facet.coastal = ساحلی
+facet.river_presence = دریا
+facet.river_level_min = دریا کا کم از کم بونس
+facet.river_level_max = دریا کا زیادہ سے زیادہ بونس
+facet.harbor_presence = بندرگاہ کی موزونیت
+facet.movement_presence = نقل و حرکت میں معاونت
+
+# Checklist controls
+checklist.search.placeholder = اختیارات فلٹر کریں
+checklist.expand = فہرست پھیلائیں
+checklist.collapse = فہرست سمیٹیں
+checklist.clear = انتخاب صاف کریں
+checklist.selected_count[one] = {count} منتخب
+checklist.selected_count[other] = {count} منتخب
+checklist.empty = کوئی مماثل اختیار نہیں
+
+# Static option labels
+option.kind.land = خشکی
+option.kind.sea = سمندر
+option.kind.lake = جھیل
+option.kind.impassable = ناقابل عبور
+option.kind.unknown = نامعلوم
+option.yes = ہاں
+option.no = نہیں
+option.present = موجود
+option.missing = غیر موجود
+option.no_value = غیر موجود
+option.symbol_with_key = {label} [{key}]
+option.river_tier = سطح {level}: {tier} (+{percent}%)
+
+# River tiers
+river.tier.brook = نالہ
+river.tier.stream = ندی
+river.tier.river = دریا
+river.tier.large_river = بڑا دریا
+river.tier.major_river = اہم دریا
+river.tier.unknown = نامعلوم
+
+# Exact color and numeric ranges
+rgb.label = درست رنگ
+rgb.placeholder = #RRGGBB
+rgb.tooltip = ایک سے چھ ہیکساڈیسیمل ہندسے درج کریں؛ ابتدائی صفر چھوڑے جا سکتے ہیں۔
+range.harbor = بندرگاہ کی قدر
+range.movement_x = نقل و حرکت X
+range.movement_y = نقل و حرکت Y
+range.min.placeholder = کم از کم
+range.max.placeholder = زیادہ سے زیادہ
+validation.rgb = ایک سے چھ ہیکساڈیسیمل ہندسے درج کریں، جیسے #1A2B3C۔
+validation.number = ایک عدد درج کریں، جیسے 0.5۔
+validation.number_finite = ایک محدود عدد درج کریں۔
+
+# Result grid
+grid.legend.food = خوراک پیدا کرنے والے
+grid.legend.precious = سونا یا چاندی
+grid.columns = کالم
+grid.show_details = تفصیلات دکھائیں
+grid.sort.ascending = صعودی ترتیب
+grid.sort.descending = نزولی ترتیب
+grid.sort.hint = ترتیب دینے کے لیے منتخب کریں؛ الٹنے کے لیے دوبارہ منتخب کریں
+grid.resize.hint = سائز تبدیل کرنے کے لیے کنارہ گھسیٹیں
+grid.empty.title = کوئی مقام مماثل نہیں
+grid.empty.body = مزید مقامات دیکھنے کے لیے فلٹرز تبدیل کریں یا صاف کریں۔
+
+# Column headers
+column.color = رنگ
+column.name = نام
+column.identifier = شناخت کنندہ
+column.kind = قسم
+column.topography = سطحی ساخت
+column.vegetation = نباتات
+column.climate = آب و ہوا
+column.continent = براعظم
+column.subcontinent = برصغیر
+column.region = علاقہ
+column.area = حلقہ
+column.province = صوبہ
+column.religion = مذہب
+column.culture = ثقافت
+column.raw_material = خام مال
+column.modifier = ترمیم کنندہ
+column.rgb = RGB
+column.coastal = ساحلی
+column.river_presence = دریا
+column.river_level = دریا کا بونس
+column.harbor = بندرگاہ
+column.movement_presence = نقل و حرکت
+column.movement_x = نقل و حرکت X
+column.movement_y = نقل و حرکت Y
+column.static_capacity = مستقل گنجائش
+column.equator_capacity = خط استوا کی گنجائش
+
+# Column menu
+column_menu.title = نظر آنے والے کالم
+column_menu.close = بند کریں
+column_menu.keep_one = کم از کم ایک کالم نظر آتا رہے گا۔
+
+# Detail pane
+detail.title = مقام کی تفصیلات
+detail.hide = تفصیلات چھپائیں
+detail.close = بند کریں
+detail.resize = تفصیلی پین کا سائز تبدیل کریں
+detail.empty.title = ایک مقام منتخب کریں
+detail.empty.body = مقام کی تفصیلات، درجہ بندی، رنگ اور دریا کا ڈیٹا یہاں ظاہر ہوتا ہے۔
+detail.breadcrumb = درجہ بندی
+detail.group.classification = زمرہ بندی
+detail.group.society = معاشرہ
+detail.group.economy = معیشت
+detail.group.coast = ساحل اور نقل و حرکت
+detail.group.river = دریا
+detail.group.capacity = مستقل آبادی کی گنجائش
+detail.field.type = قسم
+detail.field.topography = سطحی ساخت
+detail.field.vegetation = نباتات
+detail.field.climate = آب و ہوا
+detail.field.religion = مذہب
+detail.field.culture = ثقافت
+detail.field.raw_material = خام مال
+detail.field.modifier = ترمیم کنندہ
+detail.field.coastal = ساحلی
+detail.field.connected_sea = منسلک سمندر
+detail.field.harbor = بندرگاہ کی موزونیت
+detail.field.movement = نقل و حرکت میں معاونت
+detail.field.river = دریا
+detail.field.river_bonus = گنجائش کا بونس
+detail.field.river_source = دریا کا منبع
+detail.field.river_confluence = دریاؤں کا سنگم
+detail.field.capacity_total = کل گنجائش
+detail.field.capacity_vegetation = نباتات کی گنجائش
+detail.field.capacity_equator = خط استوا سے قربت
+detail.field.capacity_modifier = مستقل گنجائش کا ترمیم کنندہ
+detail.capacity.note = صرف غیر متغیر نقشہ ڈیٹا سے اخذ کی گئی ہے؛ ترقی، عمارات، قوانین اور مہم کی دیگر حالت شامل نہیں۔
+
+# Value formats
+format.rgb = rgb({red}, {green}, {blue})
+format.river_cell = L{level} +{percent}%
+format.river_detail = {tier}، سطح {level}
+format.percent_bonus = +{percent}%
+format.signed_percent = {value}%
+format.movement = {x}, {y}
+format.progress = {percent}%
+value.none = -
+
+# Loading stages
+load.starting = شروع ہو رہا ہے
+load.embedded = شامل ڈیٹا لوڈ ہو رہا ہے
+load.loading_data = EU5 {version} کا ڈیٹا لوڈ ہو رہا ہے
+load.preparing = EU5 {version} کا ڈیٹا تیار ہو رہا ہے
+load.external = بیرونی ڈیٹا تیار ہو رہا ہے
+load.rebuild = دوبارہ تعمیر کی تیاری ہو رہی ہے
+load.fonts = فونٹس لوڈ ہو رہے ہیں
+load.names = مقامات کے نام لوڈ ہو رہے ہیں
+import.templates = مقام کے سانچے پڑھے جا رہے ہیں
+import.hierarchy = درجہ بندی پڑھی جا رہی ہے
+import.colors = نقشے کے رنگ پڑھے جا رہے ہیں
+import.ports = بندرگاہیں پڑھی جا رہی ہیں
+import.river_settings = دریا کی ترتیبات پڑھی جا رہی ہیں
+import.map_factors = نقشے کے مستقل عوامل پڑھے جا رہے ہیں
+import.localization = مقامی زبان کی فائلیں پڑھی جا رہی ہیں
+import.rivers = نقشہ اور دریا اسکین ہو رہے ہیں
+import.capacity = مستقل آبادی کی گنجائش کا حساب ہو رہا ہے
+import.complete = درآمد مکمل ہو گئی
+
+# Load errors
+error.title = EU5 کے مقامات لوڈ نہیں ہو سکے
+error.detail = تکنیکی تفصیل
+error.io = {path} کے لیے فائل کا عمل ناکام رہا۔
+error.parse = گیم فائل {source} بائٹ {offset} کے قریب پارس نہیں ہو سکی۔
+error.installation = Europa Universalis V کی تنصیب نہیں ملی۔
+error.missing_file = گیم کی ایک ضروری فائل موجود نہیں: {path}
+error.invalid_data = مقامات کا ڈیٹا غلط ہے۔
+error.encoding = مقامات کا ڈیٹا ڈی کوڈ نہیں ہو سکا۔
+error.compression = مقامات کا ڈیٹا ان زپ نہیں ہو سکا۔
+error.png = نقشے کی تصویر ڈی کوڈ نہیں ہو سکی: {path}
+error.ui = انٹرفیس ناکام ہو گیا۔
+error.worker = پس منظر کا لوڈر غیر متوقع طور پر رک گیا۔
+error.hint.retryable = تنصیب کی ڈائریکٹری چیک کریں، پھر دوبارہ کوشش کریں یا ڈیٹا دوبارہ بنائیں۔
+error.hint.rebuild = اس خرابی میں دوبارہ کوشش سے فائدہ نہیں ہوگا؛ گیم فائلوں سے ڈیٹا دوبارہ بنائیں۔
+error.hint.web = دوبارہ کوشش کے لیے صفحہ ری لوڈ کریں۔
+error.install_path.label = تنصیب کی ڈائریکٹری
+error.install_path.placeholder = Europa Universalis V کی تنصیب کی ڈائریکٹری
+error.retry = دوبارہ کوشش کریں
+error.rebuild = ڈیٹا دوبارہ بنائیں
+
+# Notices shown over a loaded interface
+notice.language_pack = اس زبان کے لیے مقامات کے نام لوڈ نہیں ہو سکے، اس لیے انگریزی نام دکھائے جا رہے ہیں۔
+notice.language_pack_mismatch = ڈاؤن لوڈ کیے گئے مقامات کے نام ڈیٹا کی مختلف بلڈ سے تعلق رکھتے ہیں اور استعمال نہیں کیے گئے۔
+notice.font_pack = اس زبان کا فونٹ لوڈ نہیں ہو سکا، اس لیے کچھ متن ظاہر نہیں ہو سکتا۔
+notice.dismiss = مسترد کریں
+
+# Drawers
+drawer.close = بند کریں
+
+# About dialog
+about.title = EU5 Location DB
+about.version = ورژن {version}
+about.data = مقامات کا ڈیٹا Europa Universalis V {version}، Steam بلڈ {build} سے لیا گیا ہے۔
+about.author = تخلیق کار: Young Hyun Chi
+about.link.github = GitHub
+about.link.website = cyhdev.com
+about.link.linkedin = LinkedIn
+about.disclaimer = نقشے کے مستقل ڈیٹا کا ایک غیر سرکاری براؤزر۔ Paradox Interactive سے وابستہ یا اس کا تصدیق شدہ نہیں۔
+about.trademark = Europa Universalis اور Paradox Interactive اپنے اپنے مالکان کے ٹریڈ مارک ہیں۔
+about.license.source = سورس لائسنس: MIT OR Apache-2.0
+about.license.ui = انٹرفیس ٹول کٹ: iced، MIT لائسنس
+about.license.fonts = فونٹس: IBM Plex Sans، IBM Plex Mono، IBM Plex Sans KR، IBM Plex Sans JP اور Noto Sans خاندان، SIL Open Font License 1.1
+about.licenses.show = لائسنس کے متن دکھائیں
+about.licenses.hide = لائسنس کے متن چھپائیں
+about.keys.title = کی بورڈ
+about.keys.search = تلاش پر فوکس کریں
+about.keys.regions = ہیڈر، فلٹرز، نتائج اور تفصیلات کے درمیان جائیں
+about.keys.focus = کنٹرولز کے درمیان جائیں
+about.keys.rows = منتخب قطار کو منتقل کریں
+about.keys.columns = فعال کالم کو منتقل کریں
+about.keys.sort = فعال کالم کے مطابق ترتیب دیں
+about.keys.resize = فعال کالم کا سائز تبدیل کریں
+about.keys.details = منتخب قطار کی تفصیلات دکھائیں
+about.keys.toggle = فعال اختیار کو آن یا آف کریں
+about.keys.close = مینو، ڈائیلاگ یا دراز بند کریں
+about.close = بند کریں
+
+# Key names used in the keyboard table
+keycap.ctrl = Ctrl
+keycap.cmd = Cmd
+keycap.shift = Shift
+keycap.tab = Tab
+keycap.space = Space
+keycap.enter = Enter
+keycap.escape = Esc
+keycap.arrows = تیر والی کیز
+keycap.page_up = Page Up
+keycap.page_down = Page Down
+keycap.home = Home
+keycap.end = End

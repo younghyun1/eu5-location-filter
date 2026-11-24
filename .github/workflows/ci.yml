@@ -15,6 +15,9 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
+  # wgpu's WebGPU bindings need web-sys' unstable API cfg. RUSTFLAGS replaces the wasm32 flags in
+  # .cargo/config.toml instead of adding to them, so the config's target features are repeated here.
+  WASM_RUSTFLAGS: --cfg=web_sys_unstable_apis -C target-feature=+bulk-memory,+mutable-globals,+nontrapping-fptoint,+sign-ext,+reference-types,+multivalue,+simd128
 
 jobs:
   quality:
@@ -32,6 +35,8 @@ jobs:
         run: cargo clippy --locked --all-targets -- -D warnings
       - name: Run tests
         run: cargo test --locked --all-targets
+      - name: Check the data core without the interface
+        run: cargo check --locked --no-default-features
       - name: Build documentation
         run: cargo doc --locked --no-deps
       - name: Verify source package
@@ -70,7 +75,7 @@ jobs:
         run: rustup toolchain install nightly --profile minimal --component rust-src
       - name: Install Linux desktop dependencies
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y libfontconfig1-dev libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev libx11-xcb-dev libxcursor-dev libxkbcommon-x11-dev libx11-dev libgl1-mesa-dev
+        run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libxkbcommon-x11-dev libwayland-dev libx11-dev libxcb1-dev
       - name: Check target
         run: cargo check --locked --all-targets --target ${{ matrix.target }}
 
@@ -84,10 +89,14 @@ jobs:
       - name: Install rolling nightly and WASM target
         run: rustup toolchain install nightly --profile minimal --component clippy --target wasm32-unknown-unknown
       - name: Run WASM Clippy
+        env:
+          RUSTFLAGS: ${{ env.WASM_RUSTFLAGS }}
         run: cargo clippy --locked --target wasm32-unknown-unknown --no-default-features --features web -- -D warnings
       - name: Install pinned wasm-pack
         run: cargo install wasm-pack --version 0.15.0 --locked
       - name: Build optimized browser package
+        env:
+          RUSTFLAGS: ${{ env.WASM_RUSTFLAGS }}
         run: wasm-pack build --release --target web --no-pack --no-typescript -- --locked --no-default-features --features web
       - name: Verify generated package
         shell: bash

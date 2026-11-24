@@ -2,6 +2,12 @@
 //! so the host page places a real text field over the header search slot; this wrapper tells
 //! the application where that slot is by publishing its window-space bounds whenever they
 //! change. Layout, drawing and events pass through to the child unchanged.
+//!
+//! The check runs on every event the widget receives. The runtime sends
+//! `window::Event::RedrawRequested` through `update` before each frame is drawn, so the first
+//! layout and every later move or resize are published without waiting for input. The bounds are
+//! those of the layout, which for the header are window coordinates because the header is not
+//! inside a scrollable.
 
 use iced::advanced::layout::{self, Layout};
 use iced::advanced::widget::{self, Tree, tree};
@@ -113,13 +119,18 @@ impl<Message> Widget<Message, iced::Theme, iced::Renderer> for Anchor<'_, Messag
         shell: &mut Shell<'_, Message>,
         viewport: &Rectangle,
     ) {
-        // Placeholder: the implementer compares `layout.bounds()` with `AnchorState::reported`
-        // on every event and publishes `on_bounds` when they differ.
-        let _ = &self.on_bounds;
         if let Some(child) = tree.children.first_mut() {
             self.content.as_widget_mut().update(
                 child, event, layout, cursor, renderer, clipboard, shell, viewport,
             );
+        }
+        let bounds = layout.bounds();
+        let state = tree.state.downcast_mut::<AnchorState>();
+        if state.reported != Some(bounds) {
+            // Recorded before publishing, so the update pass the message triggers sees equal
+            // bounds and publishes nothing further.
+            state.reported = Some(bounds);
+            shell.publish((self.on_bounds)(bounds));
         }
     }
 

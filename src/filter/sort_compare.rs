@@ -1,12 +1,53 @@
 //! Offline column comparisons with nulls last and deterministic ID tie-breaking.
 
 use super::SortField;
+use super::text::fold_sort;
+use crate::lang_pack::ResolvedText;
 use crate::model::{Dataset, LocationId, LocationRecord, SymbolId};
 use std::cmp::Ordering;
 
+/// Folded sort keys, computed once per order build so comparisons only read slices.
+///
+/// Label-ordered columns need `names` and `labels`; the identifier column needs
+/// `identifiers`. A build fills only the vectors its columns read, and a missing key sorts as
+/// null, so a key set built for one group of columns cannot silently order another.
+#[derive(Debug, Default)]
+pub(super) struct SortKeys {
+    /// `fold_sort` of the display name, per location ID.
+    pub(super) names: Vec<String>,
+    /// `fold_sort` of the display label, per dataset symbol.
+    pub(super) labels: Vec<String>,
+    /// `fold_sort` of the raw dictionary entry, per dataset symbol.
+    pub(super) identifiers: Vec<String>,
+}
+
+impl SortKeys {
+    /// Keys for the language-independent columns, which read only internal identifiers.
+    pub(super) fn identifiers(dataset: &Dataset) -> Self {
+        Self {
+            identifiers: dataset
+                .stored
+                .dictionary
+                .iter()
+                .map(|value| fold_sort(value))
+                .collect(),
+            ..Self::default()
+        }
+    }
+
+    /// Keys for the label-ordered columns of one language.
+    pub(super) fn labels(text: &ResolvedText<'_>) -> Self {
+        Self {
+            names: text.names.iter().map(|value| fold_sort(value)).collect(),
+            labels: text.labels.iter().map(|value| fold_sort(value)).collect(),
+            identifiers: Vec::new(),
+        }
+    }
+}
+
 pub(super) fn compare(
     dataset: &Dataset,
-    folded: &[String],
+    keys: &SortKeys,
     left: LocationId,
     right: LocationId,
     field: SortField,
@@ -18,7 +59,7 @@ pub(super) fn compare(
     let Some(right_record) = dataset.location(right) else {
         return Ordering::Equal;
     };
-    let ordering = compare_records(folded, left_record, right_record, field);
+    let ordering = compare_records(keys, left_record, right_record, field);
     let directed = if ascending {
         ordering
     } else {
@@ -28,48 +69,48 @@ pub(super) fn compare(
 }
 
 fn compare_records(
-    folded: &[String],
+    keys: &SortKeys,
     left: &LocationRecord,
     right: &LocationRecord,
     field: SortField,
 ) -> Ordering {
+    let labels = keys.labels.as_slice();
     match field {
         SortField::Color => left.color.cmp(&right.color),
-        SortField::Name => symbols(folded, Some(left.name), Some(right.name)),
-        SortField::Identifier => symbols(folded, Some(left.key), Some(right.key)),
+        SortField::Name => optional_values(
+            key(&keys.names, left.id.0),
+            key(&keys.names, right.id.0),
+        ),
+        SortField::Identifier => symbols(&keys.identifiers, Some(left.key), Some(right.key)),
         SortField::Kind => left.kind.cmp(&right.kind),
-        SortField::Topography => symbols(folded, Some(left.topography), Some(right.topography)),
-        SortField::Vegetation => symbols(folded, left.vegetation, right.vegetation),
-        SortField::Climate => symbols(folded, left.climate, right.climate),
+        SortField::Topography => symbols(labels, Some(left.topography), Some(right.topography)),
+        SortField::Vegetation => symbols(labels, left.vegetation, right.vegetation),
+        SortField::Climate => symbols(labels, left.climate, right.climate),
         SortField::Continent => symbols(
-            folded,
+            labels,
             Some(left.hierarchy.continent),
             Some(right.hierarchy.continent),
         ),
         SortField::Subcontinent => symbols(
-            folded,
+            labels,
             Some(left.hierarchy.subcontinent),
             Some(right.hierarchy.subcontinent),
         ),
         SortField::Region => symbols(
-            folded,
+            labels,
             Some(left.hierarchy.region),
             Some(right.hierarchy.region),
         ),
-        SortField::Area => symbols(
-            folded,
-            Some(left.hierarchy.area),
-            Some(right.hierarchy.area),
-        ),
+        SortField::Area => symbols(labels, Some(left.hierarchy.area), Some(right.hierarchy.area)),
         SortField::Province => symbols(
-            folded,
+            labels,
             Some(left.hierarchy.province),
             Some(right.hierarchy.province),
         ),
-        SortField::Religion => symbols(folded, left.religion, right.religion),
-        SortField::Culture => symbols(folded, left.culture, right.culture),
-        SortField::RawMaterial => symbols(folded, left.raw_material, right.raw_material),
-        SortField::Modifier => symbols(folded, left.modifier, right.modifier),
+        SortField::Religion => symbols(labels, left.religion, right.religion),
+        SortField::Culture => symbols(labels, left.culture, right.culture),
+        SortField::RawMaterial => symbols(labels, left.raw_material, right.raw_material),
+        SortField::Modifier => symbols(labels, left.modifier, right.modifier),
         SortField::Coastal => left.coastal.cmp(&right.coastal),
         SortField::RiverPresence => left.river.is_some().cmp(&right.river.is_some()),
         SortField::RiverLevel => optional_values(
@@ -104,13 +145,13 @@ fn compare_records(
 
 fn symbols(folded: &[String], left: Option<SymbolId>, right: Option<SymbolId>) -> Ordering {
     optional_values(
-        left.and_then(|value| symbol_key(folded, value)),
-        right.and_then(|value| symbol_key(folded, value)),
+        left.and_then(|value| key(folded, value.0)),
+        right.and_then(|value| key(folded, value.0)),
     )
 }
 
-fn symbol_key(folded: &[String], symbol: SymbolId) -> Option<&str> {
-    usize::try_from(symbol.0)
+fn key(folded: &[String], index: u32) -> Option<&str> {
+    usize::try_from(index)
         .ok()
         .and_then(|index| folded.get(index))
         .map(String::as_str)
