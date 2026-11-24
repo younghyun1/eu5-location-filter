@@ -11,7 +11,7 @@ use crate::AppError;
 use crate::compression::decode_limited;
 
 // Validation and desktop file access live in sibling modules to keep each file small; these
-// re-exports keep the frozen `codec::` paths working for code that imports them from here.
+// re-exports keep the `codec::` paths working for code that imports them from here.
 #[cfg(feature = "desktop")]
 pub use super::files::{load_pack, write_pack};
 pub use super::validate::validate_pack;
